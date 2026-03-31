@@ -1,0 +1,2 @@
+declare const _default: "\nfn quatToMat3(R: vec4<f32>) -> mat3x3<f32> {\n    let R2: vec4<f32> = R + R;\n    let X: f32       = R2.x * R.w;\n    let Y: vec4<f32> = R2.y * R;\n    let Z: vec4<f32> = R2.z * R;\n    let W: f32       = R2.w * R.w;\n\n    return mat3x3<f32>(\n        1.0 - Z.z - W,  Y.z + X,      Y.w - Z.x,\n        Y.z - X,        1.0 - Y.y - W, Z.w + Y.x,\n        Y.w + Z.x,      Z.w - Y.x,     1.0 - Y.y - Z.z\n    );\n}\n";
+export default _default;

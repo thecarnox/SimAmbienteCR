@@ -1,0 +1,2 @@
+declare const _default: "\nmat3 quatToMat3(vec4 R) {\n    vec4 R2 = R + R;\n    float X = R2.x * R.w;\n    vec4 Y  = R2.y * R;\n    vec4 Z  = R2.z * R;\n    float W = R2.w * R.w;\n\n    return mat3(\n        1.0 - Z.z - W,\n              Y.z + X,\n              Y.w - Z.x,\n              Y.z - X,\n        1.0 - Y.y - W,\n              Z.w + Y.x,\n              Y.w + Z.x,\n              Z.w - Y.x,\n        1.0 - Y.y - Z.z\n    );\n}\n";
+export default _default;

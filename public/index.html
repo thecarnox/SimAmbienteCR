@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>SimAmbienteCR</title>
+
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+
+    <!-- MENÚ -->
+    <div id="menu">
+
+        <header>
+            <h1>SimAmbienteCR 🌱</h1>
+            <p>Simulador ambiental interactivo de Costa Rica</p>
+        </header>
+
+        <section id="menu-content">
+            <button class="btn" id="startBtn">▶ Iniciar Juego</button>
+            <button class="btn" id="fullscreenBtn">⛶ Pantalla Completa</button>
+            <button class="btn">❓ Próximamente</button>
+        </section>
+
+        <footer>
+            <p>Proyecto de Tesis - UNED</p>
+            <p>Desarrollado por Erick</p>
+        </footer>
+
+    </div>
+
+    <!-- CANVAS -->
+    <canvas id="application-canvas"></canvas>
+
+    <!-- AUDIO -->
+    <audio id="bgSound" loop>
+        <source src="sounds/ambiente.mp3" type="audio/mp3">
+    </audio>
+
+    <!-- PLAYCANVAS -->
+    <script src="/playcanvas/playcanvas.js"></script>
+
+    <!-- JS -->
+    <script src="js/main.js"></script>
+
+</body>
+</html>
