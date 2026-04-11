@@ -5,6 +5,12 @@
     <title>SimAmbienteCR</title>
 
     <link rel="stylesheet" href="styles/styles.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    
 </head>
 <body>
 
@@ -19,7 +25,7 @@
         <section id="menu-content">
             <button class="btn" id="startBtn">▶ Iniciar Juego</button>
             <button class="btn" id="fullscreenBtn">⛶ Pantalla Completa</button>
-            <button class="btn">❓ Próximamente</button>
+            <button class="btn" id="mapBtn">🌍 Modo Mapa</button>
         </section>
 
         <footer>
@@ -32,16 +38,48 @@
     <!-- CANVAS -->
     <canvas id="application-canvas"></canvas>
 
+    <!-- =========================
+         MAPA (MITAD IZQUIERDA)
+    ========================= -->
+    <div id="map"></div>
+
+    <!-- =========================
+         PANEL DERECHO (JUEGO)
+    ========================= -->
+    <div id="rightPanel">
+
+        <div id="panelContent">
+
+            <h2>🌱 Exploración Ambiental</h2>
+            <p>Selecciona una región:</p>
+
+            <button onclick="irAGuanacaste()">Guanacaste</button>
+            <button onclick="irALimon()">Limón</button>
+            <button onclick="irASanJose()">San José</button>
+
+        </div>
+
+    </div>
+
+
+    <!-- MENSAJE CLICK -->
+    <div id="clickMessage">Tocaste el mapa 🌍</div>
+
     <!-- AUDIO -->
     <audio id="bgSound" loop>
         <source src="sounds/ambiente.mp3" type="audio/mp3">
     </audio>
 
+    <!-- =========================
+         SCRIPTS
+    ========================= -->
+
     <!-- PLAYCANVAS -->
     <script src="/playcanvas/playcanvas.js"></script>
 
-    <!-- JS -->
+    <!-- MAIN -->
     <script src="js/main.js"></script>
+    
 
 </body>
 </html>

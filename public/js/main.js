@@ -6,6 +6,14 @@ const startBtn = document.getElementById('startBtn');
 const fullscreenBtn = document.getElementById('fullscreenBtn');
 const menu = document.getElementById('menu');
 const bgSound = document.getElementById('bgSound');
+//TOCAR MAPA const clickMessage = document.getElementById('clickMessage');
+
+const mapBtn = document.getElementById('mapBtn');
+const mapDiv = document.getElementById('map');
+const rightPanel = document.getElementById('rightPanel');
+
+
+let mapInstance = null;
 
 // --------------------
 // CREAR APP PLAYCANVAS
@@ -18,6 +26,9 @@ const app = new pc.Application(canvas, {
 app.setCanvasFillMode(pc.FILLMODE_FILL_WINDOW);
 app.setCanvasResolution(pc.RESOLUTION_AUTO);
 
+// referencia al modelo
+let mapEntity = null;
+
 // --------------------
 // BOTÓN INICIAR JUEGO
 // --------------------
@@ -27,7 +38,7 @@ startBtn.addEventListener('click', () => {
     bgSound.volume = 0.5;
     bgSound.play();
 
-    // 🎬 FADE OUT MENÚ
+    // 🎬 FADE OUT
     menu.classList.add('fade-out');
 
     setTimeout(() => {
@@ -39,17 +50,15 @@ startBtn.addEventListener('click', () => {
         app.start();
 
         // --------------------
-        // 🎥 CÁMARA FIJA + ZOOM REAL
+        // 🎥 CÁMARA
         // --------------------
         const camera = new pc.Entity('camera');
         camera.addComponent('camera', {
             clearColor: new pc.Color(0.5, 0.7, 0.9)
         });
 
-        // 🔥 DIRECCIÓN BASE (tu posición original)
         const direction = new pc.Vec3(0, 30, 10).normalize();
-
-        let distance = 1; // zoom inicial
+        let distance = 1;
 
         function updateCamera() {
             const pos = direction.clone().scale(distance * 30);
@@ -61,14 +70,14 @@ startBtn.addEventListener('click', () => {
         app.root.addChild(camera);
 
         // --------------------
-        // 🔍 ZOOM CON SCROLL
+        // 🔍 ZOOM
         // --------------------
         canvas.addEventListener('wheel', (e) => {
 
-            distance += e.deltaY * 0.001;
+            e.preventDefault();
 
-            // 🔥 LIMITES DE ZOOM
-            distance = Math.max(0.3, Math.min(2, distance));
+            distance += e.deltaY * 0.001;
+            distance = Math.max(0.3, Math.min(1, distance));
 
             updateCamera();
         });
@@ -87,12 +96,10 @@ startBtn.addEventListener('click', () => {
         app.root.addChild(light);
 
         // --------------------
-        // 🌊 AGUA INFINITA
+        // 🌊 AGUA
         // --------------------
         const water = new pc.Entity('water');
-        water.addComponent('model', {
-            type: 'plane'
-        });
+        water.addComponent('model', { type: 'plane' });
 
         water.setLocalScale(500, 1, 500);
         water.setPosition(0, -1, 0);
@@ -104,11 +111,10 @@ startBtn.addEventListener('click', () => {
         waterMaterial.update();
 
         water.model.meshInstances[0].material = waterMaterial;
-
         app.root.addChild(water);
 
         // --------------------
-        // 🏝️ CARGAR MODELO GLB
+        // 🏝️ CARGAR GLB
         // --------------------
         app.assets.loadFromUrl("models/costa_rica.glb", "container", function (err, asset) {
 
@@ -117,21 +123,72 @@ startBtn.addEventListener('click', () => {
                 return;
             }
 
-            const entity = asset.resource.instantiateRenderEntity();
+            mapEntity = asset.resource.instantiateRenderEntity();
 
-            entity.setLocalScale(2, 2, 2);
+            mapEntity.setLocalScale(2, 2, 2);
+            mapEntity.setPosition(0, 0, 0);
+            mapEntity.name = "mapa";
 
-            // 🔥 CENTRO EXACTO
-            entity.setPosition(0, 0, 0);
+            app.root.addChild(mapEntity);
+        });
 
-            app.root.addChild(entity);
+        // --------------------
+        // 🖱️ CLICK SOBRE EL GLB
+        // --------------------
+        canvas.addEventListener('mousedown', (event) => {
+
+            if (!mapEntity) return;
+
+            const rect = canvas.getBoundingClientRect();
+
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+            const from = camera.camera.screenToWorld(x, y, camera.camera.nearClip);
+            const to = camera.camera.screenToWorld(x, y, camera.camera.farClip);
+
+            const ray = new pc.Ray(from, to.sub(from).normalize());
+
+            let hit = false;
+
+            mapEntity.findComponents("render").forEach(render => {
+
+                render.meshInstances.forEach(meshInstance => {
+
+                    if (meshInstance.aabb.intersectsRay(ray)) {
+                        hit = true;
+                    }
+
+                });
+
+            });
+
+            if (hit) {
+                console.log("🌎 Tocaste el mapa (GLB)");
+                showClickMessage();
+            }
         });
 
     }, 1000);
 });
 
+/*TOCAR MAPA
 // --------------------
-// 🖥️ PANTALLA COMPLETA
+// 🟢 MENSAJE
+// --------------------
+ function showClickMessage() {
+
+    if (!clickMessage) return;
+
+    clickMessage.classList.add("show");
+
+    setTimeout(() => {
+        clickMessage.classList.remove("show");
+    }, 1500);
+}*/
+
+// --------------------
+// 🖥️ FULLSCREEN
 // --------------------
 fullscreenBtn.addEventListener('click', () => {
 
@@ -142,3 +199,87 @@ fullscreenBtn.addEventListener('click', () => {
     }
 
 });
+
+// --------------------
+// BOTÓN MODO MAPA
+// --------------------
+mapBtn.addEventListener('click', () => {
+   
+    // Ocultar menú
+    menu.style.display = 'none';
+
+    // Mostrar mapa y panel 
+    mapDiv.style.display = 'block';
+
+    rightPanel.style.display = 'flex';
+
+    // Crear mapa SOLO UNA VEZ
+    if (!mapInstance) {
+
+        mapInstance = L.map('map', {
+            center: [9.7489, -83.7534], // Costa Rica
+            zoom: 7,
+            zoomControl: false,
+
+            // 🔒 BLOQUEOS
+            dragging: false,
+            scrollWheelZoom: false,
+            doubleClickZoom: false,
+            boxZoom: false,
+            keyboard: false,
+            touchZoom: false
+        });
+
+        // 🌍 CAPA DEL MAPA
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(mapInstance);
+
+        // 🔒 LIMITES COSTA RICA
+        const bounds = [
+            [7.5, -86],
+            [11.5, -82]
+        ];
+
+        mapInstance.setMaxBounds(bounds);
+    }
+
+    // 🔥 IMPORTANTE (arregla render) (evita bug visual)
+    setTimeout(() => {
+        mapInstance.invalidateSize();
+    }, 100);
+
+        /*
+        // Evento click
+        mapInstance.on('click', function (e) {
+
+            const lat = e.latlng.lat;
+            const lng = e.latlng.lng;
+
+            console.log("📍 Click en mapa:", lat, lng);
+
+            alert("Tocaste el mapa 🌍");
+        });
+        */
+
+
+});
+
+// --------------------
+    // 🎮 CONTROL DEL MAPA (JUEGO)
+    // --------------------
+
+    // Guanacaste
+    function irAGuanacaste() {
+        mapInstance.setView([10.5, -85.3], 8);
+    }
+
+    // Limón
+    function irALimon() {
+        mapInstance.setView([10.0, -83.0], 8);
+    }
+
+    // San José
+    function irASanJose() {
+        mapInstance.setView([9.9, -84.1], 10);
+    }
