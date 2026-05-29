@@ -14,6 +14,11 @@ const rightPanel = document.getElementById('rightPanel');
 
 
 let mapInstance = null;
+//Desertico
+let currentLayer = null;
+
+//habilitar mapa
+let mapUnlocked = false;
 
 // --------------------
 // CREAR APP PLAYCANVAS
@@ -231,9 +236,41 @@ mapBtn.addEventListener('click', () => {
         });
 
         // 🌍 CAPA DEL MAPA
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        currentLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap'
         }).addTo(mapInstance);
+
+
+        /*
+        // --------------------
+        // 🎮 ICONO ACTIVIDAD
+        // --------------------
+        const actividadIcon = L.icon({
+            iconUrl: 'img/planta.jpg', // asegúrate que existe
+            iconSize: [40, 40],
+            iconAnchor: [20, 40]
+        });
+
+        // --------------------
+        // 📍 BOTÓN EN SAN JOSÉ
+        // --------------------
+        const sanJoseMarker = L.marker([9.9281, -84.0907], {
+            icon: actividadIcon
+        }).addTo(mapInstance);
+
+        // --------------------
+        // 🖱️ CLICK ACTIVIDAD
+        // --------------------
+        sanJoseMarker.on('click', () => {
+
+            console.log("🎮 Actividad 1");
+
+            document.getElementById("panelTitle").textContent = "Actividad 1";
+            document.getElementById("panelText").textContent = "Explora San José y responde la actividad.";
+        });
+        */
+
+
 
         // 🔒 LIMITES COSTA RICA
         const bounds = [
@@ -271,15 +308,88 @@ mapBtn.addEventListener('click', () => {
 
     // Guanacaste
     function irAGuanacaste() {
-        mapInstance.setView([10.5, -85.3], 8);
+         if (!mapInstance) return;
+
+        if (currentLayer) {
+            mapInstance.removeLayer(currentLayer);
+        }
+
+        // 🌍 mapa normal
+        currentLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(mapInstance);
+
+        mapInstance.flyTo([10.5, -85.3], 8);
     }
 
     // Limón
     function irALimon() {
-        mapInstance.setView([10.0, -83.0], 8);
-    }
+        if (!mapInstance) return;
+
+        // 🔥 eliminar capa actual
+        if (currentLayer) {
+            mapInstance.removeLayer(currentLayer);
+        }
+
+        // 🌵 mapa estilo desértico (claro)
+        currentLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '© OpenStreetMap © CARTO'
+        }).addTo(mapInstance);
+
+        // mover cámara
+        mapInstance.flyTo([10.0, -83.0], 8);
+        }
 
     // San José
     function irASanJose() {
         mapInstance.setView([9.9, -84.1], 10);
     }
+
+    // Cartago
+    function irACartago() {
+
+    if (!mapInstance) return;
+
+    // Mover a Cartago
+    mapInstance.flyTo([9.9799, -83.8527], 10);
+
+    // 📍 POPUP EN EL MAPA
+    L.popup()
+        .setLatLng([9.9799, -83.8527])
+        .setContent("🌄 <b>Cartago</b><br>Zona montañosa con gran biodiversidad.")
+        .openOn(mapInstance);
+}
+
+// --------------------
+// 🔓 BOTÓN ACTIVAR MOVIMIENTO (GLOBAL)
+// --------------------
+toggleMoveBtn.addEventListener('click', () => {
+
+    if (!mapInstance) return;
+
+    mapUnlocked = !mapUnlocked;
+
+    if (mapUnlocked) {
+
+        mapInstance.dragging.enable();
+        mapInstance.scrollWheelZoom.enable();
+        mapInstance.doubleClickZoom.enable();
+        mapInstance.boxZoom.enable();
+        mapInstance.keyboard.enable();
+        mapInstance.touchZoom.enable();
+
+        toggleMoveBtn.textContent = "🔒 Bloquear mapa";
+
+    } else {
+
+        mapInstance.dragging.disable();
+        mapInstance.scrollWheelZoom.disable();
+        mapInstance.doubleClickZoom.disable();
+        mapInstance.boxZoom.disable();
+        mapInstance.keyboard.disable();
+        mapInstance.touchZoom.disable();
+
+        toggleMoveBtn.textContent = "🧭 Mover mapa";
+    }
+
+});
