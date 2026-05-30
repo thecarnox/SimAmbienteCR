@@ -6,6 +6,11 @@ html, body {
     padding: 0;
     overflow: hidden;
     font-family: 'Segoe UI', Tahoma, sans-serif;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: black;
+
 }
 
 /* =========================
@@ -174,7 +179,7 @@ footer {
 }
 
 #rightPanel {
-    display: none; /* ✅ SOLO ESTE */
+    display: none;
 
     position: absolute;
     top: 0;
@@ -188,10 +193,29 @@ footer {
 
     z-index: 2;
 
+    flex-direction: column;
+}
+
+#activitySection {
+    padding: 40px;
+    text-align: center;
+}
+
+#regionsSection {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 
-    font-size: 22px;
+    gap: 15px;
+}
+
+#regionsSection button {
+    width: 220px;
+    padding: 12px;
+    font-size: 16px;
 }
 
 

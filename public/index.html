@@ -23,9 +23,8 @@
         </header>
 
         <section id="menu-content">
-            <button class="btn" id="startBtn">▶ Iniciar Juego</button>
+            <button class="btn" id="mapBtn">🌍 Iniciar Juego</button>
             <button class="btn" id="fullscreenBtn">⛶ Pantalla Completa</button>
-            <button class="btn" id="mapBtn">🌍 Modo Mapa</button>
         </section>
 
         <footer>
@@ -48,23 +47,25 @@
     ========================= -->
     <div id="rightPanel">
 
-        <div id="panelContent">
+    <!-- ACTIVIDAD -->
+    <div id="activitySection">
 
-            <h2>🌱 Exploración Ambiental</h2>
-            <p>Selecciona una región:</p>
+        <h2 id="panelTitle">🌱 Actividad</h2>
+        <p id="panelText">Selecciona una provincia para comenzar.</p>
 
-            <button onclick="irAGuanacaste()">Guanacaste</button>
-            <button onclick="irALimon()">Limón</button>
-            <button onclick="irASanJose()">San José</button>
-            <button id="toggleMoveBtn">🧭 Mover mapa</button>
+    </div>
 
-        </div>
+    <!-- REGIONES -->
+    <div id="regionsSection">
 
-        <div id="panelContent">
-        <h2 id="panelTitle">🌱 Exploración</h2>
-        <p id="panelText">Selecciona una actividad</p>
-        </div>
-        
+        <h2>🌍 Regiones</h2>
+
+        <button onclick="irAGuanacaste()">Guanacaste</button>
+        <button onclick="irALimon()">Limón</button>
+        <button onclick="irASanJose()">San José</button>
+        <button id="toggleMoveBtn">🧭 Mover mapa</button>
+
+    </div>
 
     </div>
 
@@ -74,7 +75,7 @@
 
     <!-- AUDIO -->
     <audio id="bgSound" loop>
-        <source src="sounds/ambiente.mp3" type="audio/mp3">
+    <source src="sounds/ambiente.mp3" type="audio/mp3">
     </audio>
 
     <!-- =========================
