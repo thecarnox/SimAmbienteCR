@@ -34,6 +34,60 @@
 
     </div>
 
+
+    <!-- =========================
+         CUADRO DE TEXTO
+    ========================= -->
+    <div id="dialogBox">
+
+    <div id="characterContainer">
+
+        <img id="characterImage"
+             src="img/personajes/guia.png"
+             alt="Guía Ambiental">
+
+    </div>
+
+    <div id="dialogContent">
+
+        <h3 id="characterName">Guía Ambiental</h3>
+
+        <p id="dialogText">
+            Bienvenido a SimAmbienteCR.
+        </p>
+
+        <button id="nextDialogBtn">
+            Continuar ►
+        </button>
+
+    </div>
+
+    </div>
+
+    <!-- =========================
+     MODAL DEL JUGADOR
+    ========================= -->
+    <div id="playerModal">
+
+        <div id="playerModalContent">
+
+            <h2>Bienvenido a SimAmbienteCR</h2>
+
+            <p>Ingrese su nombre para comenzar</p>
+
+            <input
+                type="text"
+                id="playerName"
+                placeholder="Nombre del jugador">
+
+            <button id="startPlayerBtn">
+                Comenzar
+            </button>
+
+        </div>
+
+    </div>
+
     <!-- CANVAS -->
     <canvas id="application-canvas"></canvas>
 
@@ -46,6 +100,27 @@
          PANEL DERECHO (JUEGO)
     ========================= -->
     <div id="rightPanel">
+
+     <!-- BOTÓN MENÚ -->
+    <button id="menuToggleBtn">☰</button>    
+    <!-- =========================
+     MENÚ DE PAUSA
+    ========================= -->
+    <div id="pauseMenu">
+
+        <div id="pauseContent">
+
+            <h2>⚙️ Menú</h2>
+
+            <button id="resumeBtn">▶ Reanudar</button>
+
+            <button id="optionsBtn">⚙️ Opciones</button>
+
+            <button id="mainMenuBtn">🏠 Menú Principal</button>
+
+        </div>
+
+    </div>
 
     <!-- ACTIVIDAD -->
     <div id="activitySection">
@@ -65,6 +140,11 @@
         <button onclick="irASanJose()">San José</button>
         <button id="toggleMoveBtn">🧭 Mover mapa</button>
 
+    </div>
+
+    <!-- BOTÓN VOLVER -->
+    <div id="bottomSection">
+        <button id="backToMenuBtn">🏠 Menú Principal</button>
     </div>
 
     </div>

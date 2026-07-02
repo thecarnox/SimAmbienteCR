@@ -11,6 +11,31 @@ const rightPanel = document.getElementById('rightPanel');
 
 const bgSound = document.getElementById('bgSound');
 
+const menuToggleBtn = document.getElementById('menuToggleBtn');
+const pauseMenu = document.getElementById('pauseMenu');
+
+const resumeBtn = document.getElementById('resumeBtn');
+const optionsBtn = document.getElementById('optionsBtn');
+const mainMenuBtn = document.getElementById('mainMenuBtn');
+
+const dialogBox = document.getElementById('dialogBox');
+const characterName = document.getElementById('characterName');
+const dialogText = document.getElementById('dialogText');
+const characterImage = document.getElementById('characterImage');
+const nextDialogBtn = document.getElementById('nextDialogBtn');
+
+
+// ==========================================
+// Jugador Base de datos
+// ==========================================
+const playerModal = document.getElementById("playerModal");
+const playerName = document.getElementById("playerName");
+const startPlayerBtn = document.getElementById("startPlayerBtn");
+
+let jugadorID = null;
+let jugadorNombre = "";
+
+
 // ==========================================
 // VARIABLES GLOBALES
 // ==========================================
@@ -31,26 +56,199 @@ app.setCanvasResolution(pc.RESOLUTION_AUTO);
 
 
 // ==========================================
+// MENÚ (ABRIR, REANUDAR, OPCIONES, VOLVER ALMENU PRINCIPAL)
+// ==========================================
+menuToggleBtn.addEventListener('click', () => {
+
+    pauseMenu.style.display = 'flex';
+    //Pausar música
+    bgSound.pause();
+
+});
+
+resumeBtn.addEventListener('click', () => {
+
+    pauseMenu.style.display = 'none';
+
+    //Continuar música
+    bgSound.play();
+
+
+});
+
+optionsBtn.addEventListener('click', () => {
+
+    alert("Opciones próximamente");
+
+});
+
+mainMenuBtn.addEventListener('click', () => {
+
+    pauseMenu.style.display = 'none';
+
+    mapDiv.style.display = 'none';
+    rightPanel.style.display = 'none';
+
+    menu.style.display = 'flex';
+
+    bgSound.pause();
+    bgSound.currentTime = 0;
+});
+
+// ==========================================
 // BOTÓN MODO MAPA
 // ==========================================
 mapBtn.addEventListener('click', () => {
 
-    // 🎵 Iniciar música ambiental
-    bgSound.volume = 0.5;
-    bgSound.play();
+    playerModal.style.display="flex";
 
-    // Ocultar menú
-    menu.style.display = 'none';
+    startPlayerBtn.addEventListener("click", async ()=>{
 
-    // Mostrar mapa y panel
-    mapDiv.style.display = 'block';
-    rightPanel.style.display = 'flex';
+    const nombre = playerName.value.trim();
 
-    inicializarMapa();
+    if(nombre===""){
 
-    setTimeout(() => {
-        mapInstance.invalidateSize();
-    }, 100);
+        alert("Ingrese su nombre.");
+
+        return;
+
+    }
+
+    try{
+
+        const respuesta = await fetch("/players/create",{
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+
+                nombre:nombre
+
+            })
+
+        });
+
+        const datos = await respuesta.json();
+        
+        console.log("Respuesta completa:", datos);
+        console.log("Existe:", datos.existe);
+        console.log("Tipo:", typeof datos.existe);
+        
+        jugadorID = datos.id;
+
+        jugadorNombre = nombre;
+
+
+        if(datos.existe){
+
+            console.log("¡Bienvenido de nuevo, " + jugadorNombre + "!");
+            alert("👋 ¡Bienvenido de nuevo, " + jugadorNombre + "! Tu progreso ha sido cargado.");
+        }else{
+
+            console.log("Jugador registrado correctamente.");
+            alert("✅ Jugador registrado correctamente. ¡Bienvenido, " + jugadorNombre + "!");
+        }
+
+        playerModal.style.display="none";
+
+        bgSound.volume=0.5;
+        bgSound.play();
+
+        menu.style.display="none";
+
+        mapDiv.style.display="block";
+
+        rightPanel.style.display="flex";
+
+        currentDialog=0;
+
+        mostrarDialogo(currentDialog);
+
+        inicializarMapa();
+
+        setTimeout(()=>{
+
+            mapInstance.invalidateSize();
+
+        },100);
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        alert("No se pudo conectar con el servidor.");
+
+    }
+
+});
+
+});
+
+
+// --------------------
+// 💬 DIÁLOGOS
+// --------------------
+
+let currentDialog = 0;
+
+const dialogs = [
+
+    {
+        nombre: "Guía Ambiental",
+        texto: "Bienvenido a SimAmbienteCR."
+    },
+
+    {
+        nombre: "Guía Ambiental",
+        texto: "En esta experiencia explorarás distintas regiones de Costa Rica."
+    },
+
+    {
+        nombre: "Guía Ambiental",
+        texto: "Selecciona una provincia para comenzar tu aventura."
+    }
+
+];
+
+// --------------------
+// 💬 MOSTRAR DIÁLOGOS
+// --------------------
+
+function mostrarDialogo(indice) {
+
+    const dialogo = dialogs[indice];
+
+    characterName.textContent = dialogo.nombre;
+    dialogText.textContent = dialogo.texto;
+
+    dialogBox.style.display = "flex";
+
+}
+
+// --------------------
+// BOTÓN CONTINUAR
+// --------------------
+nextDialogBtn.addEventListener('click', () => {
+
+    currentDialog++;
+
+    if (currentDialog < dialogs.length) {
+
+        mostrarDialogo(currentDialog);
+
+    } else {
+
+        dialogBox.style.display = "none";
+
+        currentDialog = 0;
+    }
+
 });
 
 // ==========================================
@@ -215,3 +413,4 @@ fullscreenBtn.addEventListener('click', () => {
         document.exitFullscreen();
     }
 });
+

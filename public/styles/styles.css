@@ -218,4 +218,250 @@ footer {
     font-size: 16px;
 }
 
+/* =========================
+   MENÚ BOTÓN HAMBURGUESA
+========================= */
 
+#menuToggleBtn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+
+    width: 55px;
+    height: 55px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: rgba(255,255,255,0.15);
+    color: white;
+
+    font-size: 28px;
+    cursor: pointer;
+
+    z-index: 10;
+}
+
+#menuToggleBtn:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+
+/* =========================
+   MENÚ PAUSA
+========================= */
+#pauseMenu {
+    display: none;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100vh;
+
+    background: rgba(0,0,0,0.85);
+
+    z-index: 9999;
+
+    justify-content: center;
+    align-items: center;
+}
+
+#pauseContent {
+    width: 80%;
+    max-width: 700px;
+
+    padding: 40px;
+
+    background: rgba(30,30,30,0.95);
+
+    border-radius: 20px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    text-align: center;
+}
+
+#pauseContent h2 {
+    margin-bottom: 20px;
+}
+
+#pauseContent button {
+    padding: 15px;
+
+    font-size: 18px;
+
+    border: none;
+    border-radius: 10px;
+
+    cursor: pointer;
+}
+
+/* =========================
+   CUADRO DE TEXTO
+========================= */
+#dialogBox {
+
+    display: none;
+
+    position: absolute;
+
+    bottom: 0;
+    left: 0;
+
+    width: 100%;
+    height: 25vh;
+
+    background: rgba(0, 0, 0, 0.90);
+
+    z-index: 9999;
+
+    border-top: 4px solid #5cb85c;
+
+}
+
+/* =========================
+    ÁREA DEL PERSONAJE
+========================= */
+#characterContainer {
+
+    width: 220px;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* =========================
+    RENDER DEL PERSONAJE
+========================= */
+#characterImage {
+
+    width: 180px;
+    height: 180px;
+
+    object-fit: contain;
+}
+/* =========================
+    CONTENIDO DEL CUADRO DE TEXTO
+========================= */
+#dialogContent {
+
+    flex: 1;
+
+    padding: 20px;
+
+    color: white;
+
+    display: flex;
+    flex-direction: column;
+}
+/* =========================
+    NOMBRE
+========================= */
+#characterName {
+
+    margin: 0 0 10px 0;
+
+    font-size: 28px;
+
+    color: #7CFC00;
+}
+/* =========================
+    TEXTO
+========================= */
+#dialogText {
+
+    flex: 1;
+
+    font-size: 20px;
+
+    line-height: 1.5;
+}
+/* =========================
+    BOTÓN CONTINUAR
+========================= */
+#nextDialogBtn {
+
+    align-self: flex-end;
+
+    padding: 10px 20px;
+
+    font-size: 18px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+}
+
+
+/* =========================
+   MODAL JUGADOR
+========================= */
+
+#playerModal{
+
+    display:none;
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100vh;
+
+    background:rgba(0,0,0,.85);
+
+    z-index:99999;
+
+    justify-content:center;
+    align-items:center;
+
+}
+
+#playerModalContent{
+
+    background:white;
+
+    padding:40px;
+
+    border-radius:15px;
+
+    width:400px;
+
+    text-align:center;
+
+}
+
+#playerModalContent input{
+
+    width:90%;
+
+    padding:12px;
+
+    font-size:18px;
+
+    margin:20px 0;
+
+}
+
+#playerModalContent button{
+
+    padding:12px 25px;
+
+    font-size:18px;
+
+    cursor:pointer;
+
+}
+
+/* =========================
+   MODAL JUGADOR FINAL
+========================= */
