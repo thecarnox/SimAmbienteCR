@@ -42,9 +42,8 @@
 
     <div id="characterContainer">
 
-        <img id="characterImage"
-             src="img/personajes/guia.png"
-             alt="Guía Ambiental">
+        <canvas id="characterCanvas"></canvas>
+
 
     </div>
 
@@ -83,6 +82,37 @@
             <button id="startPlayerBtn">
                 Comenzar
             </button>
+
+        </div>
+
+    </div>
+
+    <!-- =========================
+     PANTALLA DE CARGA
+    ========================= -->
+
+    <div id="loadingScreen">
+
+        <div id="loadingContent">
+
+            <img src="img/personajes/guia.png"
+                id="loadingCharacter">
+
+            <h2 id="loadingTitle">
+                Guía Ambiental
+            </h2>
+
+            <p id="loadingMessage">
+
+                Cargando...
+
+            </p>
+
+            <div id="loadingBar">
+
+                <div id="loadingProgress"></div>
+
+            </div>
 
         </div>
 
@@ -164,6 +194,16 @@
 
     <!-- PLAYCANVAS -->
     <script src="/playcanvas/playcanvas.js"></script>
+
+    <!-- MAIN -->
+    <script src="js/personaje3D.js"></script>
+
+
+    <!-- DIALOGOS -->
+    <script src="js/dialogos.js"></script>
+
+    <!-- MAPA -->
+    <script src="js/mapa.js"></script>
 
     <!-- MAIN -->
     <script src="js/main.js"></script>

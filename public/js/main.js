@@ -1,29 +1,47 @@
 // ==========================================
 // ELEMENTOS HTML
 // ==========================================
+
+// CANVAS PRINCIPAL
+// ==========================================
 const canvas = document.getElementById('application-canvas');
+
+// MENÚ PRINCIPAL
+// ==========================================
 const fullscreenBtn = document.getElementById('fullscreenBtn');
 const mapBtn = document.getElementById('mapBtn');
-const toggleMoveBtn = document.getElementById('toggleMoveBtn');
 const menu = document.getElementById('menu');
+
+// MAPA
+// ==========================================
+const toggleMoveBtn = document.getElementById('toggleMoveBtn');
 const mapDiv = document.getElementById('map');
 const rightPanel = document.getElementById('rightPanel');
 
+// AUDIO
+// ==========================================
 const bgSound = document.getElementById('bgSound');
 
+// MENÚ PAUSA
+// ==========================================
 const menuToggleBtn = document.getElementById('menuToggleBtn');
 const pauseMenu = document.getElementById('pauseMenu');
-
 const resumeBtn = document.getElementById('resumeBtn');
 const optionsBtn = document.getElementById('optionsBtn');
 const mainMenuBtn = document.getElementById('mainMenuBtn');
 
+// DIÁLOGOS
+// ==========================================
 const dialogBox = document.getElementById('dialogBox');
 const characterName = document.getElementById('characterName');
 const dialogText = document.getElementById('dialogText');
-const characterImage = document.getElementById('characterImage');
 const nextDialogBtn = document.getElementById('nextDialogBtn');
 
+// PANTALLA DE CARGA
+// ==========================================
+const loadingScreen = document.getElementById("loadingScreen");
+const loadingMessage = document.getElementById("loadingMessage");
+const loadingProgress = document.getElementById("loadingProgress");
 
 // ==========================================
 // Jugador Base de datos
@@ -37,19 +55,15 @@ let jugadorNombre = "";
 
 
 // ==========================================
-// VARIABLES GLOBALES
+// PLAYCANVAS PRINCIPAL
 // ==========================================
-let mapInstance = null;
-let currentLayer = null;
-let mapUnlocked = false;
 
-// ==========================================
-// PLAYCANVAS
-// ==========================================
 const app = new pc.Application(canvas, {
+
     mouse: new pc.Mouse(canvas),
     touch: new pc.TouchDevice(canvas)
 });
+
 
 app.setCanvasFillMode(pc.FILLMODE_FILL_WINDOW);
 app.setCanvasResolution(pc.RESOLUTION_AUTO);
@@ -84,15 +98,7 @@ optionsBtn.addEventListener('click', () => {
 
 mainMenuBtn.addEventListener('click', () => {
 
-    pauseMenu.style.display = 'none';
-
-    mapDiv.style.display = 'none';
-    rightPanel.style.display = 'none';
-
-    menu.style.display = 'flex';
-
-    bgSound.pause();
-    bgSound.currentTime = 0;
+    location.reload();
 });
 
 // ==========================================
@@ -143,15 +149,7 @@ mapBtn.addEventListener('click', () => {
         jugadorNombre = nombre;
 
 
-        if(datos.existe){
-
-            console.log("¡Bienvenido de nuevo, " + jugadorNombre + "!");
-            alert("👋 ¡Bienvenido de nuevo, " + jugadorNombre + "! Tu progreso ha sido cargado.");
-        }else{
-
-            console.log("Jugador registrado correctamente.");
-            alert("✅ Jugador registrado correctamente. ¡Bienvenido, " + jugadorNombre + "!");
-        }
+        await mostrarPantallaCarga(datos.existe);
 
         playerModal.style.display="none";
 
@@ -191,217 +189,6 @@ mapBtn.addEventListener('click', () => {
 });
 
 
-// --------------------
-// 💬 DIÁLOGOS
-// --------------------
-
-let currentDialog = 0;
-
-const dialogs = [
-
-    {
-        nombre: "Guía Ambiental",
-        texto: "Bienvenido a SimAmbienteCR."
-    },
-
-    {
-        nombre: "Guía Ambiental",
-        texto: "En esta experiencia explorarás distintas regiones de Costa Rica."
-    },
-
-    {
-        nombre: "Guía Ambiental",
-        texto: "Selecciona una provincia para comenzar tu aventura."
-    }
-
-];
-
-// --------------------
-// 💬 MOSTRAR DIÁLOGOS
-// --------------------
-
-function mostrarDialogo(indice) {
-
-    const dialogo = dialogs[indice];
-
-    characterName.textContent = dialogo.nombre;
-    dialogText.textContent = dialogo.texto;
-
-    dialogBox.style.display = "flex";
-
-}
-
-// --------------------
-// BOTÓN CONTINUAR
-// --------------------
-nextDialogBtn.addEventListener('click', () => {
-
-    currentDialog++;
-
-    if (currentDialog < dialogs.length) {
-
-        mostrarDialogo(currentDialog);
-
-    } else {
-
-        dialogBox.style.display = "none";
-
-        currentDialog = 0;
-    }
-
-});
-
-// ==========================================
-// INICIALIZAR MAPA LEAFLET
-// ==========================================
-function inicializarMapa() {
-
-    if (mapInstance) return;
-
-    mapInstance = L.map('map', {
-
-        center: [9.7489, -83.7534],
-        zoom: 7,
-        zoomControl: false,
-
-        dragging: false,
-        scrollWheelZoom: false,
-        doubleClickZoom: false,
-        boxZoom: false,
-        keyboard: false,
-        touchZoom: false
-    });
-
-    currentLayer = L.tileLayer(
-        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        {
-            attribution: '© OpenStreetMap'
-        }
-    ).addTo(mapInstance);
-
-    const bounds = [
-        [7.5, -86],
-        [11.5, -82]
-    ];
-
-    mapInstance.setMaxBounds(bounds);
-}
-
-// ==========================================
-// SAN JOSÉ
-// ==========================================
-function irASanJose() {
-
-    if (!mapInstance) return;
-
-    if (currentLayer) {
-        mapInstance.removeLayer(currentLayer);
-    }
-
-    currentLayer = L.tileLayer(
-        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        {
-            attribution: '© OpenStreetMap'
-        }
-    ).addTo(mapInstance);
-
-    mapInstance.flyTo([9.93, -84.08], 10);
-}
-
-// ==========================================
-// GUANACASTE
-// ==========================================
-function irAGuanacaste() {
-
-    if (!mapInstance) return;
-
-    if (currentLayer) {
-        mapInstance.removeLayer(currentLayer);
-    }
-
-    currentLayer = L.tileLayer(
-        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        {
-            attribution: '© OpenStreetMap'
-        }
-    ).addTo(mapInstance);
-
-    mapInstance.flyTo([10.5, -85.3], 10);
-}
-
-// ==========================================
-// LIMÓN
-// ==========================================
-function irALimon() {
-
-    if (!mapInstance) return;
-
-    if (currentLayer) {
-        mapInstance.removeLayer(currentLayer);
-    }
-
-    currentLayer = L.tileLayer(
-        'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-        {
-            attribution: '© OpenStreetMap © CARTO'
-        }
-    ).addTo(mapInstance);
-
-    mapInstance.flyTo([10.0, -83.0], 10);
-}
-
-// ==========================================
-// CARTAGO
-// ==========================================
-function irACartago() {
-
-    if (!mapInstance) return;
-
-    mapInstance.flyTo([9.8644, -83.9194], 10);
-
-    L.popup()
-        .setLatLng([9.8644, -83.9194])
-        .setContent(
-            "🌄 <b>Cartago</b><br>Zona montañosa con gran biodiversidad."
-        )
-        .openOn(mapInstance);
-}
-
-// ==========================================
-// BLOQUEAR / DESBLOQUEAR MAPA
-// ==========================================
-toggleMoveBtn.addEventListener('click', () => {
-
-    if (!mapInstance) return;
-
-    mapUnlocked = !mapUnlocked;
-
-    if (mapUnlocked) {
-
-        mapInstance.dragging.enable();
-        mapInstance.scrollWheelZoom.enable();
-        mapInstance.doubleClickZoom.enable();
-        mapInstance.boxZoom.enable();
-        mapInstance.keyboard.enable();
-        mapInstance.touchZoom.enable();
-
-        toggleMoveBtn.textContent =
-            "🔒 Bloquear mapa";
-
-    } else {
-
-        mapInstance.dragging.disable();
-        mapInstance.scrollWheelZoom.disable();
-        mapInstance.doubleClickZoom.disable();
-        mapInstance.boxZoom.disable();
-        mapInstance.keyboard.disable();
-        mapInstance.touchZoom.disable();
-
-        toggleMoveBtn.textContent =
-            "🧭 Mover mapa";
-    }
-});
-
 // ==========================================
 // PANTALLA COMPLETA
 // ==========================================
@@ -414,3 +201,74 @@ fullscreenBtn.addEventListener('click', () => {
     }
 });
 
+
+// ==========================================
+// PANTALLA DE CARGA
+// ==========================================
+async function mostrarPantallaCarga(esJugadorExistente){
+
+    playerModal.style.display="none";
+
+    loadingScreen.style.display="flex";
+
+    if(esJugadorExistente){
+
+        loadingMessage.innerHTML=
+
+        "👋 Bienvenido nuevamente <b>" +
+
+        jugadorNombre +
+
+        "</b>.<br><br>Estamos cargando tu progreso...";
+
+    }else{
+
+        loadingMessage.innerHTML=
+
+        "🌱 Bienvenido <b>" +
+
+        jugadorNombre +
+
+        "</b>.<br><br>Preparando tu primera aventura...";
+
+    }
+
+    loadingProgress.style.width="0%";
+
+    let progreso=0;
+
+    return new Promise(resolve=>{
+
+        const intervalo=setInterval(()=>{
+
+            progreso+=2;
+
+            loadingProgress.style.width=progreso+"%";
+
+            if(progreso>=100){
+
+                clearInterval(intervalo);
+
+                setTimeout(()=>{
+
+                    loadingScreen.style.display="none";
+
+                    resolve();
+
+                },500);
+
+            }
+
+        },100);
+
+    });
+
+
+}
+
+
+window.addEventListener("resize",()=>{
+
+    characterApp.resizeCanvas();
+
+    });
