@@ -1,0 +1,11 @@
+# Dependencias de Node.js
+node_modules/
+
+# Base de datos SQLite
+database/*.db
+
+# Archivos de registro
+*.log
+
+# Variables de entorno
+.env
