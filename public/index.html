@@ -1,78 +1,146 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
     <meta charset="UTF-8">
+
     <title>SimAmbienteCR</title>
 
-    <link rel="stylesheet" href="styles/styles.css">
+    <link
+        rel="stylesheet"
+        href="styles/styles.css">
+
     <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet/dist/leaflet.css">
 
     <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    
+    <script
+        src="https://unpkg.com/leaflet/dist/leaflet.js">
+    </script>
+
 </head>
+
+
 <body>
 
-    <!-- MENÚ -->
+
+    <!-- ==========================================
+         MENÚ PRINCIPAL
+    =========================================== -->
+
     <div id="menu">
 
         <header>
-            <h1>SimAmbienteCR 🌱</h1>
-            <p>Simulador ambiental interactivo de Costa Rica</p>
+
+            <h1>
+                SimAmbienteCR 🌱
+            </h1>
+
+            <p>
+                Simulador ambiental interactivo de Costa Rica
+            </p>
+
         </header>
 
+
         <section id="menu-content">
-            <button class="btn" id="mapBtn">🌍 Iniciar Juego</button>
-            <button class="btn" id="fullscreenBtn">⛶ Pantalla Completa</button>
+
+            <button
+                class="btn"
+                id="mapBtn">
+
+                🌍 Iniciar Juego
+
+            </button>
+
+
+            <button
+                class="btn"
+                id="fullscreenBtn">
+
+                ⛶ Pantalla Completa
+
+            </button>
+
         </section>
 
+
         <footer>
-            <p>Proyecto de Tesis - UNED</p>
-            <p>Desarrollado por Erick</p>
+
+            <p>
+                Proyecto de Tesis - UNED
+            </p>
+
+            <p>
+                Desarrollado por Erick
+            </p>
+
         </footer>
 
     </div>
 
 
-    <!-- =========================
+
+    <!-- ==========================================
          CUADRO DE TEXTO
-    ========================= -->
+    =========================================== -->
+
     <div id="dialogBox">
 
-    <div id="characterContainer">
+        <div id="characterContainer">
 
-        <canvas id="characterCanvas"></canvas>
+            <!-- IMPORTANTE:
+                 Se mantiene porque personaje3D.js
+                 utiliza este canvas.
+            -->
 
+            <canvas id="characterCanvas"></canvas>
+
+        </div>
+
+
+        <div id="dialogContent">
+
+            <h3 id="characterName">
+                Guía Ambiental
+            </h3>
+
+            <p id="dialogText">
+
+                Bienvenido a SimAmbienteCR.
+
+            </p>
+
+            <button id="nextDialogBtn">
+
+                Continuar ►
+
+            </button>
+
+        </div>
 
     </div>
 
-    <div id="dialogContent">
 
-        <h3 id="characterName">Guía Ambiental</h3>
 
-        <p id="dialogText">
-            Bienvenido a SimAmbienteCR.
-        </p>
+    <!-- ==========================================
+         MODAL DEL JUGADOR
+    =========================================== -->
 
-        <button id="nextDialogBtn">
-            Continuar ►
-        </button>
-
-    </div>
-
-    </div>
-
-    <!-- =========================
-     MODAL DEL JUGADOR
-    ========================= -->
     <div id="playerModal">
 
         <div id="playerModalContent">
 
-            <h2>Bienvenido a SimAmbienteCR</h2>
+            <h2>
+                Bienvenido a SimAmbienteCR
+            </h2>
 
-            <p>Ingrese su nombre para comenzar</p>
+            <p>
+                Ingrese su nombre para comenzar
+            </p>
 
             <input
                 type="text"
@@ -80,26 +148,33 @@
                 placeholder="Nombre del jugador">
 
             <button id="startPlayerBtn">
+
                 Comenzar
+
             </button>
 
         </div>
 
     </div>
 
-    <!-- =========================
-     PANTALLA DE CARGA
-    ========================= -->
+
+
+    <!-- ==========================================
+         PANTALLA DE CARGA
+    =========================================== -->
 
     <div id="loadingScreen">
 
         <div id="loadingContent">
 
-            <img src="img/personajes/guia.png"
+            <img
+                src="img/personajes/guia.png"
                 id="loadingCharacter">
 
             <h2 id="loadingTitle">
+
                 Guía Ambiental
+
             </h2>
 
             <p id="loadingMessage">
@@ -118,96 +193,527 @@
 
     </div>
 
-    <!-- CANVAS -->
+
+
+    <!-- ==========================================
+         ESCENARIO PRINCIPAL
+    =========================================== -->
+
+    <div id="escenarioPrincipal">
+
+
+        <!-- Cielo animado -->
+
+        <div class="cieloAnimado">
+
+            <div class="nubes nubes1"></div>
+
+            <div class="nubes nubes2"></div>
+
+        </div>
+
+
+        <!-- Título -->
+
+        <div class="tituloEscenarioPrincipal">
+
+            <h1>
+                Selecciona una región
+            </h1>
+
+            <p>
+                Elige el lugar que deseas explorar
+            </p>
+
+        </div>
+
+
+        <!-- Regiones -->
+
+        <div class="regionesEscenario">
+
+
+            <!-- ACTIVIDAD 1 - LIMÓN -->
+
+            <button
+                id="botonLimon"
+                class="botonRegion">
+
+                🌴
+
+                <span>
+                    Limón
+                </span>
+
+            </button>
+
+
+            <!-- ACTIVIDAD 2 - GUANACASTE -->
+
+            <button
+                id="botonGuanacaste"
+                class="botonRegion">
+
+                🌳
+
+                <span>
+                    Guanacaste
+                </span>
+
+            </button>
+
+
+            <!-- ACTIVIDAD 3 - SAN JOSÉ -->
+
+            <button
+                id="botonSanJose"
+                class="botonRegion">
+
+                🏙️
+
+                <span>
+                    San José
+                </span>
+
+            </button>
+
+        </div>
+
+
+        <!-- Menú de pausa -->
+
+        <button id="menuPausaEscenarioPrincipal">
+
+            ☰
+
+        </button>
+
+    </div>
+
+
+
+    <!-- ==========================================
+         CANVAS PRINCIPAL
+    =========================================== -->
+
     <canvas id="application-canvas"></canvas>
 
-    <!-- =========================
-         MAPA (MITAD IZQUIERDA)
-    ========================= -->
+
+
+    <!-- ==========================================
+         ACTIVIDAD 3 - SAN JOSÉ
+         MAPA
+    =========================================== -->
+
     <div id="map"></div>
 
-    <!-- =========================
-         PANEL DERECHO (JUEGO)
-    ========================= -->
+
+
+    <!-- ==========================================
+         ACTIVIDAD 3 - SAN JOSÉ
+         PANEL DERECHO
+    =========================================== -->
+
     <div id="rightPanel">
 
-     <!-- BOTÓN MENÚ -->
-    <button id="menuToggleBtn">☰</button>    
-    <!-- =========================
-     MENÚ DE PAUSA
-    ========================= -->
-    <div id="pauseMenu">
 
-        <div id="pauseContent">
+        <!-- BOTÓN MENÚ -->
 
-            <h2>⚙️ Menú</h2>
+        <button id="menuToggleBtn">
 
-            <button id="resumeBtn">▶ Reanudar</button>
+            ☰
 
-            <button id="optionsBtn">⚙️ Opciones</button>
+        </button>
 
-            <button id="mainMenuBtn">🏠 Menú Principal</button>
+
+        <!-- ======================================
+             MENÚ DE PAUSA
+        ======================================= -->
+
+        <div id="pauseMenu">
+
+            <div id="pauseContent">
+
+                <h2>
+                    ⚙️ Menú
+                </h2>
+
+                <button id="resumeBtn">
+
+                    ▶ Reanudar
+
+                </button>
+
+                <button id="optionsBtn">
+
+                    ⚙️ Opciones
+
+                </button>
+
+                <button id="mainMenuBtn">
+
+                    🏠 Menú Principal
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ======================================
+             INFORMACIÓN DE ACTIVIDAD
+        ======================================= -->
+
+        <div id="activitySection">
+
+            <h2 id="panelTitle">
+
+                🌱 Actividad
+
+            </h2>
+
+            <p id="panelText">
+
+                Selecciona una provincia para comenzar.
+
+            </p>
+
+        </div>
+
+
+
+        <!-- ======================================
+             ACTIVIDADES
+        ======================================= -->
+
+        <div id="regionsSection">
+
+            <h2>
+                🌍 Regiones
+            </h2>
+
+            <button>
+                Actividad 1
+            </button>
+
+            <button>
+                Actividad 2
+            </button>
+
+            <button>
+                Actividad 3
+            </button>
+
+        </div>
+
+
+
+        <!-- ======================================
+             BOTÓN VOLVER
+        ======================================= -->
+
+        <div id="bottomSection">
+
+            <button id="backToMenuBtn">
+
+                🏠 Menú Principal
+
+            </button>
 
         </div>
 
     </div>
 
-    <!-- ACTIVIDAD -->
-    <div id="activitySection">
+    <!-- ==========================================
+        ACTIVIDAD 1 - LIMÓN
+    =========================================== -->
 
-        <h2 id="panelTitle">🌱 Actividad</h2>
-        <p id="panelText">Selecciona una provincia para comenzar.</p>
+    <div id="actividadLimon">
+
+        <!-- ======================================
+            ENCABEZADO
+        ======================================= -->
+
+        <div id="encabezadoLimon">
+
+            <h2>
+                🌱 Actividad 1
+            </h2>
+
+            <div id="informacionLimon">
+
+                <span id="progresoLimon">
+                    Elemento 1 de 10
+                </span>
+
+                <span id="puntosLimon">
+                    Puntos: 0
+                </span>
+
+                <span id="tiempoLimon">
+                    Tiempo: 01:00
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- ======================================
+            MENÚ DE PAUSA
+        ======================================= -->
+
+        <button id="menuPausaLimon">
+            ☰
+        </button>
+
+
+        <!-- ======================================
+            ÁREA DEL ELEMENTO 3D
+        ======================================= -->
+
+        <div id="areaElementoLimon">
+
+            <canvas id="limonCanvas"></canvas>
+
+            <div id="nombreElementoLimon">
+                Elemento ambiental
+            </div>
+
+        </div>
+
+
+        <!-- ======================================
+            OPCIONES DE CLASIFICACIÓN
+        ======================================= -->
+
+        <div id="clasificacionLimon">
+
+            <button
+                id="favorableLimon"
+                class="botonClasificacionLimon">
+
+                🌱 FAVORABLE
+
+            </button>
+
+            <button
+                id="desfavorableLimon"
+                class="botonClasificacionLimon">
+
+                ⚠️ DESFAVORABLE
+
+            </button>
+
+        </div>
+
+
+        <!-- ======================================
+            PERSONAJE GUÍA E INSTRUCCIONES
+        ======================================= -->
+
+        <div id="guiaLimon">
+
+            <img
+                src="img/personajes/guia.png"
+                id="personajeGuiaLimon">
+
+            <div id="dialogoLimon">
+
+                <h3>
+                    Guía Ambiental
+                </h3>
+
+                <p id="textoGuiaLimon">
+
+                    Observa cada elemento y decide si es
+                    favorable o desfavorable para las
+                    condiciones del suelo.
+
+                </p>
+
+                <button id="continuarGuiaLimon">
+
+                    Comenzar
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ======================================
+            RESULTADO FINAL
+        ======================================= -->
+
+        <div id="resultadoFinalLimon">
+
+            <div id="contenidoResultadoLimon">
+
+                <h2>
+                    Actividad completada
+                </h2>
+
+                <p id="puntosFinalesLimon">
+                    Puntos obtenidos: 0
+                </p>
+
+                <h3 id="nivelFinalLimon">
+                    Resultado:
+                </h3>
+
+                <p id="retroalimentacionFinalLimon"></p>
+
+                <button id="continuarResultadoLimon">
+
+                    Continuar
+
+                </button>
+
+            </div>
+
+        </div>
 
     </div>
 
-    <!-- REGIONES -->
-    <div id="regionsSection">
 
-        <h2>🌍 Regiones</h2>
 
-        <button onclick="irAGuanacaste()">Guanacaste</button>
-        <button onclick="irALimon()">Limón</button>
-        <button onclick="irASanJose()">San José</button>
-        <button id="toggleMoveBtn">🧭 Mover mapa</button>
+    <!-- ==========================================
+         ACTIVIDAD 2 - GUANACASTE
+         
+         IMPORTANTE:
+         Ahora se encuentra FUERA de rightPanel.
+         Es una pantalla independiente.
+    =========================================== -->
+
+    <div id="actividadGuanacaste">
+
+
+        <!-- MENÚ DE PAUSA -->
+
+        <button id="menuPausaGuanacaste">
+
+            ☰
+
+        </button>
+
+
+        <!-- ESCENARIO 3D -->
+
+        <canvas id="guanacasteCanvas"></canvas>
+
+
+        <!-- MENSAJES -->
+
+        <div id="mensajeGuanacaste"></div>
+
+
+        <!-- RESULTADO -->
+
+        <div
+            id="resultadoGuanacaste"
+            class="resultadoGuanacaste">
+
+        </div>
 
     </div>
 
-    <!-- BOTÓN VOLVER -->
-    <div id="bottomSection">
-        <button id="backToMenuBtn">🏠 Menú Principal</button>
-    </div>
+
+
+    <!-- ==========================================
+         MENSAJE DEL MAPA
+    =========================================== -->
+
+    <div id="clickMessage">
+
+        Tocaste el mapa 🌍
 
     </div>
 
 
-    <!-- MENSAJE CLICK -->
-    <div id="clickMessage">Tocaste el mapa 🌍</div>
 
-    <!-- AUDIO -->
-    <audio id="bgSound" loop>
-    <source src="sounds/ambiente.mp3" type="audio/mp3">
+    <!-- ==========================================
+         AUDIO
+    =========================================== -->
+
+    <audio
+        id="bgSound"
+        loop>
+
+        <source
+            src="sounds/ambiente.mp3"
+            type="audio/mp3">
+
     </audio>
 
-    <!-- =========================
+
+
+    <!-- ==========================================
          SCRIPTS
-    ========================= -->
+    =========================================== -->
+
+
+    <!-- ==========================================
+         AMMO.JS - FÍSICA PLAYCANVAS
+    =========================================== -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/ammo.js@0.0.10/builds/ammo.wasm.js">
+    </script>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/ammo.js@0.0.10/builds/ammo.js">
+    </script>
+
 
     <!-- PLAYCANVAS -->
+
     <script src="/playcanvas/playcanvas.js"></script>
 
-    <!-- MAIN -->
+
+    <!-- PERSONAJE 3D -->
+
     <script src="js/personaje3D.js"></script>
 
 
-    <!-- DIALOGOS -->
+    <!-- DIÁLOGOS -->
+
     <script src="js/dialogos.js"></script>
 
+
+    <!-- ACTIVIDAD 1 - LIMÓN -->
+
+    <script src="js/actividadLimon.js"></script>
+
+
+    <!-- ACTIVIDAD 2 - GUANACASTE -->
+
+    <script src="js/actividadGuanacaste.js"></script>
+
+
+    <!-- ACTIVIDAD 3 - SAN JOSÉ -->
+
+    <script src="js/actividadSanJose.js"></script>
+
+
+    <!-- ESCENARIO PRINCIPAL -->
+
+    <script src="js/escenarioPrincipal.js"></script>
+
+
     <!-- MAPA -->
+
     <script src="js/mapa.js"></script>
 
-    <!-- MAIN -->
+
+    <!-- LÓGICA PRINCIPAL -->
+
     <script src="js/main.js"></script>
-    
+
 
 </body>
+
 </html>

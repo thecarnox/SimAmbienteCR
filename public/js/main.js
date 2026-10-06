@@ -70,36 +70,56 @@ app.setCanvasResolution(pc.RESOLUTION_AUTO);
 
 
 // ==========================================
-// MENÚ (ABRIR, REANUDAR, OPCIONES, VOLVER ALMENU PRINCIPAL)
+// MENÚ DE PAUSA
 // ==========================================
-menuToggleBtn.addEventListener('click', () => {
+
+// Abrir menú de pausa
+function abrirMenuPausa() {
 
     pauseMenu.style.display = 'flex';
-    //Pausar música
+
+    // Pausar música
     bgSound.pause();
+}
 
-});
+// Botón menú principal
+menuToggleBtn.addEventListener(
+    'click',
+    abrirMenuPausa
+);
 
-resumeBtn.addEventListener('click', () => {
+// Reanudar
+resumeBtn.addEventListener(
+    'click',
+    () => {
 
-    pauseMenu.style.display = 'none';
+        pauseMenu.style.display = 'none';
 
-    //Continuar música
-    bgSound.play();
+        // Continuar música
+        bgSound.play();
 
+    }
+);
 
-});
+// Opciones
+optionsBtn.addEventListener(
+    'click',
+    () => {
 
-optionsBtn.addEventListener('click', () => {
+        alert("Opciones próximamente");
 
-    alert("Opciones próximamente");
+    }
+);
 
-});
+// Menú principal
+mainMenuBtn.addEventListener(
+    'click',
+    () => {
 
-mainMenuBtn.addEventListener('click', () => {
+        location.reload();
 
-    location.reload();
-});
+    }
+);
 
 // ==========================================
 // BOTÓN MODO MAPA
@@ -158,16 +178,13 @@ mapBtn.addEventListener('click', () => {
 
         menu.style.display="none";
 
-        mapDiv.style.display="block";
-
-        rightPanel.style.display="flex";
 
         currentDialog=0;
 
         mostrarDialogo(currentDialog);
 
-        inicializarMapa();
-
+        abrirEscenarioPrincipal();
+        
         setTimeout(()=>{
 
             mapInstance.invalidateSize();
@@ -272,3 +289,6 @@ window.addEventListener("resize",()=>{
     characterApp.resizeCanvas();
 
     });
+
+
+

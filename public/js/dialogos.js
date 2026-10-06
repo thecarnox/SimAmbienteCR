@@ -45,24 +45,76 @@ function mostrarDialogo(indice) {
 
 
 
-// --------------------
-// BOTÓN CONTINUAR
-// --------------------
-nextDialogBtn.addEventListener('click', () => {
+        // ==========================================
+        // BOTÓN CONTINUAR
+        // ==========================================
 
-    currentDialog++;
+        nextDialogBtn.addEventListener(
+            "click",
+            () => {
 
-    if (currentDialog < dialogs.length) {
 
-        mostrarDialogo(currentDialog);
+        // ======================================
+        // DIÁLOGOS DE ACTIVIDAD 1 - LIMÓN
+        // ======================================
 
-    } else {
+        if (
+            typeof dialogosLimonActivos !==
+                "undefined" &&
+            dialogosLimonActivos
+        ) {
 
-        dialogBox.style.display = "none";
+            dialogoLimonActual++;
 
-        currentDialog = 0;
+
+            // Todavía quedan instrucciones
+            if (
+                dialogoLimonActual <
+                dialogosLimon.length
+            ) {
+
+                mostrarDialogoLimon();
+
+            }
+
+            // Terminar instrucciones
+            else {
+
+                finalizarDialogosLimon();
+
+            }
+
+
+            return;
+        }
+
+
+        // ======================================
+        // DIÁLOGOS NORMALES DEL JUEGO
+        // ======================================
+
+        currentDialog++;
+
+
+        if (
+            currentDialog <
+            dialogs.length
+        ) {
+
+            mostrarDialogo(
+                currentDialog
+            );
+
+        } else {
+
+            dialogBox.style.display =
+                "none";
+
+            currentDialog =
+                0;
+
+        }
+
     }
-
-});
-
+);
 

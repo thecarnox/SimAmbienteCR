@@ -168,20 +168,20 @@ footer {
 #map {
     display: none;
 
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
 
     width: 50%;
     height: 100vh;
 
-    z-index: 2;
+    z-index: 1;
 }
 
 #rightPanel {
     display: none;
 
-    position: absolute;
+    position: fixed;
     top: 0;
     right: 0;
 
@@ -194,6 +194,9 @@ footer {
     z-index: 2;
 
     flex-direction: column;
+
+    overflow: hidden;
+
 }
 
 #activitySection {
@@ -300,121 +303,241 @@ footer {
     cursor: pointer;
 }
 
-/* =========================
-   CUADRO DE TEXTO
-========================= */
+/* ==========================================
+   CUADRO DE DIÁLOGO - PERSONAJE GUÍA
+========================================== */
+
 #dialogBox {
+
+    position: fixed;
+
+    left: 50%;
+    bottom: 25px;
+
+    transform: translateX(-50%);
+
+    width: min(900px, 90vw);
+    min-height: 180px;
 
     display: none;
 
+    align-items: stretch;
+
+    background: rgba(255, 255, 255, 0.97);
+
+    border: 3px solid #2e7d32;
+    border-radius: 20px;
+
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.25);
+
+    overflow: hidden;
+
+    z-index: 9999;
+}
+
+
+/* ==========================================
+   CONTENEDOR DEL PERSONAJE
+========================================== */
+
+#characterContainer {
+
+    position: relative;
+
+    width: 230px;
+    min-width: 230px;
+
+    min-height: 180px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #e3f2fd,
+            #e8f5e9
+        );
+
+    border-right: 3px solid #2e7d32;
+
+    overflow: hidden;
+}
+
+
+/* ==========================================
+   CANVAS DEL PERSONAJE 3D
+========================================== */
+
+#characterCanvas {
+
     position: absolute;
 
-    bottom: 0;
+    top: 0;
     left: 0;
 
     width: 100%;
-    height: 25vh;
+    height: 100%;
 
-    background: rgba(0, 0, 0, 0.90);
-
-    z-index: 9999;
-
-    border-top: 4px solid #5cb85c;
-
+    display: block;
 }
 
-/* =========================
-    ÁREA DEL PERSONAJE
-========================= */
-#characterContainer {
 
-     width:260px;
-    height:100%;
+/* ==========================================
+   CONTENIDO DEL DIÁLOGO
+========================================== */
 
-    display:flex;
-
-    justify-content:center;
-    align-items:center;
-
-    background:#202020;
-}
-
-#characterCanvas{
-
-    width:240px;
-
-    height:240px;
-
-    display:block;
-
-    background: transparent;
-
-}
-
-/* =========================
-    RENDER DEL PERSONAJE
-========================= */
-#characterImage {
-
-    width: 180px;
-    height: 180px;
-
-    object-fit: contain;
-}
-/* =========================
-    CONTENIDO DEL CUADRO DE TEXTO
-========================= */
 #dialogContent {
 
     flex: 1;
 
-    padding: 20px;
-
-    color: white;
-
     display: flex;
     flex-direction: column;
+
+    justify-content: center;
+
+    padding: 22px 28px;
+
+    background: white;
 }
-/* =========================
-    NOMBRE
-========================= */
+
+
+/* ==========================================
+   NOMBRE DEL PERSONAJE
+========================================== */
+
 #characterName {
 
     margin: 0 0 10px 0;
 
-    font-size: 28px;
+    color: #1565c0;
 
-    color: #7CFC00;
+    font-size: 22px;
+    font-weight: 700;
 }
-/* =========================
-    TEXTO
-========================= */
+
+
+/* Línea decorativa */
+
+#characterName::after {
+
+    content: "";
+
+    display: block;
+
+    width: 60px;
+    height: 4px;
+
+    margin-top: 6px;
+
+    background: #2e7d32;
+
+    border-radius: 4px;
+}
+
+
+/* ==========================================
+   TEXTO DEL DIÁLOGO
+========================================== */
+
 #dialogText {
 
-    flex: 1;
+    margin: 5px 0 18px 0;
 
-    font-size: 20px;
+    color: #263238;
 
-    line-height: 1.5;
+    font-size: 17px;
+
+    line-height: 1.6;
 }
-/* =========================
-    BOTÓN CONTINUAR
-========================= */
+
+
+/* ==========================================
+   BOTÓN CONTINUAR
+========================================== */
+
 #nextDialogBtn {
 
     align-self: flex-end;
 
-    padding: 10px 20px;
+    min-width: 130px;
 
-    font-size: 18px;
+    padding: 11px 22px;
 
     border: none;
+    border-radius: 10px;
 
-    border-radius: 8px;
+    background: #2e7d32;
+
+    color: white;
+
+    font-size: 16px;
+    font-weight: 600;
 
     cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
 }
 
+
+#nextDialogBtn:hover {
+
+    background: #1b5e20;
+
+    transform: translateY(-2px);
+}
+
+
+#nextDialogBtn:active {
+
+    transform: translateY(0);
+}
+
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 700px) {
+
+    #dialogBox {
+
+        width: 94vw;
+
+        min-height: 150px;
+
+    }
+
+
+    #characterContainer {
+
+        width: 150px;
+        min-width: 150px;
+
+    }
+
+
+    #dialogContent {
+
+        padding: 16px;
+
+    }
+
+
+    #characterName {
+
+        font-size: 19px;
+
+    }
+
+
+    #dialogText {
+
+        font-size: 15px;
+
+    }
+
+}
 
 /* =========================
    MODAL JUGADOR
@@ -571,3 +694,1097 @@ footer {
 /* =====================================
    PANTALLA DE FINAL
 ===================================== */
+
+
+
+
+/* ==========================================
+   ACTIVIDAD 3D DE LIMÓN
+   ========================================== */
+
+#actividadLimon {
+    display: none;
+
+    width: 100%;
+    height: calc(100% - 90px);
+}
+
+
+#juegoLimon {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    border-radius: 12px;
+}
+
+
+#limonCanvas {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+}
+
+
+#limonHUD {
+
+    position: absolute;
+
+    top: 10px;
+    left: 10px;
+    right: 10px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 10px 15px;
+
+    background: rgba(0, 0, 0, 0.65);
+
+    color: white;
+
+    border-radius: 8px;
+
+    font-family: Arial, sans-serif;
+
+    pointer-events: none;
+}
+
+
+#btnRestablecerVista {
+
+    pointer-events: auto;
+
+    border: none;
+
+    border-radius: 6px;
+
+    padding: 8px 12px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+}
+
+
+
+
+
+
+/* ==========================================
+   ACTIVIDAD 4 - GUANACASTE
+   PANTALLA COMPLETA
+========================================== */
+
+#actividadGuanacaste {
+
+    display: none;
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    background: #18251b;
+
+    z-index: 100000;
+
+    overflow: hidden;
+}
+
+
+/* ==========================================
+   CANVAS
+========================================== */
+
+#guanacasteCanvas {
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    cursor: crosshair;
+}
+
+
+/* ==========================================
+   PANEL DE ELEMENTOS
+========================================== */
+
+#panelElementosGuanacaste {
+
+    position: absolute;
+
+    top: 100px;
+    right: 20px;
+
+    width: 270px;
+
+    padding: 20px;
+
+    background:
+        rgba(0, 0, 0, 0.78);
+
+    color: white;
+
+    border-radius: 15px;
+
+    box-sizing: border-box;
+
+    z-index: 10;
+
+    font-family:
+        'Segoe UI',
+        Tahoma,
+        sans-serif;
+}
+
+
+#panelElementosGuanacaste h3 {
+
+    margin-top: 0;
+
+    font-size: 24px;
+
+}
+
+
+#panelElementosGuanacaste p {
+
+    font-size: 15px;
+
+    line-height: 1.4;
+
+}
+
+
+/* ==========================================
+   BOTONES DE ELEMENTOS
+========================================== */
+
+.botonElementoGuanacaste {
+
+    width: 100%;
+
+    padding: 12px;
+
+    margin-top: 8px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-size: 16px;
+
+    background:
+        rgba(255,255,255,0.12);
+
+    color: white;
+
+    transition:
+        0.2s ease;
+
+}
+
+
+.botonElementoGuanacaste:hover {
+
+    background:
+        rgba(255,255,255,0.25);
+
+    transform:
+        scale(1.02);
+
+}
+
+
+.botonElementoGuanacaste.elementoSeleccionado {
+
+    background:
+        rgba(120, 220, 100, 0.35);
+
+    outline:
+        2px solid #7CFC00;
+
+}
+
+
+/* ==========================================
+   BOTÓN EVALUAR
+========================================== */
+
+#btnEvaluarGuanacaste {
+
+    width: 100%;
+
+    margin-top: 20px;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #66aa44;
+
+    color: white;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+
+#btnEvaluarGuanacaste:hover {
+
+    background: #78c653;
+
+}
+
+
+/* ==========================================
+   MENSAJE TEMPORAL
+========================================== */
+
+#mensajeGuanacaste {
+
+    position: absolute;
+
+    top: 20px;
+
+    left: 50%;
+
+    transform:
+        translateX(-50%)
+        translateY(-20px);
+
+    padding:
+        12px 20px;
+
+    background:
+        rgba(0,0,0,0.8);
+
+    color: white;
+
+    border-radius: 10px;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition:
+        0.3s ease;
+
+    z-index: 20;
+
+}
+
+
+#mensajeGuanacaste.mostrarMensajeGuanacaste {
+
+    opacity: 1;
+
+    transform:
+        translateX(-50%)
+        translateY(0);
+
+}
+
+
+/* ==========================================
+   RESULTADO
+========================================== */
+
+.resultadoGuanacaste {
+
+    display: none;
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background:
+        rgba(0, 0, 0, 0.75);
+
+    z-index: 500;
+
+}
+
+
+.resultadoGuanacaste > div {
+
+    width: 500px;
+
+    max-width: 85%;
+
+    padding: 35px;
+
+    background: white;
+
+    border-radius: 18px;
+
+    color: #222;
+
+    text-align: center;
+
+}
+
+
+.resultadoGuanacaste h2 {
+
+    font-size: 30px;
+
+    margin-top: 0;
+
+}
+
+
+.resultadoGuanacaste p {
+
+    font-size: 19px;
+
+    line-height: 1.5;
+
+}
+
+
+.resultadoGuanacaste button {
+
+    margin-top: 20px;
+
+    padding:
+        12px 25px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #4d8f3b;
+
+    color: white;
+
+    font-size: 17px;
+
+    cursor: pointer;
+
+}
+
+
+/* ==========================================
+   RESULTADOS POR TIPO
+========================================== */
+
+.resultadoGuanacaste.bueno > div {
+
+    border-top:
+        6px solid #4caf50;
+
+}
+
+
+.resultadoGuanacaste.medio > div {
+
+    border-top:
+        6px solid #e0a82e;
+
+}
+
+
+.resultadoGuanacaste.riesgo > div {
+
+    border-top:
+        6px solid #d9534f;
+
+}
+
+
+
+
+/* ==========================================
+   BOTÓN MENÚ - GUANACASTE
+========================================== */
+
+#menuPausaGuanacaste {
+
+    position: absolute;
+
+    top: 20px;
+    right: 20px;
+
+    width: 55px;
+    height: 55px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: rgba(0, 0, 0, 0.45);
+
+    color: white;
+
+    font-size: 28px;
+
+    cursor: pointer;
+
+    z-index: 1000;
+
+    transition: 0.2s ease;
+}
+
+
+#menuPausaGuanacaste:hover {
+
+    background: rgba(0, 0, 0, 0.7);
+
+    transform: scale(1.05);
+
+}
+
+/* ==========================================
+   ESCENARIO PRINCIPAL
+========================================== */
+
+#escenarioPrincipal {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: none;
+
+    justify-content: center;
+    align-items: center;
+
+    flex-direction: column;
+
+    overflow: hidden;
+
+    z-index: 500;
+}
+
+
+/* ==========================================
+   CIELO ANIMADO
+========================================== */
+
+.cieloAnimado {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            180deg,
+            #45b6fe 0%,
+            #87ceeb 55%,
+            #d9f3ff 100%
+        );
+
+    z-index: -2;
+
+    overflow: hidden;
+}
+
+
+/* NUBES */
+
+.nubes {
+
+    position: absolute;
+
+    width: 220px;
+    height: 70px;
+
+    background: rgba(
+        255,
+        255,
+        255,
+        0.85
+    );
+
+    border-radius: 100px;
+
+    filter: blur(2px);
+}
+
+
+.nubes::before,
+.nubes::after {
+
+    content: "";
+
+    position: absolute;
+
+    background: inherit;
+
+    border-radius: 50%;
+}
+
+
+.nubes::before {
+
+    width: 90px;
+    height: 90px;
+
+    top: -45px;
+    left: 40px;
+}
+
+
+.nubes::after {
+
+    width: 120px;
+    height: 120px;
+
+    top: -60px;
+    right: 30px;
+}
+
+
+/* NUBE 1 */
+
+.nubes1 {
+
+    top: 20%;
+
+    left: -300px;
+
+    animation:
+        moverNube 25s linear infinite;
+}
+
+
+/* NUBE 2 */
+
+.nubes2 {
+
+    top: 55%;
+
+    left: -400px;
+
+    transform: scale(0.7);
+
+    opacity: 0.7;
+
+    animation:
+        moverNube 38s linear infinite;
+
+    animation-delay: -15s;
+}
+
+
+/* MOVIMIENTO */
+
+@keyframes moverNube {
+
+    from {
+
+        left: -350px;
+
+    }
+
+    to {
+
+        left: calc(100% + 350px);
+
+    }
+
+}
+
+
+/* ==========================================
+   TÍTULO
+========================================== */
+
+.tituloEscenarioPrincipal {
+
+    text-align: center;
+
+    color: white;
+
+    text-shadow:
+        0 2px 6px
+        rgba(0, 0, 0, 0.4);
+
+    z-index: 2;
+
+    margin-bottom: 50px;
+}
+
+
+.tituloEscenarioPrincipal h1 {
+
+    font-size: 42px;
+
+    margin-bottom: 10px;
+}
+
+
+/* ==========================================
+   BOTONES DE REGIONES
+========================================== */
+
+.regionesEscenario {
+
+    display: flex;
+
+    gap: 35px;
+
+    z-index: 2;
+}
+
+
+.botonRegion {
+
+    width: 180px;
+    height: 150px;
+
+    border: none;
+
+    border-radius: 20px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.85
+        );
+
+    cursor: pointer;
+
+    font-size: 45px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 10px;
+
+    transition: 0.25s;
+}
+
+
+.botonRegion span {
+
+    font-size: 20px;
+
+    font-weight: bold;
+}
+
+
+.botonRegion:hover {
+
+    transform:
+        translateY(-8px)
+        scale(1.05);
+
+    background: white;
+}
+
+#menuPausaEscenarioPrincipal {
+
+    position: absolute;
+
+    top: 20px;
+    right: 20px;
+
+    width: 55px;
+    height: 55px;
+
+    border: none;
+    border-radius: 10px;
+
+    background:
+        rgba(0, 0, 0, 0.45);
+
+    color: white;
+
+    font-size: 28px;
+
+    cursor: pointer;
+
+    z-index: 10;
+}
+/* ==============================================================================================================================
+
+
+/* ==========================================
+   ACTIVIDAD 1 - LIMÓN
+========================================== */
+
+#actividadLimon {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    display: none;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #87ceeb 0%,
+            #c8e6c9 55%,
+            #6b8e23 100%
+        );
+
+    overflow: hidden;
+
+    z-index: 800;
+}
+
+
+/* ==========================================
+   ENCABEZADO
+========================================== */
+
+#encabezadoLimon {
+
+    position: absolute;
+
+    top: 20px;
+    left: 30px;
+    right: 100px;
+
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    z-index: 10;
+}
+
+
+#encabezadoLimon h2 {
+
+    margin: 0;
+
+    color: white;
+
+    text-shadow:
+        1px 1px 4px
+        rgba(0, 0, 0, 0.5);
+}
+
+
+#informacionLimon {
+
+    display: flex;
+
+    gap: 25px;
+
+    padding: 10px 20px;
+
+    background:
+        rgba(0, 0, 0, 0.45);
+
+    color: white;
+
+    border-radius: 10px;
+}
+
+
+/* ==========================================
+   MENÚ
+========================================== */
+
+#menuPausaLimon {
+
+    position: absolute;
+
+    top: 20px;
+    right: 20px;
+
+    width: 55px;
+    height: 55px;
+
+    border: none;
+    border-radius: 10px;
+
+    background:
+        rgba(0, 0, 0, 0.45);
+
+    color: white;
+
+    font-size: 28px;
+
+    cursor: pointer;
+
+    z-index: 20;
+}
+
+
+/* ==========================================
+   ELEMENTO 3D
+========================================== */
+
+#areaElementoLimon {
+
+    position: absolute;
+
+    top: 105px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 430px;
+    height: 430px;
+
+    /* Forma circular */
+    border-radius: 50%;
+
+    /* Color claro */
+    background:
+        rgba(235, 248, 240, 0.95);
+
+    /* Borde verde suave */
+    border:
+        4px solid
+        rgba(76, 175, 80, 0.65);
+
+    /* Sombra suave */
+    box-shadow:
+        0 8px 30px
+        rgba(87, 83, 83, 0.18);
+
+    text-align: center;
+
+    overflow: hidden;
+
+}
+
+
+#limonCanvas {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    border-radius: 50%;
+
+}
+
+
+#nombreElementoLimon {
+
+    color: white;
+
+    font-size: 22px;
+    font-weight: bold;
+
+    text-shadow:
+        1px 1px 4px
+        rgba(0, 0, 0, 0.7);
+}
+
+
+/* ==========================================
+   CLASIFICACIÓN
+========================================== */
+
+#clasificacionLimon {
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 150px;
+
+    transform: translateX(-50%);
+
+    display: flex;
+
+    gap: 40px;
+
+    z-index: 10;
+}
+
+
+.botonClasificacionLimon {
+
+    min-width: 220px;
+
+    padding: 18px 30px;
+
+    border: none;
+    border-radius: 12px;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+
+#favorableLimon {
+
+    background: #2e7d32;
+    color: white;
+}
+
+
+#desfavorableLimon {
+
+    background: #c62828;
+    color: white;
+}
+
+
+/* ==========================================
+   PERSONAJE GUÍA
+========================================== */
+
+#guiaLimon {
+
+    position: fixed;
+
+    left: 30px;
+    bottom: 20px;
+
+    display: flex;
+
+    align-items: flex-end;
+
+    z-index: 30;
+}
+
+
+#personajeGuiaLimon {
+
+    width: 130px;
+
+    object-fit: contain;
+}
+
+
+#dialogoLimon {
+
+    width: 420px;
+
+    margin-left: 10px;
+
+    padding: 15px 20px;
+
+    background: white;
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 4px 15px
+        rgba(0, 0, 0, 0.3);
+}
+
+
+#dialogoLimon h3 {
+
+    margin-top: 0;
+}
+
+
+#continuarGuiaLimon {
+
+    padding: 10px 20px;
+
+    border: none;
+    border-radius: 8px;
+
+    cursor: pointer;
+}
+
+
+/* ==========================================
+   RESULTADO FINAL
+========================================== */
+
+#resultadoFinalLimon {
+
+    position: fixed;
+
+    inset: 0;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    background:
+        rgba(0, 0, 0, 0.65);
+
+    z-index: 100;
+}
+
+
+#contenidoResultadoLimon {
+
+    width: 400px;
+
+    padding: 30px;
+
+    background: white;
+
+    border-radius: 15px;
+
+    text-align: center;
+}
+
+
+#continuarResultadoLimon {
+
+    margin-top: 15px;
+
+    padding: 12px 25px;
+
+    border: none;
+    border-radius: 8px;
+
+    cursor: pointer;
+}
+
+/* ==============================================================================================================================
+

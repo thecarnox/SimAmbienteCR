@@ -8,163 +8,347 @@ let personaje = null;
 let tiempo = 0;
 let posicionInicial = null;
 
-let hablando = false;
-let tiempoHabla = 0;
 
-function crearPersonaje3D() {
+// ==========================================
+// CREAR ESCENA DEL PERSONAJE
+// ==========================================
 
-    // Evitar crear varias veces la escena
-    if (characterApp) return;
+function crearPersonaje3D(
+    modelo = "models/perezoso.glb"
+) {
 
-    const canvas = document.getElementById("characterCanvas");
+    // ======================================
+    // CREAR PLAYCANVAS UNA SOLA VEZ
+    // ======================================
 
-    characterApp = new pc.Application(canvas);
+    if (!characterApp) {
 
-    characterApp.setCanvasFillMode(pc.FILLMODE_NONE);
-    characterApp.setCanvasResolution(pc.RESOLUTION_AUTO);
+        const canvas =
+            document.getElementById(
+                "characterCanvas"
+            );
 
-    characterApp.start();
+        characterApp =
+            new pc.Application(
+                canvas
+            );
 
-    // Fondo transparente
-    characterApp.scene.ambientLight = new pc.Color(1,1,1);
+        characterApp.setCanvasFillMode(
+            pc.FILLMODE_NONE
+        );
 
-    //----------------------------------
-    // Cámara
-    //----------------------------------
+        characterApp.setCanvasResolution(
+            pc.RESOLUTION_AUTO
+        );
 
-    const camera = new pc.Entity();
+        characterApp.start();
 
-    camera.addComponent("camera",{
 
-        clearColor:new pc.Color(0,0,0,0)
+        // ==================================
+        // LUZ AMBIENTAL
+        // ==================================
 
-    });
+        characterApp.scene.ambientLight =
+            new pc.Color(
+                1,
+                1,
+                1
+            );
 
-    camera.setPosition(0,1,3);
 
-    characterApp.root.addChild(camera);
+        // ==================================
+        // CÁMARA
+        // ==================================
 
-    //----------------------------------
-    // Luz
-    //----------------------------------
+        const camera =
+            new pc.Entity(
+                "CameraPersonaje"
+            );
 
-   const light = new pc.Entity();
+        camera.addComponent(
+            "camera",
+            {
+                clearColor:
+                    new pc.Color(
+                        0,
+                        0,
+                        0,
+                        0
+                    )
+            }
+        );
 
-    light.addComponent("light",{
+        camera.setPosition(
+            0,
+            1,
+            3
+        );
 
-        type: "directional",
+        characterApp.root.addChild(
+            camera
+        );
 
-        intensity: 3,
 
-        castShadows: true
+        // ==================================
+        // LUZ PRINCIPAL
+        // ==================================
 
-    });
+        const light =
+            new pc.Entity(
+                "LuzPersonaje"
+            );
 
-    light.setEulerAngles(45, 35, 0);
+        light.addComponent(
+            "light",
+            {
+                type: "directional",
+                intensity: 3,
+                castShadows: true
+            }
+        );
 
-    characterApp.root.addChild(light);
+        light.setEulerAngles(
+            45,
+            35,
+            0
+        );
 
-    const fillLight = new pc.Entity();
+        characterApp.root.addChild(
+            light
+        );
 
-    fillLight.addComponent("light",{
 
-        type: "omni",
+        // ==================================
+        // LUZ DE RELLENO
+        // ==================================
 
-        intensity: 1.5,
+        const fillLight =
+            new pc.Entity(
+                "LuzRellenoPersonaje"
+            );
 
-        range: 10
+        fillLight.addComponent(
+            "light",
+            {
+                type: "omni",
+                intensity: 1.5,
+                range: 10
+            }
+        );
 
-    });
+        fillLight.setLocalPosition(
+            2,
+            2,
+            2
+        );
 
-    fillLight.setLocalPosition(2, 2, 2);
+        characterApp.root.addChild(
+            fillLight
+        );
 
-    characterApp.root.addChild(fillLight);
 
-    //----------------------------------
-    // Cargar GLB
-    //----------------------------------
+        // ==================================
+        // ANIMACIÓN DEL PERSONAJE
+        // ==================================
+
+        characterApp.on(
+            "update",
+            function(dt) {
+
+                if (
+                    !personaje ||
+                    !posicionInicial
+                ) {
+                    return;
+                }
+
+                tiempo += dt;
+
+                personaje.setLocalPosition(
+
+                    posicionInicial.x,
+
+                    posicionInicial.y +
+                    Math.sin(
+                        tiempo * 2
+                    ) * 0.03,
+
+                    posicionInicial.z
+
+                );
+
+            }
+        );
+
+    }
+
+
+    // ======================================
+    // CARGAR MODELO SOLICITADO
+    // ======================================
+
+    cargarModeloPersonaje(
+        modelo
+    );
+
+}
+
+
+// ==========================================
+// CAMBIAR MODELO DEL PERSONAJE
+// ==========================================
+
+function cargarModeloPersonaje(
+    modelo
+) {
+
+    if (!characterApp) {
+        return;
+    }
+
+
+    // ======================================
+    // ELIMINAR PERSONAJE ANTERIOR
+    // ======================================
+
+    if (personaje) {
+
+        personaje.destroy();
+
+        personaje = null;
+
+        posicionInicial = null;
+
+    }
+
+
+    // ======================================
+    // CARGAR NUEVO GLB
+    // ======================================
 
     characterApp.assets.loadFromUrl(
 
-        "models/perezoso.glb",
+        modelo,
 
         "container",
 
-        function(err, asset){
+        function(err, asset) {
 
-            if(err){
+            if (err) {
 
-                console.error(err);
+                console.error(
+                    "Error cargando personaje:",
+                    modelo,
+                    err
+                );
 
                 return;
-
             }
 
-            personaje = asset.resource.instantiateRenderEntity();
 
-            characterApp.root.addChild(personaje);
+            personaje =
+                asset.resource
+                    .instantiateRenderEntity();
 
-            posicionInicial = personaje.getLocalPosition().clone();
 
-            // ==========================================
-            // AJUSTAR AUTOMÁTICAMENTE EL MODELO
-            // ==========================================
+            characterApp.root.addChild(
+                personaje
+            );
 
-            // Obtener el RenderComponent
-            const render = personaje.findComponent("render");
 
-            if (render) {
+            // ==================================
+            // BUSCAR COMPONENTE RENDER
+            // ==================================
 
-                // Obtener el tamaño del modelo
-                const aabb = render.meshInstances[0].aabb;
+            const render =
+                personaje.findComponent(
+                    "render"
+                );
 
-                const centro = aabb.center.clone();
 
-                const tamano = aabb.halfExtents.length() * 2;
+            if (
+                render &&
+                render.meshInstances.length > 0
+            ) {
 
-                // Centrar el modelo
+                const aabb =
+                    render.meshInstances[0]
+                        .aabb;
+
+                const centro =
+                    aabb.center.clone();
+
+                const tamano =
+                    aabb.halfExtents
+                        .length() * 2;
+
+
+                // ==================================
+                // CENTRAR MODELO
+                // ==================================
+
                 personaje.setPosition(
+
                     -centro.x,
                     -centro.y,
                     -centro.z
+
                 );
 
-                // Colocar la cámara automáticamente
-                camera.setPosition(
-                    0,
-                    tamano * 0.6,
-                    tamano * 2.2
-                );
 
-                camera.lookAt(0, tamano * 0.3, 0);
+                // ==================================
+                // OBTENER CÁMARA
+                // ==================================
+
+                const camera =
+                    characterApp.root.findByName(
+                        "CameraPersonaje"
+                    );
+
+
+                if (camera) {
+
+                    camera.setPosition(
+
+                        0,
+
+                        tamano * 0.6,
+
+                        tamano * 2.2
+
+                    );
+
+                    camera.lookAt(
+
+                        0,
+
+                        tamano * 0.3,
+
+                        0
+
+                    );
+
+                }
 
             }
 
-            console.log("Perezoso cargado correctamente.");
+
+            // Guardar posición para
+            // la animación de respiración
+
+            posicionInicial =
+                personaje
+                    .getLocalPosition()
+                    .clone();
+
+
+            console.log(
+                "Personaje cargado:",
+                modelo
+            );
 
         }
 
     );
-
-    // ==========================================
-    // Respiración
-    // ==========================================
-
-    characterApp.on("update", function (dt) {
-
-    if (!personaje) return;
-
-    tiempo += dt;
-
-    // Respiración suave
-    personaje.setLocalPosition(
-        posicionInicial.x,
-        posicionInicial.y + Math.sin(tiempo * 2) * 0.03,
-        posicionInicial.z
-    );
-
-
-
-});
 
 }
