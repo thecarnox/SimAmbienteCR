@@ -6,6 +6,10 @@ let dialogosLimonActivos = false;
 
 let dialogoLimonActual = 0;
 
+let puntosActividadLimon = 0;
+let elementosRespondidosLimon = 0;
+let respuestaLimonBloqueada = false;
+
 
 // TEMPORIZADOR
 
@@ -15,6 +19,34 @@ let temporizadorLimon = null;
 
 let actividadLimonActiva = false;
 
+let actividadLimonPausada = false;
+
+// ==========================================
+// SONIDOS DE RESPUESTAS - LIMÓN
+// ==========================================
+
+const sonidoBueno = new Audio("sounds/sonidoBueno.mp3");
+const sonidoMalo = new Audio("sounds/sonidoMalo.mp3");
+
+// Configurar volumen
+sonidoBueno.volume = 0.6;
+sonidoMalo.volume = 0.6;
+
+// Función para reproducir sonidos
+function reproducirSonidoRespuestaLimon(correcta) {
+
+    const sonido = correcta
+        ? sonidoBueno
+        : sonidoMalo;
+
+    // Reiniciar sonido para reproducirlo nuevamente
+    sonido.pause();
+    sonido.currentTime = 0;
+
+    sonido.play().catch(error => {
+        console.warn("No se pudo reproducir el sonido:", error);
+    });
+}
 
 // ==========================================
 // DIÁLOGOS DE LIMÓN
@@ -131,18 +163,26 @@ let camaraLimon = null;
 let modeloActualLimon = null;
 
 // ==========================================
+// CONTENEDORES 3D DE CLASIFICACIÓN
+// ==========================================
+
+let appFavorableLimon = null;
+let appDesfavorableLimon = null;
+
+let modelosFavorableLimon = [];
+let modelosDesfavorableLimon = [];
+
+
+let iconosFavorableLimon = [];
+let iconosDesfavorableLimon = [];
+
+// ==========================================
 // ESTADO DE LOS ELEMENTOS
 // ==========================================
 
 let elementoActualLimon = null;
 
 let modelosDisponiblesLimon = [];
-
-let puntosActividadLimon = 0;
-
-let elementosRespondidosLimon = 0;
-
-let respuestaLimonBloqueada = false;
 
 
 // ==========================================
@@ -162,6 +202,8 @@ function iniciarActividadLimon() {
     tiempoRestanteLimon = 60;
 
     actividadLimonActiva = false;
+
+    actividadLimonPausada = false;
 
 
     // Detener temporizador anterior
@@ -189,6 +231,11 @@ function iniciarActividadLimon() {
 
     actividad.style.display =
         "block";
+
+
+    crearContenedores3DLimon();
+
+    reiniciarContenedoresLimon();
 
 
     // ======================================
@@ -460,7 +507,10 @@ function iniciarTemporizadorLimon() {
                 // Si la actividad no está activa,
                 // no disminuir el tiempo
 
-                if (!actividadLimonActiva) {
+                if (
+                    !actividadLimonActiva ||
+                    actividadLimonPausada
+                ) {
                     return;
                 }
 
@@ -778,9 +828,14 @@ function crearEscenaLimon() {
     // ======================================
 
     limonApp =
-        new pc.Application(
-            canvas
-        );
+    new pc.Application(
+        canvas,
+        {
+            graphicsDeviceOptions: {
+                alpha: true
+            }
+        }
+    );
 
 
     limonApp.setCanvasFillMode(
@@ -1133,6 +1188,507 @@ function mostrarModeloAleatorioLimon() {
 
 }
 
+// ==========================================
+// REINICIAR CONTENEDORES 3D
+// ==========================================
+
+function reiniciarContenedoresLimon() {
+
+    // Eliminar modelos favorables
+    modelosFavorableLimon.forEach(
+        (modelo) => {
+
+            if (modelo) {
+                modelo.destroy();
+            }
+
+        }
+    );
+
+
+    // Eliminar modelos desfavorables
+    modelosDesfavorableLimon.forEach(
+        (modelo) => {
+
+            if (modelo) {
+                modelo.destroy();
+            }
+
+        }
+    );
+
+
+    // Vaciar arreglos
+    modelosFavorableLimon = [];
+    modelosDesfavorableLimon = [];
+
+
+    // ======================================
+    // ELIMINAR ICONOS ANTERIORES
+    // ======================================
+
+    iconosFavorableLimon.forEach(
+        icono => icono.remove()
+    );
+
+    iconosDesfavorableLimon.forEach(
+        icono => icono.remove()
+    );
+
+    // Vaciar arreglos
+    iconosFavorableLimon = [];
+    iconosDesfavorableLimon = [];
+
+    // Eliminar escuchadores anteriores
+    controladorIconosLimon.abort();
+
+    controladorIconosLimon = new AbortController();
+
+}
+
+// ==========================================
+// CREAR CONTENEDORES 3D
+// ==========================================
+
+function crearContenedores3DLimon() {
+
+    // ======================================
+    // FAVORABLE
+    // ======================================
+
+    if (!appFavorableLimon) {
+
+        const canvasFavorable =
+            document.getElementById(
+                "canvasFavorableLimon"
+            );
+
+        appFavorableLimon =
+            new pc.Application(
+                canvasFavorable,
+                {
+                    graphicsDeviceOptions: {
+                        alpha: true
+                    }
+                }
+            );
+
+        appFavorableLimon.setCanvasFillMode(
+            pc.FILLMODE_NONE
+        );
+
+        appFavorableLimon.setCanvasResolution(
+            pc.RESOLUTION_AUTO
+        );
+
+        appFavorableLimon.start();
+
+        appFavorableLimon.scene.ambientLight =
+            new pc.Color(1, 1, 1);
+
+
+        const camara =
+            new pc.Entity(
+                "CamaraFavorable"
+            );
+
+        camara.addComponent(
+            "camera",
+            {
+                clearColor:
+                    new pc.Color(
+                        0,
+                        0,
+                        0,
+                        0
+                    )
+            }
+        );
+
+        camara.setPosition(
+            0,
+            0,
+            12
+        );
+
+        camara.lookAt(
+            0,
+            0,
+            0
+        );
+
+        appFavorableLimon.root.addChild(
+            camara
+        );
+
+
+        const luz =
+            new pc.Entity(
+                "LuzFavorable"
+            );
+
+        luz.addComponent(
+            "light",
+            {
+                type: "directional",
+                intensity: 3
+            }
+        );
+
+        luz.setEulerAngles(
+            45,
+            30,
+            0
+        );
+
+        appFavorableLimon.root.addChild(
+            luz
+        );
+
+    }
+
+
+    // ======================================
+    // DESFAVORABLE
+    // ======================================
+
+    if (!appDesfavorableLimon) {
+
+        const canvasDesfavorable =
+            document.getElementById(
+                "canvasDesfavorableLimon"
+            );
+
+        appDesfavorableLimon =
+            new pc.Application(
+                canvasDesfavorable,
+                {
+                    graphicsDeviceOptions: {
+                        alpha: true
+                    }
+                }
+            );
+
+        appDesfavorableLimon.setCanvasFillMode(
+            pc.FILLMODE_NONE
+        );
+
+        appDesfavorableLimon.setCanvasResolution(
+            pc.RESOLUTION_AUTO
+        );
+
+        appDesfavorableLimon.start();
+
+        appDesfavorableLimon.scene.ambientLight =
+            new pc.Color(1, 1, 1);
+
+
+        const camara =
+            new pc.Entity(
+                "CamaraDesfavorable"
+            );
+
+        camara.addComponent(
+            "camera",
+            {
+                clearColor:
+                    new pc.Color(
+                        0,
+                        0,
+                        0,
+                        0
+                    )
+            }
+        );
+
+        camara.setPosition(
+            0,
+            0,
+            12
+        );
+
+        camara.lookAt(
+            0,
+            0,
+            0
+        );
+
+        appDesfavorableLimon.root.addChild(
+            camara
+        );
+
+
+        const luz =
+            new pc.Entity(
+                "LuzDesfavorable"
+            );
+
+        luz.addComponent(
+            "light",
+            {
+                type: "directional",
+                intensity: 3
+            }
+        );
+
+        luz.setEulerAngles(
+            45,
+            30,
+            0
+        );
+
+        appDesfavorableLimon.root.addChild(
+            luz
+        );
+
+    }
+
+}
+
+let controladorIconosLimon = new AbortController();
+
+// ==========================================
+// CREAR ICONO DE RESPUESTA
+// ==========================================
+
+function agregarIconoRespuestaLimon(
+    clasificacion,
+    respuestaCorrecta,
+    indice
+) {
+
+    // Obtener el canvas correspondiente
+    const canvas = document.getElementById(
+        clasificacion === "favorable"
+            ? "canvasFavorableLimon"
+            : "canvasDesfavorableLimon"
+    );
+
+    if (!canvas) {
+        return;
+    }
+
+    // ======================================
+    // CONTENEDOR DE ICONOS
+    // ======================================
+
+    const contenedor = canvas.parentElement;
+
+    // Crear icono
+    const icono = document.createElement("span");
+
+    icono.className = respuestaCorrecta
+        ? "iconoCorrectoLimon"
+        : "iconoIncorrectoLimon";
+
+    icono.textContent = respuestaCorrecta
+        ? "✓"
+        : "✕";
+
+    // Guardar la posición de la respuesta
+    icono.dataset.indice = indice;
+
+    contenedor.appendChild(icono);
+
+    // Guardar icono para reiniciarlo después
+    if (clasificacion === "favorable") {
+
+        iconosFavorableLimon.push(icono);
+
+    } else {
+
+        iconosDesfavorableLimon.push(icono);
+
+    }
+
+    // Alinear el icono con la posición 3D
+    // cuando el canvas tenga sus dimensiones
+    function actualizarPosicion() {
+
+        const app = clasificacion === "favorable"
+            ? appFavorableLimon
+            : appDesfavorableLimon;
+
+        const camara = app?.root.findByName(
+            clasificacion === "favorable"
+                ? "CamaraFavorable"
+                : "CamaraDesfavorable"
+        );
+
+        if (!camara || !camara.camera) {
+            return;
+        }
+
+        // Misma posición vertical que el modelo
+        const posicionY = 4.5 - indice;
+
+        const posicionPantalla = camara.camera.worldToScreen(
+            new pc.Vec3(0, posicionY, 0)
+        );
+
+        const rectCanvas = canvas.getBoundingClientRect();
+        const rectContenedor = contenedor.getBoundingClientRect();
+
+        const escalaX = rectCanvas.width / canvas.width;
+        const escalaY = rectCanvas.height / canvas.height;
+
+        icono.style.left =
+            (rectCanvas.left - rectContenedor.left +
+             posicionPantalla.x * escalaX +
+             rectCanvas.width * 0.12) + "px";
+
+        icono.style.top =
+            (rectCanvas.top - rectContenedor.top +
+             posicionPantalla.y * escalaY) + "px";
+    }
+
+    actualizarPosicion();
+
+    // Recalcular al cambiar el tamaño de ventana
+    window.addEventListener(
+        "resize",
+        actualizarPosicion,
+        { signal: controladorIconosLimon.signal }
+    );
+}
+
+// ==========================================
+// AGREGAR MODELO A CLASIFICACIÓN
+// ==========================================
+
+function agregarModeloClasificacionLimon(
+    elemento,
+    clasificacion,
+    respuestaCorrecta
+) {
+
+    const esFavorable =
+        clasificacion === "favorable";
+
+    
+    const app =
+        esFavorable
+            ? appFavorableLimon
+            : appDesfavorableLimon;
+
+
+    const arreglo =
+        esFavorable
+            ? modelosFavorableLimon
+            : modelosDesfavorableLimon;
+
+
+    // Máximo 10
+    if (arreglo.length >= 10) {
+        return;
+    }
+
+    // ======================================
+    // RESERVAR POSICIÓN DEL MODELO
+    // ======================================
+
+    const indice = arreglo.length;
+
+    arreglo.push(null);
+
+    // ======================================
+    // AGREGAR ICONO DE RESPUESTA
+    // ======================================
+
+    agregarIconoRespuestaLimon(
+        clasificacion,
+        respuestaCorrecta,
+        indice
+    );
+
+
+    app.assets.loadFromUrl(
+        elemento.modelo,
+        "container",
+        function(error, asset) {
+
+            if (error) {
+
+                console.error(
+                    "Error cargando modelo:",
+                    elemento.modelo
+                );
+
+                return;
+
+            }
+
+
+            const modelo =
+                asset.resource
+                    .instantiateRenderEntity();
+
+
+            app.root.addChild(
+                modelo
+            );
+
+
+            // ==================================
+            // CENTRAR MODELO
+            // ==================================
+
+            const render =
+                modelo.findComponent(
+                    "render"
+                );
+
+
+            if (
+                render &&
+                render.meshInstances.length > 0
+            ) {
+
+                const aabb =
+                    render.meshInstances[0].aabb;
+
+                const centro =
+                    aabb.center.clone();
+
+                const tamano =
+                    aabb.halfExtents.length() * 2;
+
+
+                // Escala para que todos sean pequeños
+                const escala =
+                    0.9 / tamano;
+
+
+                modelo.setLocalScale(
+                    escala,
+                    escala,
+                    escala
+                );
+
+
+                // Posiciones verticales:
+                // 4.5, 3.5, 2.5...
+                const posicionY =
+                    4.5 - indice;
+
+
+                modelo.setPosition(
+                    -centro.x * escala,
+                    posicionY -
+                        centro.y * escala,
+                    -centro.z * escala
+                );
+
+            }
+
+
+            arreglo[indice] = modelo;
+
+        }
+    );
+
+}
+
 
 // ==========================================
 // RESPONDER CLASIFICACIÓN
@@ -1140,11 +1696,11 @@ function mostrarModeloAleatorioLimon() {
 
 function responderLimon(respuestaJugador) {
 
-    // Evitar responder mientras
-    // está cargando otro modelo
+    
     if (
         respuestaLimonBloqueada ||
         !actividadLimonActiva ||
+        actividadLimonPausada ||
         !elementoActualLimon
     ) {
 
@@ -1158,10 +1714,26 @@ function responderLimon(respuestaJugador) {
 
     respuestaLimonBloqueada = true;
 
+    // ======================================
+    // COMPROBAR RESPUESTA
+    // ======================================
 
-    console.log(
-        "Jugador eligió:",
-        respuestaJugador
+    const respuestaCorrecta =
+        respuestaJugador ===
+        elementoActualLimon.clasificacion;
+
+
+    reproducirSonidoRespuestaLimon(respuestaCorrecta);
+
+
+    // ======================================
+    // AGREGAR MODELO E ICONO
+    // ======================================
+
+    agregarModeloClasificacionLimon(
+        elementoActualLimon,
+        respuestaJugador,
+        respuestaCorrecta
     );
 
     console.log(
@@ -1316,6 +1888,50 @@ document.addEventListener(
                 responderLimon(
                     "desfavorable"
                 );
+
+            }
+        );
+
+    }
+);
+
+// ==========================================
+// MENÚ DE PAUSA - ACTIVIDAD LIMÓN
+// ==========================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        const menuPausaLimon =
+            document.getElementById(
+                "menuPausaLimon"
+            );
+
+        if (!menuPausaLimon) {
+
+            console.error(
+                "No se encontró #menuPausaLimon"
+            );
+
+            return;
+        }
+
+        menuPausaLimon.addEventListener(
+            "click",
+            () => {
+
+                // Pausar actividad
+                actividadLimonPausada = true;
+
+                // Pausar música
+                if (bgSound) {
+                    bgSound.pause();
+                }
+
+                // Mostrar menú general
+                pauseMenu.style.display =
+                    "flex";
 
             }
         );

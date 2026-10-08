@@ -434,6 +434,9 @@ footer {
 }
 
 
+
+
+
 /* ==========================================
    TEXTO DEL DIÁLOGO
 ========================================== */
@@ -1786,5 +1789,277 @@ footer {
     cursor: pointer;
 }
 
+
+/* ==========================================
+   CONTENEDORES DE CLASIFICACIÓN - LIMÓN
+========================================== */
+
+.contenedorElementosLimon {
+
+    position: absolute;
+
+    top: 120px;
+
+    width: 180px;
+    height: 720px;
+
+    padding: 12px;
+
+    background: rgba(255, 255, 255, 0.90);
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 5px 20px
+        rgba(0, 0, 0, 0.20);
+
+    z-index: 10;
+
+}
+
+
+/* FAVORABLE - IZQUIERDA */
+
+#contenedorFavorableLimon {
+
+    left: 30px;
+
+    border: 3px solid #2e7d32;
+
+}
+
+
+/* DESFAVORABLE - DERECHA */
+
+#contenedorDesfavorableLimon {
+
+    right: 30px;
+
+    border: 3px solid #c62828;
+
+}
+
+
+/* TÍTULOS */
+
+.contenedorElementosLimon h3 {
+
+    margin:
+        0 0 10px 0;
+
+    text-align: center;
+
+    font-size: 16px;
+
+}
+
+
+/* LISTA VERTICAL */
+
+.listaElementosLimon {
+
+    width: 100%;
+
+    height: calc(100% - 35px);
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+}
+
+
+/* ESPACIO DE CADA ELEMENTO */
+
+.elementoClasificadoLimon {
+
+    width: 100%;
+
+    height: 43px;
+
+    flex-shrink: 0;
+
+    position: relative;
+
+    overflow: hidden;
+
+    border-radius: 7px;
+
+    background:
+        rgba(220, 235, 225, 0.55);
+
+}
+
+
+/* CANVAS DE LA MINIATURA */
+
+.canvasMiniaturaLimon {
+
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+}
+
+.canvasContenedorLimon {
+    width: 100%;
+    height: calc(100% - 35px);
+    display: block;
+
+    background: transparent;
+}
+
+
+/* ==========================================
+   ICONOS DE CLASIFICACIÓN LIMÓN
+========================================== */
+
+.iconoCorrectoLimon,
+.iconoIncorrectoLimon {
+    position: absolute !important;
+
+    display: block;
+    width: 32px;
+    height: 32px;
+
+    font-size: 28px;
+    font-weight: bold;
+    line-height: 32px;
+    text-align: center;
+
+    transform: translateY(-50%);
+
+    pointer-events: none;
+    z-index: 20;
+}
+
+/* Correcto */
+.iconoCorrectoLimon {
+    color: #22c55e;
+}
+
+/* Incorrecto */
+.iconoIncorrectoLimon {
+    color: #ef4444;
+}
+
+#contenedorFavorableLimon,
+#contenedorDesfavorableLimon {
+    position: absolute;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+#canvasFavorableLimon,
+#canvasDesfavorableLimon {
+    display: block;
+    width: 100%;
+}
+
 /* ==============================================================================================================================
 
+/* ==========================================
+   FONDO ANIMADO - GUÍAS AMBIENTALES
+   MONO Y PEREZOSO
+========================================== */
+
+#characterContainer {
+    position: relative;
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            ellipse at 20% 80%,
+            #174d32 0%,
+            transparent 55%
+        ),
+        radial-gradient(
+            ellipse at 85% 20%,
+            #4b9860 0%,
+            transparent 60%
+        ),
+        linear-gradient(
+            135deg,
+            #102e22,
+            #286b43,
+            #80b779
+        );
+
+    background-size: 100% 100%;
+
+    animation: bosqueAnimado 12s ease-in-out infinite alternate;
+}
+
+/* LUCES DEL BOSQUE */
+
+#characterContainer::before {
+    content: "";
+    position: absolute;
+    inset: -40%;
+
+    background:
+        radial-gradient(
+            circle at 30% 30%,
+            rgba(255, 245, 170, 0.28),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 75% 65%,
+            rgba(165, 255, 180, 0.18),
+            transparent 40%
+        );
+
+    animation: lucesBosque 8s ease-in-out infinite alternate;
+
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* PERSONAJE 3D */
+
+#characterCanvas {
+    position: relative;
+    z-index: 1;
+
+    background: transparent;
+}
+
+/* MOVIMIENTO DEL FONDO */
+
+@keyframes bosqueAnimado {
+    0% {
+        background-position: 0% 30%;
+    }
+
+    100% {
+        background-position: 100% 70%;
+    }
+}
+
+/* MOVIMIENTO DE LA ILUMINACIÓN */
+
+@keyframes lucesBosque {
+    0% {
+        transform: translate(-5%, -3%) scale(1);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: translate(5%, 4%) scale(1.15);
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #characterContainer,
+    #characterContainer::before {
+        animation: none;
+    }
+}

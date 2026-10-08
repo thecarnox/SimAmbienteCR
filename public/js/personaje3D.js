@@ -1,5 +1,6 @@
+
 // ==========================================
-// PERSONAJE 3D
+// PERSONAJE 3D - MONO Y PEREZOSO
 // ==========================================
 
 let characterApp = null;
@@ -7,348 +8,279 @@ let personaje = null;
 
 let tiempo = 0;
 let posicionInicial = null;
+let rotacionInicial = null;
+let escalaInicial = null;
+
+// Control de carga para evitar modelos duplicados
+let solicitudPersonaje = 0;
 
 
 // ==========================================
 // CREAR ESCENA DEL PERSONAJE
 // ==========================================
 
-function crearPersonaje3D(
-    modelo = "models/perezoso.glb"
-) {
-
-    // ======================================
-    // CREAR PLAYCANVAS UNA SOLA VEZ
-    // ======================================
+function crearPersonaje3D(modelo = "models/perezoso.glb") {
 
     if (!characterApp) {
 
-        const canvas =
-            document.getElementById(
-                "characterCanvas"
-            );
+        const canvas = document.getElementById("characterCanvas");
 
-        characterApp =
-            new pc.Application(
-                canvas
-            );
+        if (!canvas) {
+            console.error("No se encontró characterCanvas");
+            return;
+        }
 
-        characterApp.setCanvasFillMode(
-            pc.FILLMODE_NONE
-        );
+        characterApp = new pc.Application(canvas, {
+            graphicsDeviceOptions: {
+                alpha: true
+            }
+        });
 
-        characterApp.setCanvasResolution(
-            pc.RESOLUTION_AUTO
-        );
-
-        characterApp.start();
-
+        characterApp.setCanvasFillMode(pc.FILLMODE_NONE);
+        characterApp.setCanvasResolution(pc.RESOLUTION_AUTO);
 
         // ==================================
         // LUZ AMBIENTAL
         // ==================================
 
         characterApp.scene.ambientLight =
-            new pc.Color(
-                1,
-                1,
-                1
-            );
-
+            new pc.Color(1, 1, 1);
 
         // ==================================
         // CÁMARA
         // ==================================
 
-        const camera =
-            new pc.Entity(
-                "CameraPersonaje"
-            );
+        const camera = new pc.Entity("CameraPersonaje");
 
-        camera.addComponent(
-            "camera",
-            {
-                clearColor:
-                    new pc.Color(
-                        0,
-                        0,
-                        0,
-                        0
-                    )
-            }
-        );
+        camera.addComponent("camera", {
+            clearColor: new pc.Color(0, 0, 0, 0)
+        });
 
-        camera.setPosition(
-            0,
-            1,
-            3
-        );
+        camera.setPosition(0, 1, 3);
 
-        characterApp.root.addChild(
-            camera
-        );
-
+        characterApp.root.addChild(camera);
 
         // ==================================
         // LUZ PRINCIPAL
         // ==================================
 
-        const light =
-            new pc.Entity(
-                "LuzPersonaje"
-            );
+        const light = new pc.Entity("LuzPersonaje");
 
-        light.addComponent(
-            "light",
-            {
-                type: "directional",
-                intensity: 3,
-                castShadows: true
-            }
-        );
+        light.addComponent("light", {
+            type: "directional",
+            intensity: 3,
+            castShadows: true
+        });
 
-        light.setEulerAngles(
-            45,
-            35,
-            0
-        );
+        light.setEulerAngles(45, 35, 0);
 
-        characterApp.root.addChild(
-            light
-        );
-
+        characterApp.root.addChild(light);
 
         // ==================================
         // LUZ DE RELLENO
         // ==================================
 
-        const fillLight =
-            new pc.Entity(
-                "LuzRellenoPersonaje"
-            );
+        const fillLight = new pc.Entity("LuzRellenoPersonaje");
 
-        fillLight.addComponent(
-            "light",
-            {
-                type: "omni",
-                intensity: 1.5,
-                range: 10
-            }
-        );
+        fillLight.addComponent("light", {
+            type: "omni",
+            intensity: 1.5,
+            range: 10
+        });
 
-        fillLight.setLocalPosition(
-            2,
-            2,
-            2
-        );
+        fillLight.setLocalPosition(2, 2, 2);
 
-        characterApp.root.addChild(
-            fillLight
-        );
-
+        characterApp.root.addChild(fillLight);
 
         // ==================================
         // ANIMACIÓN DEL PERSONAJE
         // ==================================
 
-        characterApp.on(
-            "update",
-            function(dt) {
+        characterApp.on("update", function(dt) {
 
-                if (
-                    !personaje ||
-                    !posicionInicial
-                ) {
-                    return;
-                }
-
-                tiempo += dt;
-
-                personaje.setLocalPosition(
-
-                    posicionInicial.x,
-
-                    posicionInicial.y +
-                    Math.sin(
-                        tiempo * 2
-                    ) * 0.03,
-
-                    posicionInicial.z
-
-                );
-
+            if (
+                !personaje ||
+                !posicionInicial ||
+                !rotacionInicial ||
+                !escalaInicial
+            ) {
+                return;
             }
-        );
 
+            tiempo += dt;
+
+            // Movimiento vertical suave
+            const movimientoVertical =
+                Math.sin(tiempo * 1.8) * 0.035;
+
+            personaje.setLocalPosition(
+                posicionInicial.x,
+                posicionInicial.y + movimientoVertical,
+                posicionInicial.z
+            );
+
+            // Balanceo lateral
+            const balanceo =
+                Math.sin(tiempo * 1.3) * 3;
+
+            // Giro suave
+            const giro =
+                Math.sin(tiempo * 0.8) * 5;
+
+            personaje.setLocalEulerAngles(
+                rotacionInicial.x,
+                rotacionInicial.y + giro,
+                rotacionInicial.z + balanceo
+            );
+
+            // Respiración
+            const respiracion =
+                1 + Math.sin(tiempo * 2.2) * 0.012;
+
+            personaje.setLocalScale(
+                escalaInicial.x * respiracion,
+                escalaInicial.y * respiracion,
+                escalaInicial.z * respiracion
+            );
+
+        });
+
+        characterApp.start();
     }
 
-
-    // ======================================
-    // CARGAR MODELO SOLICITADO
-    // ======================================
-
-    cargarModeloPersonaje(
-        modelo
-    );
-
+    // Cargar el modelo solicitado
+    cargarModeloPersonaje(modelo);
 }
 
 
 // ==========================================
-// CAMBIAR MODELO DEL PERSONAJE
+// CARGAR MONO O PEREZOSO
 // ==========================================
 
-function cargarModeloPersonaje(
-    modelo
-) {
+function cargarModeloPersonaje(modelo) {
 
     if (!characterApp) {
         return;
     }
 
+    // Identificador de esta solicitud
+    const solicitudActual = ++solicitudPersonaje;
 
-    // ======================================
-    // ELIMINAR PERSONAJE ANTERIOR
-    // ======================================
-
+    // Eliminar modelo anterior
     if (personaje) {
-
         personaje.destroy();
-
         personaje = null;
-
-        posicionInicial = null;
-
     }
 
-
-    // ======================================
-    // CARGAR NUEVO GLB
-    // ======================================
+    posicionInicial = null;
+    rotacionInicial = null;
+    escalaInicial = null;
+    tiempo = 0;
 
     characterApp.assets.loadFromUrl(
-
         modelo,
-
         "container",
-
         function(err, asset) {
 
-            if (err) {
+            // Ignorar cargas antiguas si cambió el guía
+            if (solicitudActual !== solicitudPersonaje) {
+                return;
+            }
 
+            if (err || !asset || !asset.resource) {
                 console.error(
                     "Error cargando personaje:",
                     modelo,
                     err
                 );
-
                 return;
             }
 
+            personaje = asset.resource.instantiateRenderEntity();
 
-            personaje =
-                asset.resource
-                    .instantiateRenderEntity();
-
-
-            characterApp.root.addChild(
-                personaje
-            );
-
+            characterApp.root.addChild(personaje);
 
             // ==================================
-            // BUSCAR COMPONENTE RENDER
+            // CENTRAR MODELO Y AJUSTAR CÁMARA
             // ==================================
 
-            const render =
-                personaje.findComponent(
-                    "render"
-                );
+            const render = personaje.findComponent("render");
 
+            if (render && render.meshInstances.length > 0) {
 
-            if (
-                render &&
-                render.meshInstances.length > 0
-            ) {
+                const aabb = render.meshInstances[0].aabb;
 
-                const aabb =
-                    render.meshInstances[0]
-                        .aabb;
+                const centro = aabb.center.clone();
 
-                const centro =
-                    aabb.center.clone();
+                const tamano = aabb.halfExtents.length() * 2;
 
-                const tamano =
-                    aabb.halfExtents
-                        .length() * 2;
+                // Identificar si el personaje es el mono
+                const esMono = modelo.toLowerCase().includes("mono.glb");
 
-
-                // ==================================
-                // CENTRAR MODELO
-                // ==================================
+                // Ajustar altura únicamente del mono
+                const ajusteAltura = esMono ? -tamano * 0.15 : 0;
 
                 personaje.setPosition(
-
                     -centro.x,
-                    -centro.y,
+                    -centro.y + ajusteAltura,
                     -centro.z
-
                 );
 
-
-                // ==================================
-                // OBTENER CÁMARA
-                // ==================================
-
                 const camera =
-                    characterApp.root.findByName(
-                        "CameraPersonaje"
-                    );
-
+                    characterApp.root.findByName("CameraPersonaje");
 
                 if (camera) {
 
+                    // Distancia de cámara
+                    const distanciaCamara = tamano * 3;
+
                     camera.setPosition(
-
                         0,
-
-                        tamano * 0.6,
-
-                        tamano * 2.2
-
+                        tamano * 0.45,
+                        distanciaCamara
                     );
 
+                    // Altura visual del personaje
                     camera.lookAt(
-
                         0,
-
-                        tamano * 0.3,
-
+                        tamano * 0.10,
                         0
-
                     );
-
                 }
-
             }
 
+            // ==================================
+            // ESCALA DEL PERSONAJE
+            // ==================================
 
-            // Guardar posición para
-            // la animación de respiración
+            // Cambia este valor para agrandarlo
+            const escalaPersonaje = 3;
 
-            posicionInicial =
-                personaje
-                    .getLocalPosition()
-                    .clone();
-
-
-            console.log(
-                "Personaje cargado:",
-                modelo
+            personaje.setLocalScale(
+                escalaPersonaje,
+                escalaPersonaje,
+                escalaPersonaje
             );
 
+            // ==================================
+            // GUARDAR VALORES PARA ANIMACIÓN
+            // ==================================
+
+            posicionInicial =
+                personaje.getLocalPosition().clone();
+
+            rotacionInicial =
+                personaje.getLocalEulerAngles().clone();
+
+            escalaInicial =
+                personaje.getLocalScale().clone();
+
+            tiempo = 0;
+
+            console.log(
+                "Personaje cargado correctamente:",
+                modelo
+            );
         }
-
     );
-
 }

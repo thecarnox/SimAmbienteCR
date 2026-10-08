@@ -90,13 +90,25 @@ menuToggleBtn.addEventListener(
 
 // Reanudar
 resumeBtn.addEventListener(
-    'click',
+    "click",
     () => {
 
-        pauseMenu.style.display = 'none';
+        pauseMenu.style.display =
+            "none";
 
-        // Continuar música
         bgSound.play();
+
+
+        // Reanudar Limón
+        if (
+            typeof actividadLimonPausada !==
+            "undefined"
+        ) {
+
+            actividadLimonPausada =
+                false;
+
+        }
 
     }
 );

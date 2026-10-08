@@ -92,10 +92,6 @@
 
         <div id="characterContainer">
 
-            <!-- IMPORTANTE:
-                 Se mantiene porque personaje3D.js
-                 utiliza este canvas.
-            -->
 
             <canvas id="characterCanvas"></canvas>
 
@@ -321,44 +317,9 @@
 
         <button id="menuToggleBtn">
 
-            ☰
+            ⚙️
 
         </button>
-
-
-        <!-- ======================================
-             MENÚ DE PAUSA
-        ======================================= -->
-
-        <div id="pauseMenu">
-
-            <div id="pauseContent">
-
-                <h2>
-                    ⚙️ Menú
-                </h2>
-
-                <button id="resumeBtn">
-
-                    ▶ Reanudar
-
-                </button>
-
-                <button id="optionsBtn">
-
-                    ⚙️ Opciones
-
-                </button>
-
-                <button id="mainMenuBtn">
-
-                    🏠 Menú Principal
-
-                </button>
-
-            </div>
-
-        </div>
 
 
 
@@ -439,7 +400,7 @@
         <div id="encabezadoLimon">
 
             <h2>
-                🌱 Actividad 1
+                Actividad 1
             </h2>
 
             <div id="informacionLimon">
@@ -466,9 +427,37 @@
         ======================================= -->
 
         <button id="menuPausaLimon">
-            ☰
+            ⚙️
         </button>
 
+        <!-- CONTENEDOR FAVORABLE -->
+        <div
+            id="contenedorFavorableLimon"
+            class="contenedorElementosLimon">
+
+            <h3>FAVORABLE</h3>
+
+            <canvas
+                id="canvasFavorableLimon"
+                class="canvasContenedorLimon">
+            </canvas>
+
+        </div>
+
+
+        <!-- CONTENEDOR DESFAVORABLE -->
+        <div
+            id="contenedorDesfavorableLimon"
+            class="contenedorElementosLimon">
+
+            <h3>DESFAVORABLE</h3>
+
+            <canvas
+                id="canvasDesfavorableLimon"
+                class="canvasContenedorLimon">
+            </canvas>
+
+        </div>
 
         <!-- ======================================
             ÁREA DEL ELEMENTO 3D
@@ -477,10 +466,6 @@
         <div id="areaElementoLimon">
 
             <canvas id="limonCanvas"></canvas>
-
-            <div id="nombreElementoLimon">
-                Elemento ambiental
-            </div>
 
         </div>
 
@@ -495,7 +480,7 @@
                 id="favorableLimon"
                 class="botonClasificacionLimon">
 
-                🌱 FAVORABLE
+                FAVORABLE
 
             </button>
 
@@ -503,7 +488,7 @@
                 id="desfavorableLimon"
                 class="botonClasificacionLimon">
 
-                ⚠️ DESFAVORABLE
+                DESFAVORABLE
 
             </button>
 
@@ -634,6 +619,39 @@
     </div>
 
 
+    <!-- ======================================
+        MENÚ DE PAUSA
+    ======================================= -->
+
+    <div id="pauseMenu">
+
+        <div id="pauseContent">
+
+             <h2>
+                  ⚙️ Menú
+            </h2>
+
+            <button id="resumeBtn">
+
+                ▶ Reanudar
+
+             </button>
+
+            <button id="optionsBtn">
+
+                ⚙️ Opciones
+
+            </button>
+
+            <button id="mainMenuBtn">
+
+                🏠 Menú Principal
+
+            </button>
+
+        </div>
+
+    </div>
 
     <!-- ==========================================
          AUDIO
