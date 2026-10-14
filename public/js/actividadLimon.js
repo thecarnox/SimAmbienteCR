@@ -21,6 +21,84 @@ let actividadLimonActiva = false;
 
 let actividadLimonPausada = false;
 
+
+/**
+ * Guarda el resultado de la actividad de Limón.
+ * Utiliza la ruta POST /progreso/guardar.
+ */
+
+async function guardarProgresoLimon(puntos, actividadFinalizada) {
+
+    const jugadorId = Number(
+        sessionStorage.getItem("jugadorId")
+    );
+
+    if (!Number.isSafeInteger(jugadorId) || jugadorId <= 0) {
+        console.warn(
+            "No se pudo guardar Limón: no hay jugador identificado."
+        );
+
+        return false;
+    }
+
+    // La actividad solamente se considera completada
+    // si respondió los 10 elementos y obtuvo
+    // al menos 10 puntos.
+
+    const completada =
+        actividadFinalizada && puntos >= 10;
+
+    const datos = {
+        jugador_id: jugadorId,
+        actividad_id: 1,
+        puntos: puntos,
+        estado: completada ? "completada" : "pendiente",
+        actividad_finalizada: actividadFinalizada
+    };
+
+    try {
+
+        const respuesta = await fetch("/progreso/guardar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(datos)
+        });
+
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok) {
+            throw new Error(
+                resultado.mensaje ||
+                `Error HTTP ${respuesta.status}`
+            );
+        }
+
+        if (typeof cargarProgresoJugador === "function") {
+            await cargarProgresoJugador(jugadorId);
+        }
+
+        console.log(
+            "Progreso de Limón guardado:",
+            resultado
+        );
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "No se pudo guardar el progreso de Limón:",
+            error
+        );
+
+        return false;
+    }
+}
+
+
+
 // ==========================================
 // SONIDOS DE RESPUESTAS - LIMÓN
 // ==========================================
@@ -47,6 +125,49 @@ function reproducirSonidoRespuestaLimon(correcta) {
         console.warn("No se pudo reproducir el sonido:", error);
     });
 }
+
+
+ // ==========================================
+ // SONIDOS DE RETROALIMENTACIÓN FINAL
+ // ==========================================
+
+ const retroBueno = new Audio("sounds/retroBueno.mp3");
+ const retroMedio = new Audio("sounds/retroMedio.mp3");
+ const retroMalo = new Audio("sounds/retroMalo.mp3");
+
+ const sonidosRetroLimon = {
+     BUENO: retroBueno,
+     MEDIO: retroMedio,
+     MALO: retroMalo
+ };
+
+ Object.values(sonidosRetroLimon).forEach(sonido => {
+     sonido.volume = 0.7;
+     sonido.preload = "auto";
+ });
+
+ function detenerRetroalimentacionLimon() {
+     Object.values(sonidosRetroLimon).forEach(sonido => {
+         sonido.pause();
+         sonido.currentTime = 0;
+     });
+ }
+
+ function reproducirRetroalimentacionLimon(nivel) {
+     detenerRetroalimentacionLimon();
+
+     const sonido = sonidosRetroLimon[nivel];
+
+     if (!sonido) return;
+
+     sonido.play().catch(error => {
+         console.warn(
+             "No se pudo reproducir la retroalimentación:",
+             error
+         );
+     });
+ }
+
 
 // ==========================================
 // DIÁLOGOS DE LIMÓN
@@ -190,6 +311,8 @@ let modelosDisponiblesLimon = [];
 // ==========================================
 
 function iniciarActividadLimon() {
+
+    detenerRetroalimentacionLimon();
 
     console.log(
         "Actividad 1 - Limón iniciada"  
@@ -606,8 +729,21 @@ function finalizarActividadLimon() {
     // DETENER ACTIVIDAD
     // ======================================
 
-    actividadLimonActiva =
-        false;
+    actividadLimonActiva = false;
+
+    // ======================================
+    // GUARDAR RESULTADO EN BASE DE DATOS
+    // ======================================
+
+    // Verificar si respondió los 10 elementos
+    const actividadCompletadaLimon =
+        elementosRespondidosLimon >= modelosLimon.length;
+
+    // Guardar puntuación real obtenida
+    guardarProgresoLimon(
+        puntosActividadLimon,
+        actividadCompletadaLimon
+    );
 
 
     // ======================================
@@ -630,8 +766,7 @@ function finalizarActividadLimon() {
     // ASEGURAR 00:00
     // ======================================
 
-    tiempoRestanteLimon =
-        0;
+    tiempoRestanteLimon = Math.max(0, tiempoRestanteLimon);
 
     actualizarTiempoLimon();
 
@@ -677,74 +812,115 @@ function finalizarActividadLimon() {
         puntosActividadLimon;
 
 
-   // ======================================
-// CALCULAR RESULTADO
-// ======================================
 
-let nivelFinal =
-    "MALO";
+    // ======================================
+    // CALCULAR RESULTADO Y RETROALIMENTACIÓN
+    // ======================================
 
+    let nivelFinal;
+    let mensajeFinal;
 
-let mensajeFinal =
-    "Se recomienda revisar las diferencias " +
-    "entre los elementos favorables y " +
-    "desfavorables para el suelo.";
+    if (puntosActividadLimon >= 20) {
 
+        nivelFinal = "BUENO";
 
-// 20 puntos
-if (
-    puntosActividadLimon >= 20
-) {
+        mensajeFinal =
+            "¡Excelente trabajo! Has identificado correctamente " +
+            "los elementos que favorecen o perjudican las " +
+            "condiciones del suelo. Tus decisiones demuestran " +
+            "que comprendes la importancia de conservar la " +
+            "vegetación, proteger los recursos naturales y " +
+            "prevenir la erosión. ¡Sigue aplicando estos " +
+            "conocimientos para cuidar los ecosistemas de Costa Rica!";
 
-    nivelFinal =
-        "BUENO";
+    } else if (puntosActividadLimon >= 10) {
 
-    mensajeFinal =
-        "Identificaste correctamente los elementos " +
-        "favorables y desfavorables para el suelo.";
+        nivelFinal = "MEDIO";
+
+        mensajeFinal =
+            "¡Buen esfuerzo! Has identificado correctamente " +
+            "varios elementos ambientales, aunque todavía " +
+            "puedes mejorar algunas clasificaciones. Recuerda " +
+            "que la vegetación contribuye a proteger y " +
+            "estabilizar el suelo, mientras que la acumulación " +
+            "de residuos y determinadas actividades humanas " +
+            "pueden afectar negativamente sus condiciones. " +
+            "¡Continúa fortaleciendo tus conocimientos!";
+
+    } else {
+
+        nivelFinal = "MALO";
+
+        mensajeFinal =
+            "¡Cada intento es una oportunidad para aprender! " +
+            "Necesitas reforzar la identificación de los " +
+            "elementos favorables y desfavorables para el suelo. " +
+            "Recuerda que las raíces de los árboles ayudan a " +
+            "mantenerlo estable y que los residuos pueden " +
+            "contaminarlo. Observa cuidadosamente los elementos " +
+            "antes de clasificarlos e intenta mejorar tu resultado.";
+    }
+
+    // ======================================
+    // MOSTRAR CALIFICACIÓN
+    // ======================================
+
+    const nivelElemento =
+        document.getElementById("nivelFinalLimon");
+
+    nivelElemento.textContent = nivelFinal;
+
+    nivelElemento.classList.remove(
+        "resultadoBuenoLimon",
+        "resultadoMedioLimon",
+        "resultadoMaloLimon"
+    );
+
+    const clasesResultado = {
+        BUENO: "resultadoBuenoLimon",
+        MEDIO: "resultadoMedioLimon",
+        MALO: "resultadoMaloLimon"
+    };
+
+    nivelElemento.classList.add(
+        clasesResultado[nivelFinal]
+    );
+
+    // ======================================
+    // VERIFICAR DESBLOQUEO DE GUANACASTE
+    // ======================================
+
+    const respondioTodos =
+        elementosRespondidosLimon >= modelosLimon.length;
+
+    const puedeAvanzar =
+        respondioTodos && puntosActividadLimon >= 10;
+
+    if (puedeAvanzar) {
+
+        mensajeFinal +=
+            " ¡Felicidades! Has completado satisfactoriamente " +
+            "la actividad de Limón y puedes avanzar a Guanacaste.";
+
+    } else {
+
+        mensajeFinal +=
+            " Para desbloquear Guanacaste, debes responder " +
+            "los 10 elementos y obtener al menos 10 puntos. " +
+            "¡Vuelve a intentarlo!";
+    }
+
+    document.getElementById(
+        "retroalimentacionFinalLimon"
+    ).textContent = mensajeFinal;
+
+    // ======================================
+    // REPRODUCIR SONIDO SEGÚN CALIFICACIÓN
+    // ======================================
+
+    reproducirRetroalimentacionLimon(nivelFinal);
 
 }
-
-// Entre 10 y 19
-else if (
-    puntosActividadLimon >= 10
-) {
-
-    nivelFinal =
-        "MEDIO";
-
-    mensajeFinal =
-        "Reconociste varios elementos correctamente, " +
-        "pero todavía puedes mejorar algunas clasificaciones.";
-
-}
-
-
-// ======================================
-// MOSTRAR RESULTADO
-// ======================================
-
-document.getElementById(
-    "puntosFinalesLimon"
-).textContent =
-    "Puntos obtenidos: " +
-    puntosActividadLimon;
-
-
-document.getElementById(
-    "nivelFinalLimon"
-).textContent =
-    "Resultado: " +
-    nivelFinal;
-
-
-document.getElementById(
-    "retroalimentacionFinalLimon"
-).textContent =
-    mensajeFinal;
-
-}
-
 // ==========================================
 // CONTINUAR DESPUÉS DEL RESULTADO
 // ==========================================
@@ -766,6 +942,9 @@ document.addEventListener(
         botonContinuar.addEventListener(
             "click",
             () => {
+
+                detenerRetroalimentacionLimon();
+
 
                 // Ocultar resultado
                 document.getElementById(

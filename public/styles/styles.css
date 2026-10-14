@@ -1,3 +1,114 @@
+
+/* ==========================================
+   FUENTES LOCALES - SIMAMBIENTECR
+========================================== */
+
+@font-face {
+    font-family: 'Fredoka';
+    src: url('../fonts/Fredoka-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Fredoka';
+    src: url('../fonts/Fredoka-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Nunito';
+    src: url('../fonts/Nunito-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ==========================================
+   RESET GENERAL
+========================================== */
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    background: black;
+
+    font-family: 'Nunito', 'Segoe UI', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================
+   TIPOGRAFÍA GENERAL
+========================================== */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Fredoka', 'Nunito', sans-serif;
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+/* Textos informativos */
+
+p,
+span,
+label,
+small,
+li {
+    font-family: 'Nunito', 'Segoe UI', sans-serif;
+}
+
+/* ==========================================
+   BOTONES Y FORMULARIOS
+========================================== */
+
+button,
+input,
+select,
+textarea {
+    font-family: 'Nunito', 'Segoe UI', sans-serif;
+}
+
+button {
+    font-weight: 700;
+}
+
+input,
+select,
+textarea {
+    font-size: 15px;
+}
+
+/* ==========================================
+   ACCESIBILIDAD
+========================================== */
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid #a5d66f;
+    outline-offset: 2px;
+}
+
+
 /* =========================
    RESET GENERAL
 ========================= */
@@ -13,97 +124,624 @@ html, body {
 
 }
 
-/* =========================
-   MENÚ PRINCIPAL
-========================= */
-#menu {
-    position: absolute;
-    width: 100%;
-    height: 100vh;
 
-    background: url('../img/fondo.jpg') no-repeat center center/cover;
+/* ==========================================
+   MENÚ PRINCIPAL - SIMAMBIENTECR
+========================================== */
+
+#menu {
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    min-height: 100vh;
 
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    text-align: center;
+
+    box-sizing: border-box;
+    padding: 40px 24px 25px;
+
+    background:
+        url('../img/fondo.jpg')
+        no-repeat center center / cover;
+
     color: white;
+    text-align: center;
+
+    overflow: hidden;
 }
 
-/* OVERLAY OSCURO */
+/* Sombra ligera para mejorar la lectura
+   sin ocultar la imagen del paisaje */
+
 #menu::before {
     content: "";
+
     position: absolute;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    top: 0;
-    left: 0;
-    z-index: 1;
+    inset: 0;
 
-    /* 🔥 evita bloquear clics */
+    background: linear-gradient(
+        180deg,
+        rgba(4, 24, 15, 0.42) 0%,
+        rgba(4, 24, 15, 0.08) 45%,
+        rgba(4, 24, 15, 0.42) 100%
+    );
+
     pointer-events: none;
+    z-index: 0;
 }
 
-/* CONTENIDO SOBRE EL OVERLAY */
-header, #menu-content, footer {
+/* Contenido sobre la imagen */
+
+#menu > header,
+#menu > #menu-content,
+#menu > footer {
     position: relative;
-    z-index: 2;
+    z-index: 1;
 }
 
-/* =========================
-   HEADER
-========================= */
-header {
-    margin-top: 40px;
+/* ==========================================
+   ENCABEZADO
+========================================== */
+
+#menu .menuHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: 100%;
+    max-width: 1050px;
+
+    margin-top: clamp(25px, 7vh, 90px);
 }
 
-header h1 {
-    font-size: 52px;
+.menuEtiqueta {
+    padding: 9px 22px;
+
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 30px;
+
+    background: rgba(9, 46, 28, 0.35);
+
+    color: #f0f9dd;
+
+    font-family: 'Nunito', sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 3px;
+
+    backdrop-filter: blur(4px);
+}
+
+
+/* ==========================================
+   TÍTULO PRINCIPAL - EFECTO 3D
+========================================== */
+
+#menu .menuTitulo {
+    margin: 15px 0 20px;
+
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(65px, 10.5vw, 155px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -3px;
+
+    color: #ffffff;
+
+    /* Profundidad 3D mediante sombras */
+    text-shadow:
+        1px 1px 0 #2e6943,
+        2px 2px 0 #28603d,
+        3px 3px 0 #235737,
+        4px 4px 0 #1e4e31,
+        5px 5px 0 #19452b,
+        6px 6px 0 #143c25,
+        7px 7px 0 #10341f,
+        8px 8px 0 #0b2b19,
+        11px 14px 12px rgba(0, 0, 0, 0.6),
+        18px 22px 30px rgba(0, 0, 0, 0.35);
+
+    transform: perspective(900px) rotateX(7deg);
+
+    animation: aparecerTitulo3D 1s ease-out both;
+
+    transition:
+        transform 0.4s ease,
+        filter 0.4s ease;
+}
+
+/* Resaltar la palabra Ambiente */
+
+#menu .menuTitulo span {
+    color: #c6f18c;
+
+    text-shadow:
+        1px 1px 0 #4e8c3b,
+        2px 2px 0 #437d33,
+        3px 3px 0 #386e2b,
+        4px 4px 0 #2d6024,
+        5px 5px 0 #24521e,
+        6px 6px 0 #1c4518,
+        7px 7px 0 #153812,
+        8px 8px 0 #102c0e,
+        12px 15px 15px rgba(0, 0, 0, 0.55),
+        0 0 35px rgba(170, 235, 105, 0.22);
+}
+
+/* Efecto al pasar el cursor */
+
+#menu .menuTitulo:hover {
+    transform:
+        perspective(900px)
+        rotateX(0deg)
+        translateY(-5px);
+
+    filter: brightness(1.12);
+}
+
+/* ==========================================
+   SUBTÍTULO
+========================================== */
+
+#menu .menuDescripcion {
+    max-width: 850px;
     margin: 0;
-    text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
+
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(19px, 2.2vw, 27px);
+    font-weight: 800;
+    line-height: 1.5;
+
+    color: #ffffff;
+
+    text-shadow:
+        0 2px 5px rgba(0, 0, 0, 0.85),
+        0 5px 15px rgba(0, 0, 0, 0.55);
 }
 
-header p {
-    font-size: 20px;
-    text-shadow: 1px 1px 8px rgba(0,0,0,0.7);
+/* ==========================================
+   ANIMACIÓN DEL TÍTULO
+========================================== */
+
+@keyframes aparecerTitulo3D {
+    from {
+        opacity: 0;
+        transform:
+            perspective(900px)
+            rotateX(20deg)
+            translateY(-35px)
+            scale(0.92);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            perspective(900px)
+            rotateX(7deg)
+            translateY(0)
+            scale(1);
+    }
 }
 
-/* =========================
-   BOTONES
-========================= */
+/* ==========================================
+   AJUSTES RESPONSIVOS
+========================================== */
+
+@media (max-width: 900px) {
+    #menu .menuTitulo {
+        font-size: clamp(48px, 9vw, 90px);
+        letter-spacing: -2px;
+    }
+}
+
+@media (max-width: 600px) {
+    #menu .menuTitulo {
+        font-size: clamp(38px, 9vw, 60px);
+        letter-spacing: -1px;
+        overflow-wrap: anywhere;
+    }
+
+    #menu .menuDescripcion {
+        font-size: 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #menu .menuTitulo {
+        animation: none;
+    }
+}
+
+
+/* Separador decorativo */
+
+.menuSeparador {
+    width: 115px;
+    height: 5px;
+
+    margin: 17px 0 22px;
+
+    border-radius: 10px;
+
+    background: linear-gradient(
+        90deg,
+        #b7e67e,
+        #f2d88a,
+        #b7e67e
+    );
+
+    box-shadow: 0 0 15px rgba(190, 235, 132, 0.4);
+}
+
+/* ==========================================
+   DESCRIPCIÓN
+========================================== */
+
+#menu .menuDescripcion {
+    max-width: 650px;
+    margin: 0;
+
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(16px, 1.8vw, 21px);
+    font-weight: 700;
+    line-height: 1.65;
+
+    color: #f5f9ed;
+
+    text-shadow:
+        0 2px 7px rgba(0, 0, 0, 0.85);
+}
+
+/* ==========================================
+   BOTONES DEL MENÚ
+========================================== */
+
 #menu-content {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    gap: 16px;
+
+    width: 100%;
+    max-width: 360px;
+
+    margin: auto 0;
+    padding: 35px 0 20px;
+
+    box-sizing: border-box;
+}
+
+#menu-content .btn {
+    width: 100%;
+    min-height: 58px;
+
+    padding: 15px 25px;
+
+    border-radius: 14px;
+
+    font-family: 'Nunito', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+/* Botón principal */
+
+#menu-content .btnIniciar {
+    border: 2px solid #d2f0a6;
+
+    background: linear-gradient(
+        135deg,
+        #a8e078,
+        #5fae59
+    );
+
+    color: #10301e;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+#menu-content .btnIniciar:hover {
+    transform: translateY(-4px) scale(1.02);
+
+    background: linear-gradient(
+        135deg,
+        #c5ef95,
+        #79c86e
+    );
+
+    box-shadow:
+        0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Botón secundario */
+
+#menu-content .btnPantallaCompleta {
+    border: 1px solid rgba(255, 255, 255, 0.65);
+
+    background: rgba(7, 36, 22, 0.65);
+
+    color: #ffffff;
+
+    backdrop-filter: blur(6px);
+}
+
+#menu-content .btnPantallaCompleta:hover {
+    transform: translateY(-3px);
+
+    background: rgba(20, 70, 40, 0.85);
+
+    border-color: #c5ef95;
+}
+
+
+
+/* ==========================================
+   PIE DE PÁGINA
+========================================== */
+
+#menu .menuFooter {
+    width: 100%;
+    margin: 0;
+
+    text-align: center;
+}
+
+#menu .menuFooter p {
+    margin: 3px 0;
+
+    font-family: 'Nunito', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+
+    color: rgba(255, 255, 255, 0.85);
+
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+}
+
+/* ==========================================
+   ANIMACIÓN DEL TÍTULO
+========================================== */
+
+@keyframes aparecerTitulo {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 600px) {
+
+    #menu {
+        padding: 25px 15px 18px;
+    }
+
+    #menu .menuHeader {
+        margin-top: 35px;
+    }
+
+    .menuEtiqueta {
+        font-size: 10px;
+        letter-spacing: 1.5px;
+        padding: 8px 14px;
+    }
+
+    #menu .menuTitulo {
+        font-size: clamp(42px, 11vw, 65px);
+        letter-spacing: -1px;
+    }
+
+    #menu .menuDescripcion {
+        font-size: 15px;
+    }
+
+    #menu-content {
+        max-width: 300px;
+        padding: 20px 0;
+    }
+
+    #menu-content .btn {
+        min-height: 52px;
+        font-size: 16px;
+    }
+}
+
+@media (max-height: 650px) {
+
+    #menu {
+        overflow-y: auto;
+    }
+
+    #menu .menuHeader {
+        margin-top: 10px;
+    }
+
+    #menu .menuTitulo {
+        font-size: clamp(42px, 7vw, 75px);
+    }
+
+    #menu-content {
+        padding: 15px 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    #menu .menuTitulo {
+        animation: none;
+    }
+
+    #menu-content .btn {
+        transition: none;
+    }
+}
+
+
+/* ==========================================
+   BOTONES 3D - MENÚ PRINCIPAL
+   MISMO ESTILO DEL MENÚ DE PAUSA
+========================================== */
+
+#menu #menu-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: 100%;
+    max-width: 360px;
+
     gap: 20px;
 }
 
-.btn {
-    padding: 15px 30px;
-    font-size: 18px;
-    border: none;
+/* ==========================================
+   ESTILO GENERAL 3D
+========================================== */
+
+#menu #menu-content .pauseButton {
+    display: block;
+
+    width: 100%;
+    min-height: 60px;
+
+    margin: 0;
+    padding: 14px 24px;
+
+    box-sizing: border-box;
+
+    border: 2px solid #d0efa9;
+    border-radius: 14px;
+
+    background: linear-gradient(
+        180deg,
+        #c6f18c 0%,
+        #91d36b 55%,
+        #65af53 100%
+    );
+
+    color: #173d26;
+
+    font-family: 'Fredoka', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+
+    box-shadow:
+        0 6px 0 #326d38,
+        0 11px 17px rgba(0, 0, 0, 0.35);
+
     cursor: pointer;
-    border-radius: 10px;
 
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-
-    transition: all 0.3s ease;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
 }
 
-.btn:hover {
-    background-color: rgba(0, 0, 0, 0.9);
-    transform: scale(1.05);
+/* ==========================================
+   EFECTO HOVER
+========================================== */
+
+#menu #menu-content .pauseButton:hover {
+    transform: translateY(-4px);
+
+    filter: brightness(1.08);
+
+    box-shadow:
+        0 10px 0 #326d38,
+        0 16px 22px rgba(0, 0, 0, 0.4);
 }
 
-/* =========================
-   FOOTER
-========================= */
-footer {
-    margin-bottom: 20px;
-    font-size: 14px;
+/* ==========================================
+   EFECTO AL PRESIONAR
+========================================== */
+
+#menu #menu-content .pauseButton:active {
+    transform: translateY(5px);
+
+    box-shadow:
+        0 1px 0 #326d38,
+        0 3px 7px rgba(0, 0, 0, 0.3);
 }
+
+/* ==========================================
+   BOTÓN SECUNDARIO
+   PANTALLA COMPLETA
+========================================== */
+
+#menu #menu-content .pauseSecondary {
+    background: linear-gradient(
+        180deg,
+        #8ac5a3,
+        #4d9875
+    );
+
+    color: #103c2b;
+
+    border-color: #b9e6ca;
+
+    box-shadow:
+        0 6px 0 #2b6549,
+        0 11px 17px rgba(0, 0, 0, 0.35);
+}
+
+#menu #menu-content .pauseSecondary:hover {
+    box-shadow:
+        0 10px 0 #2b6549,
+        0 16px 22px rgba(0, 0, 0, 0.4);
+}
+
+#menu #menu-content .pauseSecondary:active {
+    box-shadow:
+        0 1px 0 #2b6549,
+        0 3px 7px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 600px) {
+
+    #menu #menu-content {
+        max-width: 300px;
+        gap: 17px;
+    }
+
+    #menu #menu-content .pauseButton {
+        min-height: 55px;
+        font-size: 19px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    #menu #menu-content .pauseButton {
+        transition: none;
+    }
+}
+
+
 
 /* =========================
    CANVAS (JUEGO)
@@ -250,58 +888,1154 @@ footer {
 }
 
 
-/* =========================
-   MENÚ PAUSA
-========================= */
+
+/* ==========================================
+   MENÚ DE PAUSA - SIMAMBIENTECR
+========================================== */
+
 #pauseMenu {
     display: none;
 
     position: fixed;
-    top: 0;
-    left: 0;
+    inset: 0;
 
     width: 100%;
     height: 100vh;
 
-    background: rgba(0,0,0,0.85);
+    background: rgba(5, 24, 15, 0.45);
 
-    z-index: 9999;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+
+    z-index: 200000;
 
     justify-content: center;
     align-items: center;
+
+    box-sizing: border-box;
+    padding: 20px;
 }
 
+/* ==========================================
+   VENTANA DEL MENÚ
+========================================== */
+
 #pauseContent {
-    width: 80%;
-    max-width: 700px;
+    position: relative;
 
-    padding: 40px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
 
-    background: rgba(30,30,30,0.95);
+    padding: 42px 40px 32px;
 
-    border-radius: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
 
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    align-items: center;
+    gap: 0;
 
     text-align: center;
+
+    background: linear-gradient(
+        145deg,
+        #245c3d 0%,
+        #133c2a 55%,
+        #09291e 100%
+    );
+
+    border: 2px solid #a9db83;
+    border-radius: 25px;
+
+    box-shadow:
+        0 8px 0 #08281a,
+        0 16px 0 #061c13,
+        0 25px 45px rgba(0, 0, 0, 0.5),
+        inset 0 2px 0 rgba(255, 255, 255, 0.15);
+
+    color: #ffffff;
+
+    animation: pauseAppear 0.4s ease-out both;
 }
 
-#pauseContent h2 {
-    margin-bottom: 20px;
+/* ==========================================
+   ENCABEZADO
+========================================== */
+
+.pauseHeader {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-#pauseContent button {
-    padding: 15px;
+/* ==========================================
+   TÍTULO 3D
+========================================== */
 
-    font-size: 18px;
+#pauseContent .pauseTitle {
+    margin: 0 0 18px;
 
-    border: none;
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(42px, 5vw, 65px);
+    font-weight: 700;
+    line-height: 1.2;
+
+    color: #c6f18c;
+
+    text-shadow:
+        1px 1px 0 #4d893b,
+        2px 2px 0 #427934,
+        3px 3px 0 #37692c,
+        4px 4px 0 #2c5924,
+        5px 5px 0 #21491c,
+        6px 6px 0 #173a16,
+        9px 12px 12px rgba(0, 0, 0, 0.55);
+
+    transform: perspective(800px) rotateX(6deg);
+}
+
+/* Separador decorativo */
+
+.pauseSeparator {
+    width: 110px;
+    height: 5px;
+
+    margin: 4px 0 20px;
+
     border-radius: 10px;
+
+    background: linear-gradient(
+        90deg,
+        #a8db75,
+        #e8e69d,
+        #a8db75
+    );
+
+    box-shadow: 0 0 15px rgba(198, 241, 140, 0.3);
+}
+
+/* Subtítulo */
+
+.pauseSubtitle {
+    max-width: 420px;
+    margin: 0 0 32px;
+
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.5;
+
+    color: #e5f3db;
+}
+
+/* ==========================================
+   CONTENEDOR DE BOTONES
+========================================== */
+
+.pauseButtons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+
+    width: 100%;
+    max-width: 360px;
+}
+
+/* ==========================================
+   BOTONES CON EFECTO 3D
+========================================== */
+
+#pauseContent .pauseButton {
+    display: block;
+
+    width: 100%;
+    min-height: 60px;
+
+    margin: 0;
+    padding: 14px 24px;
+
+    box-sizing: border-box;
+
+    border: 2px solid #d0efa9;
+    border-radius: 14px;
+
+    background: linear-gradient(
+        180deg,
+        #c6f18c 0%,
+        #91d36b 55%,
+        #65af53 100%
+    );
+
+    color: #173d26;
+
+    font-family: 'Fredoka', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+
+    box-shadow:
+        0 6px 0 #326d38,
+        0 11px 17px rgba(0, 0, 0, 0.35);
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+}
+
+/* Efecto al pasar el cursor */
+
+#pauseContent .pauseButton:hover {
+    transform: translateY(-4px);
+    filter: brightness(1.08);
+
+    box-shadow:
+        0 10px 0 #326d38,
+        0 16px 22px rgba(0, 0, 0, 0.4);
+}
+
+/* Efecto al presionar */
+
+#pauseContent .pauseButton:active {
+    transform: translateY(5px);
+
+    box-shadow:
+        0 1px 0 #326d38,
+        0 3px 7px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================
+   BOTÓN OPCIONES
+========================================== */
+
+#pauseContent .pauseSecondary {
+    background: linear-gradient(
+        180deg,
+        #8ac5a3,
+        #4d9875
+    );
+
+    color: #103c2b;
+
+    border-color: #b9e6ca;
+
+    box-shadow:
+        0 6px 0 #2b6549,
+        0 11px 17px rgba(0, 0, 0, 0.35);
+}
+
+#pauseContent .pauseSecondary:hover {
+    box-shadow:
+        0 10px 0 #2b6549,
+        0 16px 22px rgba(0, 0, 0, 0.4);
+}
+
+#pauseContent .pauseSecondary:active {
+    box-shadow:
+        0 1px 0 #2b6549,
+        0 3px 7px rgba(0, 0, 0, 0.3);
+}
+
+
+
+/* ==========================================
+   MENÚ DE OPCIONES - SIMAMBIENTECR
+========================================== */
+
+/* Ocultar correctamente las vistas inactivas */
+
+#pauseContent [hidden] {
+    display: none !important;
+}
+
+#pauseMainView,
+#gameOptionsView {
+    width: 100%;
+}
+
+/* Contenedor de configuraciones */
+
+.gameOptionsList {
+    display: flex;
+    flex-direction: column;
+
+    gap: 18px;
+    margin: 25px 0;
+}
+
+/* Tarjetas de configuración */
+
+.gameOptionCard {
+    padding: 20px;
+
+    border: 2px solid #8fcb79;
+    border-radius: 16px;
+
+    background: rgba(11, 47, 30, 0.75);
+
+    box-shadow:
+        0 5px 0 #08291a,
+        0 10px 20px rgba(0, 0, 0, 0.25);
+}
+
+.gameOptionHeading h3 {
+    margin: 0 0 6px;
+
+    font-family: 'Fredoka', sans-serif;
+    font-size: 24px;
+
+    color: #c6f18c;
+}
+
+.gameOptionHeading p {
+    margin: 0 0 18px;
+
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+
+    color: #e0efdb;
+}
+
+/* Controles de volumen y accesibilidad */
+
+.gameOptionControls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+}
+
+/* Botones 3D pequeños */
+
+#pauseContent .optionControlBtn {
+    flex: 0 0 50px;
+
+    width: 50px;
+    height: 46px;
+
+    padding: 0;
+
+    border: 2px solid #d0efa9;
+    border-radius: 12px;
+
+    background: linear-gradient(
+        180deg,
+        #c6f18c,
+        #91d36b,
+        #65af53
+    );
+
+    color: #173d26;
+
+    font-family: 'Fredoka', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+
+    box-shadow:
+        0 5px 0 #326d38,
+        0 8px 12px rgba(0, 0, 0, 0.3);
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+#pauseContent .optionControlBtn:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 7px 0 #326d38,
+        0 10px 15px rgba(0, 0, 0, 0.35);
+}
+
+#pauseContent .optionControlBtn:active {
+    transform: translateY(4px);
+
+    box-shadow:
+        0 1px 0 #326d38;
+}
+
+/* Barras deslizantes */
+
+.gameOptionControls input[type="range"] {
+    flex: 1;
+
+    width: 100%;
+    min-width: 0;
+
+    accent-color: #a8e578;
 
     cursor: pointer;
 }
+
+/* Porcentaje */
+
+.optionValue {
+    flex: 0 0 52px;
+
+    font-family: 'Fredoka', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+
+    color: #c6f18c;
+    text-align: right;
+}
+
+/* Botones secundarios */
+
+#pauseContent .optionTextBtn {
+    margin-top: 18px;
+    padding: 10px 18px;
+
+    border: 1px solid #8fcb79;
+    border-radius: 10px;
+
+    background: rgba(114, 174, 91, 0.18);
+
+    color: #e5f3db;
+
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: background 0.2s ease;
+}
+
+#pauseContent .optionTextBtn:hover {
+    background: rgba(114, 174, 91, 0.35);
+}
+
+.optionsFooterButtons {
+    margin-top: 25px;
+}
+
+/* Accesibilidad: foco visible */
+
+#pauseContent button:focus-visible,
+#pauseContent input:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 4px;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 600px) {
+
+    #pauseContent {
+        max-height: 90dvh;
+        overflow-y: auto;
+    }
+
+    .gameOptionCard {
+        padding: 14px;
+    }
+
+    .gameOptionControls {
+        gap: 7px;
+    }
+
+    #pauseContent .optionControlBtn {
+        flex-basis: 40px;
+        width: 40px;
+        height: 42px;
+        font-size: 18px;
+    }
+
+    .optionValue {
+        flex-basis: 43px;
+        font-size: 15px;
+    }
+}
+
+
+
+/* ==========================================
+   BOTÓN MENÚ PRINCIPAL
+========================================== */
+
+#pauseContent .pauseExit {
+    background: linear-gradient(
+        180deg,
+        #386c4c,
+        #1b4731
+    );
+
+    color: #ffffff;
+
+    border-color: #81b58c;
+
+    text-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
+
+    box-shadow:
+        0 6px 0 #102b1c,
+        0 11px 17px rgba(0, 0, 0, 0.35);
+}
+
+#pauseContent .pauseExit:hover {
+    box-shadow:
+        0 10px 0 #102b1c,
+        0 16px 22px rgba(0, 0, 0, 0.4);
+}
+
+#pauseContent .pauseExit:active {
+    box-shadow:
+        0 1px 0 #102b1c,
+        0 3px 7px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================
+   PIE DEL MENÚ
+========================================== */
+
+.pauseFooter {
+    margin-top: 35px;
+
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    color: rgba(226, 245, 213, 0.7);
+}
+
+/* ==========================================
+   ANIMACIÓN DE ENTRADA
+========================================== */
+
+@keyframes pauseAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 600px) {
+
+    #pauseContent {
+        padding: 32px 22px 28px;
+        border-radius: 18px;
+    }
+
+    #pauseContent .pauseTitle {
+        font-size: 42px;
+    }
+
+    .pauseSubtitle {
+        font-size: 14px;
+    }
+
+    #pauseContent .pauseButton {
+        min-height: 55px;
+        font-size: 19px;
+    }
+
+    .pauseButtons {
+        gap: 17px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    #pauseContent {
+        animation: none;
+    }
+
+    #pauseContent .pauseButton {
+        transition: none;
+    }
+}
+
+
+
+
+
+/* ==========================================
+   SIMAMBIENTECR - MODAL DEL JUGADOR
+========================================== */
+
+#playerModal {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+    box-sizing: border-box;
+
+    /* Sin fondo oscuro */
+    background: transparent;
+
+    /* Sin efecto de desenfoque */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+/* ==========================================
+   CONTENEDOR PRINCIPAL
+========================================== */
+
+#playerModal .playerModalContent {
+    position: relative;
+
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    box-sizing: border-box;
+
+    padding: 36px;
+
+    border: 1px solid rgba(166, 214, 153, 0.24);
+    border-radius: 26px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #183d2d 0%,
+            #102d22 55%,
+            #092118 100%
+        );
+
+    box-shadow:
+        0 28px 80px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+    color: #f2f8ed;
+
+    font-family: inherit;
+
+    animation: playerModalAppear 0.4s ease-out;
+}
+
+/* Decoración superior */
+
+.playerModalDecoration {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 5px;
+
+    background: linear-gradient(
+        90deg,
+        #4caf50,
+        #b7dc78,
+        #e4c36d,
+        #4caf50
+    );
+}
+
+/* ==========================================
+   ENCABEZADOS
+========================================== */
+
+.playerModalHeader,
+.playerFormHeader {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.playerEyebrow {
+    display: inline-block;
+
+    margin-bottom: 10px;
+
+    color: #d9bf75;
+
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+}
+
+#playerModal h2 {
+    margin: 0 0 12px;
+
+    color: #f4f8e9;
+
+    font-size: clamp(24px, 4vw, 31px);
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.playerModalHeader p,
+.playerFormHeader p {
+    max-width: 410px;
+    margin: 0 auto;
+
+    color: #b8d0be;
+
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+/* ==========================================
+   TARJETAS DE SELECCIÓN
+========================================== */
+
+.playerOptions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin: 28px 0 18px;
+}
+
+#playerModal .playerOptionBtn {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    min-width: 0;
+    min-height: 220px;
+
+    padding: 23px 14px 20px;
+
+    border: 1px solid rgba(142, 195, 137, 0.27);
+    border-radius: 20px;
+
+    background: linear-gradient(
+        160deg,
+        rgba(52, 103, 65, 0.58),
+        rgba(18, 53, 37, 0.8)
+    );
+
+    color: #ffffff;
+    text-align: center;
+    cursor: pointer;
+
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+#playerModal .playerOptionBtn:hover {
+    transform: translateY(-6px);
+
+    border-color: #c4dc8b;
+
+    background: linear-gradient(
+        160deg,
+        rgba(73, 135, 77, 0.75),
+        rgba(27, 74, 49, 0.95)
+    );
+
+    box-shadow:
+        0 14px 28px rgba(0, 0, 0, 0.24),
+        0 0 20px rgba(135, 196, 105, 0.12);
+}
+
+#playerModal .playerOptionBtn:active {
+    transform: translateY(-2px) scale(0.98);
+}
+
+/* ==========================================
+   ICONOS DE JUGADOR
+========================================== */
+
+#playerModal .playerOptionIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 94px;
+    height: 94px;
+
+    margin-bottom: 18px;
+
+    border-radius: 24px;
+
+    background: radial-gradient(
+        circle,
+        rgba(170, 216, 131, 0.22),
+        rgba(52, 112, 64, 0.12)
+    );
+
+    border: 1px solid rgba(191, 222, 151, 0.2);
+
+    transition: transform 0.25s ease;
+}
+
+#playerModal .playerOptionBtn:hover .playerOptionIcon {
+    transform: scale(1.08);
+}
+
+#playerModal .playerOptionIcon img {
+    display: block;
+    width: 76px;
+    height: 76px;
+    object-fit: contain;
+}
+
+/* ==========================================
+   TEXTO DE LAS TARJETAS
+========================================== */
+
+.playerOptionTitle {
+    display: block;
+
+    color: #f3f9e9;
+
+    font-size: 17px;
+    font-weight: 800;
+}
+
+#playerModal .playerOptionBtn small {
+    display: block;
+
+    margin-top: 9px;
+
+    color: #b8d2b9;
+
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.playerOptionArrow {
+    margin-top: auto;
+    padding-top: 15px;
+
+    color: #e4cb7e;
+    font-size: 23px;
+    font-weight: bold;
+
+    transition: transform 0.25s ease;
+}
+
+.playerOptionBtn:hover .playerOptionArrow {
+    transform: translateX(5px);
+}
+
+/* ==========================================
+   FORMULARIOS
+========================================== */
+
+#newPlayerForm,
+#existingPlayerForm {
+    width: 100%;
+    box-sizing: border-box;
+
+    animation: playerFormAppear 0.3s ease;
+}
+
+.playerFormIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 88px;
+    height: 88px;
+
+    margin: 0 auto 18px;
+
+    border-radius: 24px;
+
+    background: rgba(107, 170, 97, 0.18);
+    border: 1px solid rgba(185, 224, 152, 0.2);
+}
+
+.playerFormIcon img {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+}
+
+.playerField {
+    margin-bottom: 19px;
+}
+
+#playerModal .playerField label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #dbead5;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+#playerModal .playerField input,
+#playerModal .playerField select {
+    display: block;
+
+    width: 100%;
+    min-height: 49px;
+
+    box-sizing: border-box;
+
+    padding: 12px 15px;
+
+    border: 1px solid #42664e;
+    border-radius: 12px;
+
+    outline: none;
+
+    background: #f4f8f1;
+    color: #1a3525;
+
+    font-size: 14px;
+    font-family: inherit;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#playerModal .playerField input::placeholder {
+    color: #778c7d;
+}
+
+#playerModal .playerField input:focus,
+#playerModal .playerField select:focus {
+    border-color: #8fca78;
+
+    box-shadow:
+        0 0 0 4px rgba(143, 202, 120, 0.18);
+}
+
+/* ==========================================
+   BOTÓN PRINCIPAL
+========================================== */
+
+#playerModal .playerSubmitBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    width: 100%;
+    min-height: 52px;
+
+    margin-top: 25px;
+    padding: 13px 18px;
+
+    border: none;
+    border-radius: 13px;
+
+    background: linear-gradient(
+        135deg,
+        #8ac765,
+        #4b9c56
+    );
+
+    color: #102b1d;
+
+    font-size: 15px;
+    font-weight: 800;
+    font-family: inherit;
+
+    cursor: pointer;
+
+    box-shadow: 0 6px 18px rgba(66, 145, 73, 0.25);
+
+    transition:
+        transform 0.2s ease,
+        filter 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#playerModal .playerSubmitBtn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+
+    box-shadow: 0 9px 23px rgba(91, 175, 83, 0.32);
+}
+
+#playerModal .playerSubmitBtn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* ==========================================
+   BOTÓN VOLVER / CANCELAR
+========================================== */
+
+#playerModal .playerBackBtn {
+    display: block;
+
+    width: 100%;
+
+    margin-top: 12px;
+    padding: 12px;
+
+    border: 1px solid rgba(179, 212, 176, 0.23);
+    border-radius: 12px;
+
+    background: rgba(255, 255, 255, 0.04);
+    color: #c6d8c6;
+
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+#playerModal .playerBackBtn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(200, 225, 185, 0.5);
+}
+
+/* ==========================================
+   PIE DEL MODAL
+========================================== */
+
+.playerModalFooter {
+    margin-top: 22px;
+
+    color: #829f8c;
+
+    font-size: 11px;
+    text-align: center;
+    letter-spacing: 0.3px;
+}
+
+/* ==========================================
+   ACCESIBILIDAD
+========================================== */
+
+#playerModal button:focus-visible {
+    outline: 3px solid #e4cb7e;
+    outline-offset: 3px;
+}
+
+/* ==========================================
+   ANIMACIONES
+========================================== */
+
+@keyframes playerModalAppear {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes playerFormAppear {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 600px) {
+
+    #playerModal {
+        padding: 12px;
+    }
+
+    #playerModal .playerModalContent {
+        max-height: 92vh;
+        padding: 26px 20px;
+        border-radius: 20px;
+    }
+
+    .playerOptions {
+        gap: 10px;
+    }
+
+    #playerModal .playerOptionBtn {
+        min-height: 195px;
+        padding: 18px 10px;
+    }
+
+    #playerModal .playerOptionIcon {
+        width: 72px;
+        height: 72px;
+        border-radius: 18px;
+    }
+
+    #playerModal .playerOptionIcon img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .playerOptionTitle {
+        font-size: 14px;
+    }
+
+    #playerModal .playerOptionBtn small {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 360px) {
+
+    .playerOptions {
+        grid-template-columns: 1fr;
+    }
+
+    #playerModal .playerOptionBtn {
+        min-height: 150px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    #playerModal *,
+    #playerModal *::before,
+    #playerModal *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+
+
+
 
 /* ==========================================
    CUADRO DE DIÁLOGO - PERSONAJE GUÍA
@@ -542,161 +2276,699 @@ footer {
 
 }
 
-/* =========================
-   MODAL JUGADOR
-========================= */
 
-#playerModal{
 
-    display:none;
 
-    position:fixed;
+/* ==========================================
+   PANTALLA DE CARGA - SIMAMBIENTECR
+========================================== */
 
-    top:0;
-    left:0;
+#loadingScreen {
+    display: none;
 
-    width:100%;
-    height:100vh;
+    position: fixed;
+    inset: 0;
 
-    background:rgba(0,0,0,.85);
+    width: 100%;
+    height: 100dvh;
 
-    z-index:99999;
+    z-index: 10000;
 
-    justify-content:center;
-    align-items:center;
+    overflow: hidden;
 
+    justify-content: center;
+    align-items: flex-end;
+
+    padding: 25px;
+    box-sizing: border-box;
+
+    background: linear-gradient(
+        145deg,
+        #1c5638 0%,
+        #103b29 50%,
+        #061e16 100%
+    );
 }
 
-#playerModalContent{
+/* ==========================================
+   TÍTULO 3D EN MOVIMIENTO
+========================================== */
 
-    background:white;
+#loadingMovingTitle {
+    position: absolute;
+    top: 0;
+    left: 0;
 
-    padding:40px;
+    z-index: 2;
 
-    border-radius:15px;
+    width: max-content;
+    max-width: 100%;
 
-    width:400px;
+    pointer-events: none;
 
-    text-align:center;
-
+    will-change: transform;
 }
 
-#playerModalContent input{
+#loadingMovingTitle .loadingGameTitle {
+    margin: 0;
 
-    width:90%;
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(34px, 5.5vw, 72px);
+    font-weight: 700;
 
-    padding:12px;
+    line-height: 1.25;
+    letter-spacing: -2px;
+    white-space: nowrap;
 
-    font-size:18px;
+    color: #ffffff;
 
-    margin:20px 0;
-
+    text-shadow:
+        1px 1px 0 #2e6943,
+        2px 2px 0 #28603d,
+        3px 3px 0 #235737,
+        4px 4px 0 #1e4e31,
+        5px 5px 0 #19452b,
+        6px 6px 0 #143c25,
+        9px 12px 15px rgba(0, 0, 0, 0.55);
 }
 
-#playerModalContent button{
+#loadingMovingTitle .loadingGameTitle span {
+    color: #c6f18c;
 
-    padding:12px 25px;
-
-    font-size:18px;
-
-    cursor:pointer;
-
+    text-shadow:
+        1px 1px 0 #4e8c3b,
+        2px 2px 0 #437d33,
+        3px 3px 0 #386e2b,
+        4px 4px 0 #2d6024,
+        5px 5px 0 #24521e,
+        6px 6px 0 #1c4518,
+        9px 12px 15px rgba(0, 0, 0, 0.5);
 }
 
-/* =========================
-   MODAL JUGADOR FINAL
-========================= */
+/* ==========================================
+   INFORMACIÓN DE CARGA
+========================================== */
 
-/* =====================================
+#loadingContent {
+    position: relative;
+    z-index: 3;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: 100%;
+    max-width: 600px;
+
+    padding: 25px 30px;
+    margin-bottom: 20px;
+
+    box-sizing: border-box;
+
+    border: 2px solid #a8db83;
+    border-radius: 20px;
+
+    background: rgba(12, 47, 32, 0.94);
+
+    box-shadow:
+        0 6px 0 #08281a,
+        0 15px 35px rgba(0, 0, 0, 0.4);
+
+    text-align: center;
+}
+
+/* ==========================================
+   MENSAJE
+========================================== */
+
+#loadingMessage {
+    margin: 0 0 20px;
+
+    font-family: 'Nunito', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.5;
+
+    color: #ffffff;
+}
+
+/* ==========================================
+   BARRA DE PROGRESO VERDE
+========================================== */
+
+.loadingProgressSection {
+    width: 100%;
+}
+
+.loadingProgressHeader {
+    display: flex;
+    justify-content: space-between;
+
+    margin-bottom: 10px;
+
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+
+    color: #e5f3db;
+}
+
+#loadingPercentage {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 19px;
+
+    color: #c6f18c;
+}
+
+#loadingBar {
+    width: 100%;
+    height: 25px;
+
+    overflow: hidden;
+
+    border: 2px solid #8cc36d;
+    border-radius: 20px;
+
+    background: #092a1c;
+
+    box-shadow:
+        inset 0 3px 7px rgba(0, 0, 0, 0.6),
+        0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+#loadingProgress {
+    width: 0%;
+    height: 100%;
+
+    border-radius: 20px;
+
+    background: linear-gradient(
+        180deg,
+        #d5f7a3,
+        #a8e578 40%,
+        #5fb64e
+    );
+
+    box-shadow:
+        inset 0 2px 0 rgba(255, 255, 255, 0.35),
+        0 0 15px rgba(165, 235, 110, 0.5);
+
+    transition: width 0.05s linear;
+}
+
+/* ==========================================
+   PIE DE PANTALLA
+========================================== */
+
+.loadingFooter {
+    margin: 20px 0 0;
+
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+
+    color: #c7dec0;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 600px) {
+
+    #loadingScreen {
+        padding: 15px;
+    }
+
+    #loadingContent {
+        padding: 20px 15px;
+        margin-bottom: 10px;
+    }
+
+    #loadingMovingTitle .loadingGameTitle {
+        font-size: clamp(25px, 7vw, 40px);
+        letter-spacing: -1px;
+    }
+
+    #loadingMessage {
+        font-size: 15px;
+    }
+
+    #loadingBar {
+        height: 21px;
+    }
+}
+
+
+/* ==========================================
+   TÍTULO 3D CENTRADO CON VIBRACIÓN
    PANTALLA DE CARGA
-===================================== */
+========================================== */
 
-#loadingScreen{
+#loadingMovingTitle {
+    position: absolute;
 
-    display:none;
+    top: 38%;
+    left: 50%;
 
-    position:fixed;
+    width: max-content;
+    max-width: 100%;
 
-    top:0;
-    left:0;
+    z-index: 2;
 
-    width:100%;
-    height:100vh;
+    pointer-events: none;
 
-    background:#122b1e;
-
-    z-index:999999;
-
-    justify-content:center;
-    align-items:center;
-
-    color:white;
-
+    transform: translate(-50%, -50%);
 }
 
-#loadingContent{
+/* Conserva el efecto 3D existente */
 
-    width:650px;
+#loadingMovingTitle .loadingGameTitle {
+    margin: 0;
 
-    text-align:center;
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(30px, 5.5vw, 72px);
+    font-weight: 700;
 
+    line-height: 1.25;
+    white-space: nowrap;
+
+    color: #ffffff;
+
+    animation: loadingTitleShake 0.13s infinite;
 }
 
-#loadingCharacter{
+/* ==========================================
+   ANIMACIÓN DE TEMBLOR
+========================================== */
 
-    width:220px;
+@keyframes loadingTitleShake {
 
-    margin-bottom:20px;
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+    }
 
+    20% {
+        transform: translate(-3px, 2px) rotate(-0.6deg);
+    }
+
+    40% {
+        transform: translate(3px, -2px) rotate(0.6deg);
+    }
+
+    60% {
+        transform: translate(-2px, -2px) rotate(-0.4deg);
+    }
+
+    80% {
+        transform: translate(2px, 2px) rotate(0.4deg);
+    }
+
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
 }
 
-#loadingTitle{
+/* ==========================================
+   RESPONSIVE
+========================================== */
 
-    color:#7CFC00;
+@media (max-width: 600px) {
 
-    font-size:34px;
+    #loadingMovingTitle {
+        top: 35%;
+    }
 
+    #loadingMovingTitle .loadingGameTitle {
+        font-size: clamp(25px, 7vw, 40px);
+        letter-spacing: -1px;
+    }
 }
 
-#loadingMessage{
+/* ==========================================
+   ACCESIBILIDAD
+========================================== */
 
-    font-size:22px;
+@media (prefers-reduced-motion: reduce) {
 
-    min-height:70px;
-
+    #loadingMovingTitle .loadingGameTitle {
+        animation: none;
+    }
 }
 
-#loadingBar{
 
-    width:100%;
 
-    height:22px;
+/* ==========================================
+   CONTENEDOR PRINCIPAL
+========================================== */
 
-    background:#333;
+#loadingContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
-    border-radius:20px;
+    width: 100%;
+    max-width: 650px;
+    max-height: 95vh;
 
-    overflow:hidden;
+    padding: 35px 40px;
 
-    margin-top:30px;
+    box-sizing: border-box;
+    overflow-y: auto;
 
+    border: 2px solid #a8db83;
+    border-radius: 25px;
+
+    background: linear-gradient(
+        145deg,
+        rgba(38, 96, 60, 0.98),
+        rgba(12, 47, 32, 0.98)
+    );
+
+    box-shadow:
+        0 8px 0 #08281a,
+        0 16px 0 #061c13,
+        0 25px 45px rgba(0, 0, 0, 0.5),
+        inset 0 2px 0 rgba(255, 255, 255, 0.12);
+
+    color: #ffffff;
+    text-align: center;
+
+    animation: loadingAppear 0.5s ease-out both;
 }
 
-#loadingProgress{
+/* ==========================================
+   TÍTULO DEL VIDEOJUEGO - 3D
+========================================== */
 
-    width:0%;
-
-    height:100%;
-
-    background:#66cc33;
-
-    transition:width .1s linear;
-
+.loadingHeader {
+    width: 100%;
 }
 
-/* =====================================
-   PANTALLA DE FINAL
-===================================== */
+.loadingGameTitle {
+    margin: 0 0 12px;
+
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(40px, 6vw, 75px);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -2px;
+
+    color: #ffffff;
+
+    text-shadow:
+        1px 1px 0 #2e6943,
+        2px 2px 0 #28603d,
+        3px 3px 0 #235737,
+        4px 4px 0 #1e4e31,
+        5px 5px 0 #19452b,
+        6px 6px 0 #143c25,
+        9px 12px 15px rgba(0, 0, 0, 0.55);
+}
+
+.loadingGameTitle span {
+    color: #c6f18c;
+
+    text-shadow:
+        1px 1px 0 #4e8c3b,
+        2px 2px 0 #437d33,
+        3px 3px 0 #386e2b,
+        4px 4px 0 #2d6024,
+        5px 5px 0 #24521e,
+        6px 6px 0 #1c4518,
+        9px 12px 15px rgba(0, 0, 0, 0.5);
+}
+
+.loadingSubtitle {
+    margin: 0 0 20px;
+
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+
+    color: #e3f2d8;
+}
+
+/* ==========================================
+   PERSONAJE GUÍA AMBIENTAL
+========================================== */
+
+.loadingCharacterContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 150px;
+    height: 150px;
+
+    margin: 5px 0 15px;
+
+    border: 3px solid #a8db83;
+    border-radius: 50%;
+
+    background: radial-gradient(
+        circle,
+        #477e4b,
+        #1c4c31
+    );
+
+    box-shadow:
+        0 6px 0 #103d26,
+        0 12px 25px rgba(0, 0, 0, 0.35),
+        0 0 30px rgba(169, 219, 131, 0.15);
+}
+
+#loadingCharacter {
+    width: 135px;
+    height: 135px;
+
+    object-fit: contain;
+
+    animation: loadingFloat 2s ease-in-out infinite;
+}
+
+/* ==========================================
+   NOMBRE DEL GUÍA
+========================================== */
+
+#loadingTitle {
+    margin: 0 0 10px;
+
+    font-family: 'Fredoka', sans-serif;
+    font-size: 29px;
+    font-weight: 600;
+
+    color: #c6f18c;
+
+    text-shadow:
+        1px 1px 0 #37692c,
+        2px 2px 0 #295421,
+        3px 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================
+   MENSAJE DE BIENVENIDA
+========================================== */
+
+#loadingMessage {
+    max-width: 490px;
+    min-height: 50px;
+
+    margin: 0 0 22px;
+
+    font-family: 'Nunito', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.5;
+
+    color: #ffffff;
+}
+
+/* ==========================================
+   BARRA DE PROGRESO
+========================================== */
+
+.loadingProgressSection {
+    width: 100%;
+    max-width: 480px;
+}
+
+.loadingProgressHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 12px;
+
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+
+    color: #e5f3db;
+}
+
+#loadingPercentage {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 19px;
+    font-weight: 600;
+
+    color: #c6f18c;
+}
+
+/* Fondo de la barra */
+
+#loadingBar {
+    position: relative;
+
+    width: 100%;
+    height: 25px;
+
+    overflow: hidden;
+
+    border: 2px solid #8cc36d;
+    border-radius: 20px;
+
+    background: #092a1c;
+
+    box-shadow:
+        inset 0 3px 7px rgba(0, 0, 0, 0.6),
+        0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Progreso verde */
+
+#loadingProgress {
+    position: relative;
+
+    width: 0%;
+    height: 100%;
+
+    border-radius: 20px;
+
+    background: linear-gradient(
+        180deg,
+        #d5f7a3 0%,
+        #a8e578 40%,
+        #5fb64e 100%
+    );
+
+    box-shadow:
+        inset 0 2px 0 rgba(255, 255, 255, 0.35),
+        0 0 15px rgba(165, 235, 110, 0.5);
+
+    transition: width 0.05s linear;
+}
+
+/* Brillo sobre la barra */
+
+#loadingProgress::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.35),
+        transparent 60%
+    );
+
+    pointer-events: none;
+}
+
+/* ==========================================
+   PIE DE PANTALLA
+========================================== */
+
+.loadingFooter {
+    margin: 25px 0 0;
+
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+
+    color: rgba(226, 245, 213, 0.75);
+}
+
+/* ==========================================
+   ANIMACIONES
+========================================== */
+
+@keyframes loadingAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes loadingFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 600px) {
+
+    #loadingContent {
+        padding: 25px 20px;
+        border-radius: 18px;
+    }
+
+    .loadingGameTitle {
+        font-size: clamp(35px, 9vw, 55px);
+    }
+
+    .loadingSubtitle {
+        font-size: 14px;
+    }
+
+    .loadingCharacterContainer {
+        width: 120px;
+        height: 120px;
+    }
+
+    #loadingCharacter {
+        width: 110px;
+        height: 110px;
+    }
+
+    #loadingTitle {
+        font-size: 25px;
+    }
+
+    #loadingMessage {
+        font-size: 15px;
+    }
+
+    #loadingBar {
+        height: 21px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    #loadingContent,
+    #loadingCharacter {
+        animation: none;
+    }
+
+    #loadingProgress {
+        transition: none;
+    }
+}
+
 
 
 
@@ -1166,6 +3438,8 @@ footer {
     transform: scale(1.05);
 
 }
+
+
 
 /* ==========================================
    ESCENARIO PRINCIPAL
@@ -2063,3 +4337,795 @@ footer {
         animation: none;
     }
 }
+
+
+
+
+/* ==========================================
+   ACTIVIDAD LIMÓN
+   BOTONES DE CLASIFICACIÓN 3D
+========================================== */
+
+/* ESTILO GENERAL DE AMBOS BOTONES */
+
+#actividadLimon #clasificacionLimon .botonClasificacionLimon {
+    box-sizing: border-box;
+
+    min-width: 180px;
+    min-height: 60px;
+
+    padding: 14px 28px;
+    margin: 0;
+
+    border: 2px solid transparent;
+    border-radius: 14px;
+
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(17px, 1.8vw, 22px);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+}
+
+/* ==========================================
+   FAVORABLE - VERDE 3D
+========================================== */
+
+#actividadLimon #favorableLimon {
+    background: linear-gradient(
+        180deg,
+        #c6f18c 0%,
+        #91d36b 55%,
+        #65af53 100%
+    );
+
+    color: #173d26;
+
+    border-color: #d0efa9;
+
+    text-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.35);
+
+    box-shadow:
+        0 6px 0 #326d38,
+        0 11px 17px rgba(0, 0, 0, 0.35);
+}
+
+#actividadLimon #favorableLimon:hover:not(:disabled) {
+    transform: translateY(-4px);
+
+    filter: brightness(1.08);
+
+    box-shadow:
+        0 10px 0 #326d38,
+        0 16px 22px rgba(0, 0, 0, 0.4);
+}
+
+#actividadLimon #favorableLimon:active:not(:disabled) {
+    transform: translateY(5px);
+
+    box-shadow:
+        0 1px 0 #326d38,
+        0 3px 7px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================
+   DESFAVORABLE - ROJO 3D
+========================================== */
+
+#actividadLimon #desfavorableLimon {
+    background: linear-gradient(
+        180deg,
+        #ff9c91 0%,
+        #ef665c 55%,
+        #c83d38 100%
+    );
+
+    color: #ffffff;
+
+    border-color: #ffc1b8;
+
+    text-shadow:
+        0 2px 3px rgba(80, 10, 10, 0.5);
+
+    box-shadow:
+        0 6px 0 #8d2929,
+        0 11px 17px rgba(0, 0, 0, 0.35);
+}
+
+#actividadLimon #desfavorableLimon:hover:not(:disabled) {
+    transform: translateY(-4px);
+
+    filter: brightness(1.08);
+
+    box-shadow:
+        0 10px 0 #8d2929,
+        0 16px 22px rgba(0, 0, 0, 0.4);
+}
+
+#actividadLimon #desfavorableLimon:active:not(:disabled) {
+    transform: translateY(5px);
+
+    box-shadow:
+        0 1px 0 #8d2929,
+        0 3px 7px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================
+   ESTADO DESHABILITADO
+========================================== */
+
+#actividadLimon #clasificacionLimon .botonClasificacionLimon:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    filter: grayscale(0.45);
+    transform: none;
+    box-shadow: none;
+}
+
+/* ==========================================
+   ACCESIBILIDAD
+========================================== */
+
+#actividadLimon #clasificacionLimon .botonClasificacionLimon:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 5px;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 600px) {
+
+    #actividadLimon #clasificacionLimon .botonClasificacionLimon {
+        min-width: 135px;
+        min-height: 54px;
+
+        padding: 12px 16px;
+
+        font-size: 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    #actividadLimon #clasificacionLimon .botonClasificacionLimon {
+        transition: none;
+    }
+}
+
+
+/* ==========================================
+   ACTIVIDAD LIMÓN
+   BOTONES 3D DEL MISMO TAMAÑO
+========================================== */
+
+#actividadLimon #clasificacionLimon #favorableLimon,
+#actividadLimon #clasificacionLimon #desfavorableLimon {
+    width: 230px;
+    height: 65px;
+
+    min-width: 230px;
+    min-height: 65px;
+
+    padding: 10px 15px;
+    margin: 0;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 230px;
+
+    font-family: 'Fredoka', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* ==========================================
+   PANTALLAS PEQUEÑAS
+========================================== */
+
+@media (max-width: 600px) {
+
+    #actividadLimon #clasificacionLimon #favorableLimon,
+    #actividadLimon #clasificacionLimon #desfavorableLimon {
+        width: 155px;
+        height: 55px;
+
+        min-width: 155px;
+        min-height: 55px;
+
+        flex: 0 0 155px;
+
+        padding: 8px;
+        font-size: 15px;
+    }
+}
+
+
+
+/* ==========================================
+   ACCESIBILIDAD GLOBAL
+   ESCALA DEL TAMAÑO DE FUENTE
+========================================== */
+
+:root {
+    --game-font-scale: 1;
+}
+
+
+/* ==========================================
+   CORRECCIÓN DEFINITIVA
+   MENÚ DE PAUSA Y OPCIONES
+========================================== */
+
+#pauseContent {
+    width: 100%;
+    max-width: 560px;
+
+    padding: 36px 32px;
+
+    box-sizing: border-box;
+    gap: 0;
+
+    zoom: 1;
+}
+
+/* Vistas del menú */
+
+#pauseMainView,
+#gameOptionsView {
+    width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+}
+
+#pauseContent [hidden] {
+    display: none !important;
+}
+
+/* ==========================================
+   BOTONES DEL MENÚ DE PAUSA
+========================================== */
+
+#pauseContent .pauseButtons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: 100%;
+    max-width: 360px;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    gap: 18px;
+}
+
+#pauseContent .pauseButtons .pauseButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    min-height: 60px;
+
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* ==========================================
+   TARJETAS DE OPCIONES
+========================================== */
+
+#pauseContent .gameOptionsList {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    gap: 18px;
+
+    margin: 20px 0;
+}
+
+#pauseContent .gameOptionCard {
+    width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+}
+
+/* ==========================================
+   CONTROLES DE VOLUMEN Y FUENTE
+========================================== */
+
+#pauseContent .gameOptionControls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    gap: 10px;
+
+    box-sizing: border-box;
+}
+
+#pauseContent .gameOptionControls .optionControlBtn {
+    flex: 0 0 46px;
+
+    width: 46px;
+    height: 46px;
+
+    padding: 0;
+    margin: 0;
+
+    border: 2px solid #d0efa9;
+    border-radius: 12px;
+
+    font-family: 'Fredoka', sans-serif;
+    font-size: 20px;
+}
+
+#pauseContent .gameOptionControls input[type="range"] {
+    flex: 1 1 auto;
+
+    width: auto;
+    min-width: 0;
+
+    margin: 0;
+}
+
+#pauseContent .gameOptionControls .optionValue {
+    flex: 0 0 48px;
+
+    text-align: right;
+}
+
+/* ==========================================
+   BOTÓN VOLVER
+========================================== */
+
+#pauseContent .optionsFooterButtons {
+    margin-top: 24px;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 600px) {
+
+    #pauseContent {
+        width: 100%;
+        max-height: 90dvh;
+
+        padding: 25px 16px;
+
+        overflow-y: auto;
+    }
+
+    #pauseContent .pauseTitle {
+        font-size: calc(
+            38px * var(--game-font-scale)
+        );
+    }
+
+    #pauseContent .gameOptionCard {
+        padding: 14px 10px;
+    }
+
+    #pauseContent .gameOptionControls {
+        gap: 6px;
+    }
+
+    #pauseContent .gameOptionControls .optionControlBtn {
+        flex-basis: 38px;
+
+        width: 38px;
+        height: 40px;
+
+        font-size: 17px;
+    }
+
+    #pauseContent .gameOptionControls .optionValue {
+        flex-basis: 42px;
+        font-size: 14px;
+    }
+
+    #pauseContent .pauseButtons .pauseButton {
+        min-height: 55px;
+    }
+}
+
+
+
+/* ==========================================
+   ACCESIBILIDAD - DIÁLOGOS DEL GUÍA
+========================================== */
+
+:root {
+    --game-font-scale: 1;
+}
+
+/* Diálogos generales del personaje guía */
+
+#dialogBox #dialogText {
+    font-size: calc(17px * var(--game-font-scale));
+}
+
+/* Diálogos del guía en la actividad de Limón */
+
+#actividadLimon #textoGuiaLimon {
+    font-size: calc(17px * var(--game-font-scale));
+}
+
+/* Mantener legibilidad al aumentar el texto */
+
+#dialogBox #dialogText,
+#actividadLimon #textoGuiaLimon {
+    line-height: 1.6;
+    overflow-wrap: break-word;
+}
+
+
+
+/* ==========================================
+   VENTANA GLOBAL DE ALERTAS
+========================================== */
+
+#gameAlertModal {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+    box-sizing: border-box;
+
+    background: rgba(20, 18, 7, 0.65);
+
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+
+    z-index: 999999;
+}
+
+#gameAlertModal[hidden] {
+    display: none !important;
+}
+
+/* Ventana amarilla 3D */
+
+#gameAlertModal .gameAlertContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: 100%;
+    max-width: 500px;
+    max-height: 90dvh;
+
+    padding: 38px 32px 34px;
+    box-sizing: border-box;
+
+    overflow-y: auto;
+
+    border: 3px solid #fff0aa;
+    border-radius: 25px;
+
+    background: linear-gradient(
+        145deg,
+        #ffe68a 0%,
+        #f1c453 55%,
+        #d99a2e 100%
+    );
+
+    box-shadow:
+        0 8px 0 #a66b18,
+        0 16px 0 #704510,
+        0 25px 45px rgba(0, 0, 0, 0.45),
+        inset 0 2px 0 rgba(255,255,255,0.45);
+
+    text-align: center;
+
+    animation: gameAlertAppear 0.3s ease-out;
+}
+
+/* Icono */
+
+.gameAlertIcon {
+    font-size: 55px;
+    color: #68420d;
+
+    margin-bottom: 10px;
+}
+
+/* Título */
+
+#gameAlertTitle {
+    margin: 0 0 15px;
+
+    font-family: 'Fredoka', sans-serif;
+    font-size: 43px;
+    font-weight: 600;
+
+    color: #64400b;
+
+    text-shadow:
+        1px 1px 0 #fff1b4,
+        2px 2px 0 #edb74c,
+        3px 3px 0 #c78d29;
+}
+
+/* Separador */
+
+.gameAlertSeparator {
+    width: 110px;
+    height: 5px;
+
+    margin-bottom: 22px;
+
+    border-radius: 10px;
+
+    background: linear-gradient(
+        90deg,
+        #b77a1c,
+        #fff4b7,
+        #b77a1c
+    );
+}
+
+/* Mensaje */
+
+#gameAlertMessage {
+    margin: 0 0 30px;
+
+    color: #593b12;
+
+    font-family: 'Nunito', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.6;
+
+    overflow-wrap: break-word;
+}
+
+/* Botón Reintentar 3D */
+
+#gameAlertRetryBtn {
+    width: 100%;
+    max-width: 280px;
+    min-height: 60px;
+
+    padding: 14px 24px;
+
+    border: 2px solid #fff6c8;
+    border-radius: 14px;
+
+    background: linear-gradient(
+        180deg,
+        #fff4b5 0%,
+        #f3d36f 55%,
+        #e5ad42 100%
+    );
+
+    color: #62400e;
+
+    font-family: 'Fredoka', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+
+    box-shadow:
+        0 6px 0 #a66b18,
+        0 11px 17px rgba(0,0,0,0.3);
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+}
+
+#gameAlertRetryBtn:hover {
+    transform: translateY(-4px);
+    filter: brightness(1.05);
+
+    box-shadow:
+        0 10px 0 #a66b18,
+        0 16px 22px rgba(0,0,0,0.35);
+}
+
+#gameAlertRetryBtn:active {
+    transform: translateY(5px);
+
+    box-shadow:
+        0 1px 0 #a66b18,
+        0 3px 7px rgba(0,0,0,0.3);
+}
+
+#gameAlertRetryBtn:focus-visible {
+    outline: 3px solid #68420d;
+    outline-offset: 4px;
+}
+
+/* Animación */
+
+@keyframes gameAlertAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Responsive */
+
+@media (max-width: 600px) {
+    #gameAlertModal .gameAlertContent {
+        padding: 28px 20px;
+        border-radius: 18px;
+    }
+
+    #gameAlertTitle {
+        font-size: 34px;
+    }
+
+    #gameAlertMessage {
+        font-size: 16px;
+    }
+
+    #gameAlertRetryBtn {
+        min-height: 55px;
+        font-size: 19px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #gameAlertModal .gameAlertContent {
+        animation: none;
+    }
+
+    #gameAlertRetryBtn {
+        transition: none;
+    }
+}
+
+
+/* ==========================================
+   RETROALIMENTACIÓN FINAL - LIMÓN
+========================================== */
+
+#nivelFinalLimon {
+    font-family: "Fredoka", sans-serif;
+    font-size: clamp(3rem, 7vw, 5rem);
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 3px;
+    line-height: 1.1;
+    margin: 18px 0;
+    text-transform: uppercase;
+    -webkit-text-stroke: 1px rgba(0, 0, 0, 0.12);
+}
+
+/* BUENO - VERDE */
+
+#nivelFinalLimon.resultadoBuenoLimon {
+    color: #25c45a;
+    text-shadow:
+        0 3px 0 #126d32,
+        0 6px 0 #0a4620,
+        0 9px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* MEDIO - AMARILLO */
+
+#nivelFinalLimon.resultadoMedioLimon {
+    color: #ffd83d;
+    text-shadow:
+        0 3px 0 #c18a00,
+        0 6px 0 #805600,
+        0 9px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* MALO - ROJO */
+
+#nivelFinalLimon.resultadoMaloLimon {
+    color: #ff4b4b;
+    text-shadow:
+        0 3px 0 #ba2222,
+        0 6px 0 #751010,
+        0 9px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* MENSAJE EDUCATIVO */
+
+#retroalimentacionFinalLimon {
+    font-family: "Nunito", sans-serif;
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    line-height: 1.65;
+    text-align: center;
+    max-width: 620px;
+    margin: 16px auto 24px;
+    overflow-wrap: break-word;
+}
+
+/* ==========================================
+   PANEL DE OPCIONES
+========================================== */
+
+.options-menu {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0, 0, 0, 0.75);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 10000;
+}
+
+.options-content {
+    background: #173d2b;
+    color: white;
+
+    padding: 35px;
+    border-radius: 15px;
+
+    width: min(90%, 400px);
+
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+
+    text-align: center;
+}
+
+.options-content h2 {
+    margin: 0;
+}
+
+#musicVolume {
+    width: 100%;
+}
+
+#backOptionsBtn {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+
+    background: #4caf50;
+    color: white;
+
+    cursor: pointer;
+}
+
+#pauseMainView[hidden],
+#gameOptionsView[hidden] {
+    display: none !important;
+}
+

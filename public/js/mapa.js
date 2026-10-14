@@ -43,40 +43,47 @@ function inicializarMapa() {
 }
 
 
+ // ==========================================
+ // BLOQUEAR / DESBLOQUEAR MAPA
+ // ==========================================
 
+ {
+     const botonMovimientoMapa =
+         document.getElementById("toggleMoveBtn");
 
+     if (botonMovimientoMapa) {
 
-// ==========================================
-// BLOQUEAR / DESBLOQUEAR MAPA
-// ==========================================
-toggleMoveBtn.addEventListener('click', () => {
+         botonMovimientoMapa.addEventListener("click", () => {
 
-    if (!mapInstance) return;
+             if (!mapInstance) return;
 
-    mapUnlocked = !mapUnlocked;
+             mapUnlocked = !mapUnlocked;
 
-    if (mapUnlocked) {
+             if (mapUnlocked) {
 
-        mapInstance.dragging.enable();
-        mapInstance.scrollWheelZoom.enable();
-        mapInstance.doubleClickZoom.enable();
-        mapInstance.boxZoom.enable();
-        mapInstance.keyboard.enable();
-        mapInstance.touchZoom.enable();
+                 mapInstance.dragging.enable();
+                 mapInstance.scrollWheelZoom.enable();
+                 mapInstance.doubleClickZoom.enable();
+                 mapInstance.boxZoom.enable();
+                 mapInstance.keyboard.enable();
+                 mapInstance.touchZoom.enable();
 
-        toggleMoveBtn.textContent =
-            "🔒 Bloquear mapa";
+                 botonMovimientoMapa.textContent =
+                     "🔒 Bloquear mapa";
 
-    } else {
+             } else {
 
-        mapInstance.dragging.disable();
-        mapInstance.scrollWheelZoom.disable();
-        mapInstance.doubleClickZoom.disable();
-        mapInstance.boxZoom.disable();
-        mapInstance.keyboard.disable();
-        mapInstance.touchZoom.disable();
+                 mapInstance.dragging.disable();
+                 mapInstance.scrollWheelZoom.disable();
+                 mapInstance.doubleClickZoom.disable();
+                 mapInstance.boxZoom.disable();
+                 mapInstance.keyboard.disable();
+                 mapInstance.touchZoom.disable();
 
-        toggleMoveBtn.textContent =
-            "🧭 Mover mapa";
-    }
-});
+                 botonMovimientoMapa.textContent =
+                     "🧭 Mover mapa";
+             }
+         });
+     }
+ }
+

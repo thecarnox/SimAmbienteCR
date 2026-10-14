@@ -21,25 +21,33 @@
         src="https://unpkg.com/leaflet/dist/leaflet.js">
     </script>
 
+    <link
+    href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap"
+    rel="stylesheet">
+
 </head>
 
 
 <body>
 
 
+    
     <!-- ==========================================
-         MENÚ PRINCIPAL
-    =========================================== -->
+        MENÚ PRINCIPAL - SIMAMBIENTECR
+    ========================================== -->
 
     <div id="menu">
 
-        <header>
+        
+        <header class="menuHeader">
 
-            <h1>
-                SimAmbienteCR 🌱
+            <h1 class="menuTitulo">
+                Sim<span>Ambiente</span>CR
             </h1>
 
-            <p>
+            <div class="menuSeparador"></div>
+
+            <p class="menuDescripcion">
                 Simulador ambiental interactivo de Costa Rica
             </p>
 
@@ -49,38 +57,37 @@
         <section id="menu-content">
 
             <button
-                class="btn"
-                id="mapBtn">
-
-                🌍 Iniciar Juego
-
+                id="mapBtn"
+                class="btn pauseButton pausePrimary"
+                type="button"
+            >
+                Iniciar aventura
             </button>
 
-
             <button
-                class="btn"
-                id="fullscreenBtn">
-
-                ⛶ Pantalla Completa
-
+                id="fullscreenBtn"
+                class="btn pauseButton pauseSecondary"
+                type="button"
+            >
+                Pantalla completa
             </button>
 
         </section>
 
-
-        <footer>
+        <footer class="menuFooter">
 
             <p>
-                Proyecto de Tesis - UNED
+                Proyecto de Trabajo Final de Graduación
             </p>
 
             <p>
-                Desarrollado por Erick
+                Universidad Estatal a Distancia · UNED
             </p>
 
         </footer>
 
     </div>
+
 
 
 
@@ -123,71 +130,325 @@
 
 
     <!-- ==========================================
-         MODAL DEL JUGADOR
+        MODAL DEL JUGADOR - SIMAMBIENTECR
     =========================================== -->
 
-    <div id="playerModal">
+    <div id="playerModal" style="display: none;">
 
-        <div id="playerModalContent">
+        <div class="playerModalContent">
 
-            <h2>
-                Bienvenido a SimAmbienteCR
-            </h2>
+            <!-- Decoración superior -->
+            <div class="playerModalDecoration"></div>
 
-            <p>
-                Ingrese su nombre para comenzar
-            </p>
+            <!-- ==================================
+                SELECCIÓN DE TIPO DE JUGADOR
+            =================================== -->
 
-            <input
-                type="text"
-                id="playerName"
-                placeholder="Nombre del jugador">
+            <div id="playerSelection">
 
-            <button id="startPlayerBtn">
+                <div class="playerModalHeader">
+                    <span class="playerEyebrow">SIMAMBIENTECR</span>
 
-                Comenzar
+                    <h2>Bienvenido a tu aventura</h2>
 
-            </button>
+                    <p>
+                        Explora Costa Rica, descubre sus ecosistemas
+                        y aprende a proteger nuestro ambiente.
+                    </p>
+                </div>
 
-        </div>
+                <div class="playerOptions">
 
-    </div>
+                    <button
+                        type="button"
+                        id="newPlayerBtn"
+                        class="playerOptionBtn"
+                    >
+                        <span class="playerOptionIcon">
+                            <img
+                                src="img/jugador.png"
+                                alt="Jugador nuevo"
+                            >
+                        </span>
 
+                        <span class="playerOptionTitle">
+                            Jugador nuevo
+                        </span>
 
+                        <small>
+                            Crea tu perfil y comienza a explorar
+                        </small>
 
-    <!-- ==========================================
-         PANTALLA DE CARGA
-    =========================================== -->
+                        <span class="playerOptionArrow">
+                            →
+                        </span>
+                    </button>
 
-    <div id="loadingScreen">
+                    <button
+                        type="button"
+                        id="existingPlayerBtn"
+                        class="playerOptionBtn"
+                    >
+                        <span class="playerOptionIcon">
+                            <img
+                                src="img/juego.png"
+                                alt="Jugador existente"
+                            >
+                        </span>
 
-        <div id="loadingContent">
+                        <span class="playerOptionTitle">
+                            Jugador existente
+                        </span>
 
-            <img
-                src="img/personajes/guia.png"
-                id="loadingCharacter">
+                        <small>
+                            Recupera tu progreso y continúa
+                        </small>
 
-            <h2 id="loadingTitle">
+                        <span class="playerOptionArrow">
+                            →
+                        </span>
+                    </button>
 
-                Guía Ambiental
+                </div>
 
-            </h2>
+                <button
+                    type="button"
+                    id="closePlayerModalBtn"
+                    class="playerBackBtn"
+                >
+                    Cancelar
+                </button>
 
-            <p id="loadingMessage">
+            </div>
 
-                Cargando...
+            <!-- ==================================
+                FORMULARIO DE JUGADOR NUEVO
+            =================================== -->
 
-            </p>
+            <div id="newPlayerForm" style="display: none;">
 
-            <div id="loadingBar">
+                <div class="playerFormHeader">
 
-                <div id="loadingProgress"></div>
+                    <div class="playerFormIcon">
+                        <img
+                            src="img/jugador.png"
+                            alt="Jugador nuevo"
+                        >
+                    </div>
 
+                    <span class="playerEyebrow">
+                        NUEVA AVENTURA
+                    </span>
+
+                    <h2>Crea tu perfil</h2>
+
+                    <p>
+                        Registra tus datos para comenzar
+                        a explorar los ecosistemas de Costa Rica.
+                    </p>
+
+                </div>
+
+                <div class="playerField">
+
+                    <label for="playerName">
+                        Nombre completo
+                    </label>
+
+                    <input
+                        type="text"
+                        id="playerName"
+                        placeholder="Ingresa tu nombre completo"
+                        maxlength="50"
+                        autocomplete="name"
+                        required
+                    >
+
+                </div>
+
+                <div class="playerField">
+
+                    <label for="playerEmail">
+                        Correo electrónico
+                    </label>
+
+                    <input
+                        type="email"
+                        id="playerEmail"
+                        placeholder="ejemplo@correo.com"
+                        maxlength="254"
+                        autocomplete="email"
+                        required
+                    >
+
+                </div>
+
+                <div class="playerField">
+
+                    <label for="playerCenter">
+                        Centro universitario
+                    </label>
+
+                    <select id="playerCenter" required>
+
+                        <option value="">
+                            Selecciona tu centro universitario
+                        </option>
+
+                        <option value="San José">San José</option>
+                        <option value="Alajuela">Alajuela</option>
+                        <option value="Heredia">Heredia</option>
+                        <option value="Cartago">Cartago</option>
+                        <option value="Puntarenas">Puntarenas</option>
+                        <option value="Guanacaste">Guanacaste</option>
+                        <option value="Limón">Limón</option>
+
+                    </select>
+
+                </div>
+
+                <button
+                    type="button"
+                    id="startPlayerBtn"
+                    class="playerSubmitBtn"
+                >
+                    Comenzar aventura
+                    <span aria-hidden="true">→</span>
+                </button>
+
+                <button
+                    type="button"
+                    id="backNewPlayerBtn"
+                    class="playerBackBtn"
+                >
+                    ← Volver a seleccionar
+                </button>
+
+            </div>
+
+            <!-- ==================================
+                FORMULARIO DE JUGADOR EXISTENTE
+            =================================== -->
+
+            <div id="existingPlayerForm" style="display: none;">
+
+                <div class="playerFormHeader">
+
+                    <div class="playerFormIcon">
+                        <img
+                            src="img/juego.png"
+                            alt="Jugador existente"
+                        >
+                    </div>
+
+                    <span class="playerEyebrow">
+                        BIENVENIDO DE NUEVO
+                    </span>
+
+                    <h2>Continúa tu aventura</h2>
+
+                    <p>
+                        Ingresa el correo electrónico
+                        con el que registraste tu perfil.
+                    </p>
+
+                </div>
+
+                <div class="playerField">
+
+                    <label for="existingPlayerEmail">
+                        Correo electrónico
+                    </label>
+
+                    <input
+                        type="email"
+                        id="existingPlayerEmail"
+                        placeholder="ejemplo@correo.com"
+                        maxlength="254"
+                        autocomplete="email"
+                        required
+                    >
+
+                </div>
+
+                <button
+                    type="button"
+                    id="loginPlayerBtn"
+                    class="playerSubmitBtn"
+                >
+                    Continuar aventura
+                    <span aria-hidden="true">→</span>
+                </button>
+
+                <button
+                    type="button"
+                    id="backExistingPlayerBtn"
+                    class="playerBackBtn"
+                >
+                    ← Volver a seleccionar
+                </button>
+
+            </div>
+
+            <div class="playerModalFooter">
+                SimAmbienteCR · Proyecto académico UNED
             </div>
 
         </div>
 
     </div>
+
+
+
+    
+    <!-- ==========================================
+        PANTALLA DE CARGA
+    ========================================== -->
+
+    <div id="loadingScreen">
+
+        <!-- Título 3D animado -->
+        <div id="loadingMovingTitle">
+            <h1 class="loadingGameTitle">
+                Sim<span>Ambiente</span>CR
+            </h1>
+        </div>
+
+        <!-- Información y barra de carga -->
+        <div id="loadingContent">
+
+            <p id="loadingMessage">
+                Preparando tu aventura ambiental...
+            </p>
+
+            <div class="loadingProgressSection">
+
+                <div class="loadingProgressHeader">
+                    <span>Preparando el entorno</span>
+                    <span id="loadingPercentage">0%</span>
+                </div>
+
+                <div
+                    id="loadingBar"
+                    role="progressbar"
+                    aria-label="Progreso de carga"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    aria-valuenow="0"
+                >
+                    <div id="loadingProgress"></div>
+                </div>
+
+            </div>
+
+            <p class="loadingFooter">
+                Explora, aprende y protege nuestro ambiente
+            </p>
+
+        </div>
+
+    </div>
+
 
 
 
@@ -568,10 +829,6 @@
 
     <!-- ==========================================
          ACTIVIDAD 2 - GUANACASTE
-         
-         IMPORTANTE:
-         Ahora se encuentra FUERA de rightPanel.
-         Es una pantalla independiente.
     =========================================== -->
 
     <div id="actividadGuanacaste">
@@ -581,7 +838,7 @@
 
         <button id="menuPausaGuanacaste">
 
-            ☰
+            ⚙️
 
         </button>
 
@@ -618,40 +875,232 @@
 
     </div>
 
-
-    <!-- ======================================
-        MENÚ DE PAUSA
-    ======================================= -->
+    <!-- ==========================================
+        MENÚ DE PAUSA Y OPCIONES
+    ========================================== -->
 
     <div id="pauseMenu">
 
         <div id="pauseContent">
 
-             <h2>
-                  ⚙️ Menú
-            </h2>
+            <!-- MENÚ PRINCIPAL DE PAUSA -->
 
-            <button id="resumeBtn">
+            <div id="pauseMainView">
 
-                ▶ Reanudar
+                <div class="pauseHeader">
+                    <h2 class="pauseTitle">Menú de pausa</h2>
+                    <div class="pauseSeparator"></div>
+                    <p class="pauseSubtitle">
+                        Simulador ambiental interactivo de Costa Rica
+                    </p>
+                </div>
 
-             </button>
+                <div class="pauseButtons">
 
-            <button id="optionsBtn">
+                    <button id="resumeBtn"
+                            class="pauseButton pausePrimary"
+                            type="button">
+                        Reanudar
+                    </button>
 
-                ⚙️ Opciones
+                    <button id="optionsBtn"
+                            class="pauseButton pauseSecondary"
+                            type="button">
+                        Opciones
+                    </button>
 
-            </button>
+                    <button id="mainMenuBtn"
+                            class="pauseButton pauseExit"
+                            type="button">
+                        Menú principal
+                    </button>
 
-            <button id="mainMenuBtn">
+                </div>
 
-                🏠 Menú Principal
+            </div>
 
-            </button>
+            <!-- PANEL DE OPCIONES -->
+
+            <div id="gameOptionsView" hidden>
+
+                <div class="pauseHeader">
+
+                    <h2 class="pauseTitle">
+                        Opciones
+                    </h2>
+
+                    <div class="pauseSeparator"></div>
+
+                    <p class="pauseSubtitle">
+                        Personaliza tu experiencia de juego
+                    </p>
+
+                </div>
+
+                <div class="gameOptionsList">
+
+                    <!-- SONIDO -->
+
+                    <div class="gameOptionCard">
+
+                        <div class="gameOptionHeading">
+                            <h3>Sonido</h3>
+                            <p>Volumen de la música ambiental</p>
+                        </div>
+
+                        <div class="gameOptionControls">
+
+                            <button id="volumeDownBtn"
+                                    class="optionControlBtn"
+                                    type="button"
+                                    aria-label="Disminuir volumen">
+                                −
+                            </button>
+
+                            <input
+                                id="gameVolume"
+                                type="range"
+                                min="0"
+                                max="100"
+                                step="5"
+                                value="50"
+                                aria-label="Volumen de la música"
+                            >
+
+                            <button id="volumeUpBtn"
+                                    class="optionControlBtn"
+                                    type="button"
+                                    aria-label="Aumentar volumen">
+                                +
+                            </button>
+
+                            <span id="volumeValue"
+                                class="optionValue">
+                                50%
+                            </span>
+
+                        </div>
+
+                        <button id="muteGameBtn"
+                                class="optionTextBtn"
+                                type="button">
+                            Silenciar música
+                        </button>
+
+                    </div>
+
+                    <!-- ACCESIBILIDAD -->
+
+                    <div class="gameOptionCard">
+
+                        <div class="gameOptionHeading">
+                            <h3>Accesibilidad</h3>
+                            <p>Tamaño de las letras del videojuego</p>
+                        </div>
+
+                        <div class="gameOptionControls">
+
+                            <button id="fontDecreaseBtn"
+                                    class="optionControlBtn"
+                                    type="button"
+                                    aria-label="Disminuir tamaño de letra">
+                                A−
+                            </button>
+
+                            <input
+                                id="gameFontSize"
+                                type="range"
+                                min="80"
+                                max="140"
+                                step="10"
+                                value="100"
+                                aria-label="Escala del tamaño de letra"
+                            >
+
+                            <button id="fontIncreaseBtn"
+                                    class="optionControlBtn"
+                                    type="button"
+                                    aria-label="Aumentar tamaño de letra">
+                                A+
+                            </button>
+
+                            <span id="fontSizeValue"
+                                class="optionValue">
+                                100%
+                            </span>
+
+                        </div>
+
+                        <button id="resetFontBtn"
+                                class="optionTextBtn"
+                                type="button">
+                            Restablecer tamaño
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="pauseButtons optionsFooterButtons">
+
+                    <button id="backToPauseBtn"
+                            class="pauseButton pausePrimary"
+                            type="button">
+                        Volver
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="pauseFooter">
+                SimAmbienteCR
+            </div>
 
         </div>
 
     </div>
+
+    
+    
+    <!-- ==========================================
+        VENTANA GLOBAL DE ALERTAS
+    ========================================== -->
+
+    <div
+        id="gameAlertModal"
+        class="gameAlertModal"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="gameAlertTitle"
+        aria-describedby="gameAlertMessage"
+        hidden
+    >
+        <div class="gameAlertContent">
+
+            <div class="gameAlertIcon" aria-hidden="true">
+                ⚠
+            </div>
+
+            <h2 id="gameAlertTitle">
+                ¡Atención!
+            </h2>
+
+            <div class="gameAlertSeparator"></div>
+
+            <p id="gameAlertMessage"></p>
+
+            <button
+                type="button"
+                id="gameAlertRetryBtn"
+                class="gameAlertRetryBtn"
+            >
+                Reintentar
+            </button>
+
+        </div>
+    </div>
+    
 
     <!-- ==========================================
          AUDIO
@@ -665,6 +1114,13 @@
             src="sounds/ambiente.mp3"
             type="audio/mp3">
 
+    </audio>
+
+
+    <audio
+        id="sonidoAlerta"
+        src="sounds/sonidoAlerta.mp3"
+        preload="auto">
     </audio>
 
 
@@ -726,10 +1182,14 @@
 
     <script src="js/mapa.js"></script>
 
+    <!-- SISTEMA GLOBAL DE ALERTAS -->
+    <script src="js/alertas.js"></script>
 
     <!-- LÓGICA PRINCIPAL -->
-
     <script src="js/main.js"></script>
+
+    <!-- OPCIONES DEL VIDEOJUEGO -->
+    <script src="js/opciones.js"></script>
 
 
 </body>

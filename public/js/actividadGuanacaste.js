@@ -905,6 +905,34 @@ function configurarMouseGuanacaste() {
 function colocarElementoGuanacaste(event) {
 
     // ==========================================
+    // BLOQUEAR INTERACCIÓN DURANTE LA PAUSA
+    // ==========================================
+
+    const menuPausa = document.getElementById("pauseMenu");
+
+    const pausaAbierta = menuPausa &&
+        window.getComputedStyle(menuPausa).display !== "none";
+
+    if (pausaAbierta) {
+        return;
+    }
+
+    // No permitir colocar elementos después de evaluar
+    if (actividadGuanacasteEvaluada) {
+        return;
+    }
+
+    // Evitar clics si Guanacaste no está visible
+    const actividad = document.getElementById("actividadGuanacaste");
+
+    if (
+        !actividad ||
+        window.getComputedStyle(actividad).display === "none"
+    ) {
+        return;
+    }
+
+    // ==========================================
     // COMPROBAR ELEMENTO SELECCIONADO
     // ==========================================
 
@@ -1497,26 +1525,99 @@ function mostrarResultadoGuanacaste(
 
 
 // ==========================================
-// CERRAR RESULTADO
+// FINALIZAR ACTIVIDAD Y VOLVER A REGIONES
 // ==========================================
 
 function cerrarResultadoGuanacaste() {
 
-    const resultado =
-        document.getElementById(
-            "resultadoGuanacaste"
-        );
+    const resultado = document.getElementById(
+        "resultadoGuanacaste"
+    );
 
+    const actividad = document.getElementById(
+        "actividadGuanacaste"
+    );
 
-    if (!resultado) {
-        return;
+    const escenarioPrincipal = document.getElementById(
+        "escenarioPrincipal"
+    );
+
+    // Ocultar retroalimentación
+    if (resultado) {
+        resultado.style.display = "none";
     }
 
+    // Ocultar Guanacaste
+    if (actividad) {
+        actividad.style.display = "none";
+    }
 
-    resultado.style.display =
-        "none";
+    // Reiniciar estado para una nueva partida
+    reiniciarActividadGuanacaste();
+
+    // Volver a seleccionar región
+    if (escenarioPrincipal) {
+        escenarioPrincipal.style.display = "flex";
+    }
+
+    console.log(
+        "Actividad Guanacaste finalizada. Regresando a regiones."
+    );
 }
 
+// ==========================================
+// REINICIAR ACTIVIDAD GUANACASTE
+// ==========================================
+
+function reiniciarActividadGuanacaste() {
+
+    // Eliminar del escenario los elementos colocados
+    objetosColocados.forEach(objeto => {
+
+        if (objeto.entidad) {
+            objeto.entidad.destroy();
+        }
+
+    });
+
+    // Limpiar elementos y selección
+    objetosColocados = [];
+    objetoSeleccionado = null;
+
+    // Reiniciar puntuación
+    puntuacionGuanacaste = 0;
+
+    // Reiniciar estados
+    actividadGuanacasteEvaluada = false;
+    actividadGuanacasteIniciada = false;
+
+    // Reiniciar elementos pendientes, si se utiliza
+    if (typeof elementosPendientesGuanacaste !== "undefined") {
+        elementosPendientesGuanacaste = 0;
+    }
+
+    // Limpiar mensajes
+    const mensaje = document.getElementById(
+        "mensajeGuanacaste"
+    );
+
+    if (mensaje) {
+        mensaje.textContent = "";
+        mensaje.classList.remove(
+            "mostrarMensajeGuanacaste"
+        );
+    }
+
+    // Reconstruir panel de elementos
+    crearInterfazGuanacaste();
+
+    // Actualizar contador
+    actualizarContadorGuanacaste();
+
+    console.log(
+        "Guanacaste reiniciado. Listo para jugar nuevamente."
+    );
+}
 
 // ==========================================
 // MENSAJE
@@ -1622,22 +1723,19 @@ function redimensionarActividadGuanacaste() {
 
 function configurarMenuPausaGuanacaste() {
 
-    const boton =
-        document.getElementById(
-            "menuPausaGuanacaste"
-        );
+    const boton = document.getElementById("menuPausaGuanacaste");
 
     if (!boton) {
-
-        console.error(
-            "No se encontró #menuPausaGuanacaste."
-        );
-
+        console.error("No se encontró el botón de pausa de Guanacaste.");
         return;
     }
 
-    boton.addEventListener(
-        "click",
-        abrirMenuPausa
-    );
+    boton.onclick = function(event) {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        abrirMenuPausa();
+
+    };
 }

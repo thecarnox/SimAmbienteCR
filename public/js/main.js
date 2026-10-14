@@ -49,9 +49,149 @@ const loadingProgress = document.getElementById("loadingProgress");
 const playerModal = document.getElementById("playerModal");
 const playerName = document.getElementById("playerName");
 const startPlayerBtn = document.getElementById("startPlayerBtn");
+const playerEmail = document.getElementById("playerEmail");
+const playerCenter = document.getElementById("playerCenter");
+
+
+const playerSelection = document.getElementById("playerSelection");
+
+const newPlayerForm = document.getElementById("newPlayerForm");
+const existingPlayerForm = document.getElementById("existingPlayerForm");
+
+const newPlayerBtn = document.getElementById("newPlayerBtn");
+const existingPlayerBtn = document.getElementById("existingPlayerBtn");
+
+const existingPlayerEmail = document.getElementById("existingPlayerEmail");
+const loginPlayerBtn = document.getElementById("loginPlayerBtn");
+
+const backNewPlayerBtn = document.getElementById("backNewPlayerBtn");
+const backExistingPlayerBtn = document.getElementById("backExistingPlayerBtn");
+const closePlayerModalBtn = document.getElementById("closePlayerModalBtn");
+
+// ==========================================
+// MOSTRAR VISTAS DEL MODAL
+// ==========================================
+
+
+function mostrarVistaJugador(vista) {
+
+    if (iniciandoJugador) {
+        return;
+    }
+
+    playerSelection.style.display =
+        vista === "seleccion" ? "block" : "none";
+
+    newPlayerForm.style.display =
+        vista === "nuevo" ? "block" : "none";
+
+    existingPlayerForm.style.display =
+        vista === "existente" ? "block" : "none";
+}
+
+
+// ==========================================
+// SELECCIÓN DEL TIPO DE JUGADOR
+// ==========================================
+
+newPlayerBtn.addEventListener("click", () => {
+    mostrarVistaJugador("nuevo");
+});
+
+existingPlayerBtn.addEventListener("click", () => {
+    mostrarVistaJugador("existente");
+});
+
+// ==========================================
+// VOLVER A LA SELECCIÓN
+// ==========================================
+
+backNewPlayerBtn.addEventListener("click", () => {
+    mostrarVistaJugador("seleccion");
+});
+
+backExistingPlayerBtn.addEventListener("click", () => {
+    mostrarVistaJugador("seleccion");
+});
+
+// ==========================================
+// CANCELAR
+// ==========================================
+
+closePlayerModalBtn.addEventListener("click", () => {
+
+    if (iniciandoJugador) {
+        return;
+    }
+
+    playerModal.style.display = "none";
+    mostrarVistaJugador("seleccion");
+
+});
+
 
 let jugadorID = null;
 let jugadorNombre = "";
+
+
+let progresoJugador = [];
+
+// ==========================================
+// CARGAR PROGRESO DEL JUGADOR
+// ==========================================
+
+async function cargarProgresoJugador(idJugador) {
+
+    try {
+        const respuesta = await fetch(
+            `/progreso/jugador/${idJugador}`
+        );
+
+        if (!respuesta.ok) {
+            throw new Error(
+                `Error HTTP ${respuesta.status}`
+            );
+        }
+
+        const datos = await respuesta.json();
+
+        progresoJugador = Array.isArray(datos.progreso)
+            ? datos.progreso
+            : [];
+
+        console.log(
+            "Progreso recuperado:",
+            progresoJugador
+        );
+
+        return progresoJugador;
+
+    } catch (error) {
+
+        console.error(
+            "Error recuperando el progreso:",
+            error
+        );
+
+        progresoJugador = [];
+
+        return null;
+    }
+}
+
+
+
+function actividadEstaCompletada(idActividad) {
+
+    return progresoJugador.some(
+        progreso =>
+            progreso.actividad_id === idActividad &&
+            progreso.estado === "completada"
+    );
+
+}
+
+
 
 
 // ==========================================
@@ -76,10 +216,14 @@ app.setCanvasResolution(pc.RESOLUTION_AUTO);
 // Abrir menú de pausa
 function abrirMenuPausa() {
 
-    pauseMenu.style.display = 'flex';
+    if (typeof window.restablecerVistaPausa === "function") {
+        window.restablecerVistaPausa();
+    }
 
-    // Pausar música
+    pauseMenu.style.display = "flex";
+
     bgSound.pause();
+
 }
 
 // Botón menú principal
@@ -88,40 +232,45 @@ menuToggleBtn.addEventListener(
     abrirMenuPausa
 );
 
+// ==========================================
+// OPCIONES DEL VIDEOJUEGO
+// ==========================================
+
+// Abrir opciones
+optionsBtn.addEventListener("click", () => {
+
+    pauseMainView.hidden = true;
+    gameOptionsView.hidden = false;
+
+});
+
+// Regresar al menú de pausa
+backToPauseBtn.addEventListener("click", () => {
+
+    gameOptionsView.hidden = true;
+    pauseMainView.hidden = false;
+
+});
+
 // Reanudar
-resumeBtn.addEventListener(
-    "click",
-    () => {
+resumeBtn.addEventListener("click", () => {
 
-        pauseMenu.style.display =
-            "none";
+    pauseMenu.style.display = "none";
 
-        bgSound.play();
-
-
-        // Reanudar Limón
-        if (
-            typeof actividadLimonPausada !==
-            "undefined"
-        ) {
-
-            actividadLimonPausada =
-                false;
-
-        }
-
+    if (typeof window.restablecerVistaPausa === "function") {
+        window.restablecerVistaPausa();
     }
-);
 
-// Opciones
-optionsBtn.addEventListener(
-    'click',
-    () => {
+    bgSound.play().catch(error => {
+        console.warn("No se pudo reanudar la música:", error);
+    });
 
-        alert("Opciones próximamente");
-
+    if (typeof actividadLimonPausada !== "undefined") {
+        actividadLimonPausada = false;
     }
-);
+
+});
+
 
 // Menú principal
 mainMenuBtn.addEventListener(
@@ -133,89 +282,225 @@ mainMenuBtn.addEventListener(
     }
 );
 
-// ==========================================
-// BOTÓN MODO MAPA
-// ==========================================
-mapBtn.addEventListener('click', () => {
 
-    playerModal.style.display="flex";
+ // ==========================================
+ // BOTÓN MODO MAPA
+ // ==========================================
 
-    startPlayerBtn.addEventListener("click", async ()=>{
+mapBtn.addEventListener("click", () => {
+    mostrarVistaJugador("seleccion");
+    playerModal.style.display = "flex";
+});
 
-    const nombre = playerName.value.trim();
 
-    if(nombre===""){
+async function iniciarSesionJugador(datos) {
 
-        alert("Ingrese su nombre.");
-
-        return;
-
+    if (
+        !Number.isSafeInteger(datos.id) ||
+        datos.id <= 0
+    ) {
+        throw new Error("ID de jugador inválido.");
     }
 
-    try{
+    // Identificación del jugador
+    jugadorID = datos.id;
+    jugadorNombre = datos.nombre;
 
-        const respuesta = await fetch("/players/create",{
+    // Recuperar progreso
+    const progreso = await cargarProgresoJugador(jugadorID);
 
-            method:"POST",
+    if (progreso === null) {
+        throw new Error(
+            "No se pudo recuperar el progreso del jugador."
+        );
+    }
 
-            headers:{
-                "Content-Type":"application/json"
+    // Guardar sesión después de validar
+    sessionStorage.setItem(
+        "jugadorId",
+        String(jugadorID)
+    );
+
+    console.log("Jugador activo:", jugadorID);
+    console.log("Nombre:", jugadorNombre);
+    console.log("Progreso:", progreso);
+
+    // Pantalla de carga
+    await mostrarPantallaCarga(datos.existe);
+
+    playerModal.style.display = "none";
+
+    // Música
+    bgSound.volume = 0.5;
+
+    bgSound.play().catch(error => {
+        console.warn(
+            "No se pudo reproducir la música:",
+            error
+        );
+    });
+
+    // Ocultar menú principal
+    menu.style.display = "none";
+
+    // Iniciar diálogos
+    currentDialog = 0;
+    mostrarDialogo(currentDialog);
+
+    // Abrir escenario principal
+    abrirEscenarioPrincipal();
+
+    setTimeout(() => {
+        if (
+            typeof mapInstance !== "undefined" &&
+            mapInstance
+        ) {
+            mapInstance.invalidateSize();
+        }
+    }, 100);
+}
+
+
+// ==========================================
+// REGISTRO E INICIO DEL JUGADOR
+// ==========================================
+
+
+let iniciandoJugador = false;
+
+startPlayerBtn.addEventListener("click", async () => {
+
+    if (iniciandoJugador) return;
+
+    const nombre = playerName.value.trim();
+    const correo = playerEmail.value.trim();
+    const centroUniversitario = playerCenter.value;
+
+    if (!nombre || !correo || !centroUniversitario) {
+        mostrarAlertaJuego(
+            "Debes completar el nombre, correo electrónico y centro universitario antes de continuar."
+        );
+        return;
+    }
+
+    const formatoCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!formatoCorreo.test(correo)) {
+        mostrarAlertaJuego(
+            "El correo electrónico ingresado no tiene un formato válido. Ejemplo: estudiante@correo.com."
+        );
+        return;
+    }
+
+    iniciandoJugador = true;
+    startPlayerBtn.disabled = true;
+    loginPlayerBtn.disabled = true;
+
+    try {
+
+        const respuesta = await fetch("/players/create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
             },
-
-            body:JSON.stringify({
-
-                nombre:nombre
-
+            body: JSON.stringify({
+                nombre: nombre,
+                correo: correo,
+                centro_universitario: centroUniversitario
             })
-
         });
 
         const datos = await respuesta.json();
-        
-        console.log("Respuesta completa:", datos);
-        console.log("Existe:", datos.existe);
-        console.log("Tipo:", typeof datos.existe);
-        
-        jugadorID = datos.id;
 
-        jugadorNombre = nombre;
-
-
-        await mostrarPantallaCarga(datos.existe);
-
-        playerModal.style.display="none";
-
-        bgSound.volume=0.5;
-        bgSound.play();
-
-        menu.style.display="none";
-
-
-        currentDialog=0;
-
-        mostrarDialogo(currentDialog);
-
-        abrirEscenarioPrincipal();
-        
-        setTimeout(()=>{
-
-            mapInstance.invalidateSize();
-
-        },100);
-
+    if (!respuesta.ok) {
+        mostrarAlertaJuego(
+            datos.mensaje ||
+            "No fue posible registrar al jugador. Inténtalo nuevamente."
+        );
+        return;
     }
 
-    catch(error){
+        await iniciarSesionJugador(datos);
 
-        console.error(error);
+    } catch (error) {
 
-        alert("No se pudo conectar con el servidor.");
+        console.error("Error registrando jugador:", error);
+
+        mostrarAlertaJuego(
+            "No fue posible completar el registro o iniciar la partida. Inténtalo nuevamente."
+        );
+
+    } finally {
+
+        iniciandoJugador = false;
+        startPlayerBtn.disabled = false;
+        loginPlayerBtn.disabled = false;
 
     }
-
 });
 
+
+
+loginPlayerBtn.addEventListener("click", async () => {
+
+    if (iniciandoJugador) return;
+
+    const correo = existingPlayerEmail.value.trim();
+
+    const formatoCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!formatoCorreo.test(correo)) {
+        mostrarAlertaJuego(
+            "Debes ingresar un correo electrónico válido para acceder a tu partida."
+        );
+        return;
+    }
+
+    iniciandoJugador = true;
+    loginPlayerBtn.disabled = true;
+    startPlayerBtn.disabled = true;
+
+    try {
+
+        const respuesta = await fetch("/players/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                correo: correo
+            })
+        });
+
+        const datos = await respuesta.json();
+
+    if (!respuesta.ok) {
+        mostrarAlertaJuego(
+            datos.mensaje ||
+            "No fue posible encontrar al jugador. Verifica el correo electrónico."
+        );
+        return;
+    }
+
+        await iniciarSesionJugador(datos);
+
+    } catch (error) {
+
+        console.error("Error accediendo al jugador:", error);
+
+        mostrarAlertaJuego(
+            "No fue posible recuperar la información del jugador. Inténtalo nuevamente."
+        );
+
+    } finally {
+
+        iniciandoJugador = false;
+        loginPlayerBtn.disabled = false;
+        startPlayerBtn.disabled = false;
+
+    }
 });
+
 
 
 // ==========================================
@@ -231,76 +516,209 @@ fullscreenBtn.addEventListener('click', () => {
 });
 
 
-// ==========================================
-// PANTALLA DE CARGA
-// ==========================================
-async function mostrarPantallaCarga(esJugadorExistente){
 
-    playerModal.style.display="none";
+/* ==========================================
+   PANTALLA DE CARGA - SIMAMBIENTECR
+   DURACIÓN: 2.75 SEGUNDOS
+========================================== */
 
-    loadingScreen.style.display="flex";
+async function mostrarPantallaCarga(esJugadorExistente) {
 
-    if(esJugadorExistente){
+    playerModal.style.display = "none";
 
-        loadingMessage.innerHTML=
+    loadingScreen.style.display = "flex";
 
-        "👋 Bienvenido nuevamente <b>" +
+    const loadingPercentage =
+        document.getElementById("loadingPercentage");
 
-        jugadorNombre +
+    const loadingBar =
+        document.getElementById("loadingBar");
 
-        "</b>.<br><br>Estamos cargando tu progreso...";
+    // Mensaje personalizado según el jugador
 
-    }else{
+    if (esJugadorExistente) {
 
-        loadingMessage.innerHTML=
+        loadingMessage.textContent =
+            `Bienvenido nuevamente, ${jugadorNombre}. ` +
+            "Estamos preparando tu aventura ambiental...";
 
-        "🌱 Bienvenido <b>" +
+    } else {
 
-        jugadorNombre +
-
-        "</b>.<br><br>Preparando tu primera aventura...";
+        loadingMessage.textContent =
+            `Bienvenido, ${jugadorNombre}. ` +
+            "Preparando tu primera aventura...";
 
     }
 
-    loadingProgress.style.width="0%";
+    // Reiniciar progreso
 
-    let progreso=0;
+    loadingProgress.style.width = "0%";
 
-    return new Promise(resolve=>{
+    if (loadingPercentage) {
+        loadingPercentage.textContent = "0%";
+    }
 
-        const intervalo=setInterval(()=>{
+    if (loadingBar) {
+        loadingBar.setAttribute("aria-valuenow", "0");
+    }
 
-            progreso+=2;
+    let progreso = 0;
 
-            loadingProgress.style.width=progreso+"%";
+    return new Promise(resolve => {
 
-            if(progreso>=100){
+        const intervalo = setInterval(() => {
+
+            // Incremento del progreso
+
+            progreso = Math.min(progreso + 2, 100);
+
+            loadingProgress.style.width =
+                progreso + "%";
+
+            if (loadingPercentage) {
+                loadingPercentage.textContent =
+                    progreso + "%";
+            }
+
+            if (loadingBar) {
+                loadingBar.setAttribute(
+                    "aria-valuenow",
+                    String(progreso)
+                );
+            }
+
+            // Finalizar carga
+
+            if (progreso >= 100) {
 
                 clearInterval(intervalo);
 
-                setTimeout(()=>{
+                setTimeout(() => {
 
-                    loadingScreen.style.display="none";
+                    loadingScreen.style.display = "none";
 
                     resolve();
 
-                },500);
+                }, 250);
 
             }
 
-        },100);
+        }, 50);
 
     });
-
 
 }
 
 
-window.addEventListener("resize",()=>{
 
-    characterApp.resizeCanvas();
+/* ==========================================
+   ANIMACIÓN DEL TÍTULO 3D
+   PANTALLA DE CARGA
+========================================== */
 
-    });
+let loadingTitleAnimation = null;
+
+function iniciarAnimacionTituloCarga() {
+
+    detenerAnimacionTituloCarga();
+
+    const titulo = document.getElementById(
+        "loadingMovingTitle"
+    );
+
+    const pantalla = document.getElementById(
+        "loadingScreen"
+    );
+
+    if (!titulo || !pantalla) {
+        return;
+    }
+
+    let x = 20;
+    let y = 20;
+
+    // Velocidad en píxeles por segundo
+
+    let velocidadX = 850;
+    let velocidadY = 620;
+
+    let tiempoAnterior = performance.now();
+
+    function animar(tiempoActual) {
+
+        const delta = Math.min(
+            (tiempoActual - tiempoAnterior) / 1000,
+            0.05
+        );
+
+        tiempoAnterior = tiempoActual;
+
+        const anchoMaximo = Math.max(
+            0,
+            pantalla.clientWidth - titulo.offsetWidth
+        );
+
+        const altoMaximo = Math.max(
+            0,
+            pantalla.clientHeight - titulo.offsetHeight
+        );
+
+        x += velocidadX * delta;
+        y += velocidadY * delta;
+
+        // Rebote horizontal
+
+        if (x >= anchoMaximo) {
+            x = anchoMaximo;
+            velocidadX = -Math.abs(velocidadX);
+        } else if (x <= 0) {
+            x = 0;
+            velocidadX = Math.abs(velocidadX);
+        }
+
+        // Rebote vertical
+
+        if (y >= altoMaximo) {
+            y = altoMaximo;
+            velocidadY = -Math.abs(velocidadY);
+        } else if (y <= 0) {
+            y = 0;
+            velocidadY = Math.abs(velocidadY);
+        }
+
+        titulo.style.transform =
+            `translate3d(${x}px, ${y}px, 0)`;
+
+        loadingTitleAnimation =
+            requestAnimationFrame(animar);
+    }
+
+    loadingTitleAnimation =
+        requestAnimationFrame(animar);
+}
+
+function detenerAnimacionTituloCarga() {
+
+    if (loadingTitleAnimation !== null) {
+
+        cancelAnimationFrame(loadingTitleAnimation);
+
+        loadingTitleAnimation = null;
+    }
+}
+
+
+
+window.addEventListener("resize", () => {
+
+    if (
+        typeof characterApp !== "undefined" &&
+        characterApp
+    ) {
+        characterApp.resizeCanvas();
+    }
+
+});
 
 
 
