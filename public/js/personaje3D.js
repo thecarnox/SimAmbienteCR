@@ -215,16 +215,47 @@ function cargarModeloPersonaje(modelo) {
                 const tamano = aabb.halfExtents.length() * 2;
 
                 // Identificar si el personaje es el mono
+                            
+                // ==================================
+                // AJUSTAR ALTURA SEGÚN EL PERSONAJE
+                // ==================================
+
                 const esMono = modelo.toLowerCase().includes("mono.glb");
 
-                // Ajustar altura únicamente del mono
-                const ajusteAltura = esMono ? -tamano * 0.15 : 0;
+                const esGuacamaya = modelo.toLowerCase().includes("guacamaya.glb");
+
+                let ajusteAltura = 0;
+
+                // Mantener el ajuste original del mono
+                if (esMono) {
+                    ajusteAltura = -tamano * 0.15;
+                }
+
+                
+                // ==================================
+                // AJUSTAR ALTURA DE LA GUACAMAYA
+                // ==================================
+
+                // Bajar únicamente la guacamaya
+                if (esGuacamaya) {
+                    ajusteAltura = -tamano * 1.10;
+                }
 
                 personaje.setPosition(
                     -centro.x,
                     -centro.y + ajusteAltura,
                     -centro.z
                 );
+
+                // ==================================
+                // GIRAR ÚNICAMENTE LA GUACAMAYA
+                // ==================================
+
+                if (esGuacamaya) {
+                    personaje.setLocalEulerAngles(0, 50, 0);
+                }
+
+
 
                 const camera =
                     characterApp.root.findByName("CameraPersonaje");

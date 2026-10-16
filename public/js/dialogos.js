@@ -88,6 +88,31 @@ function mostrarDialogo(indice) {
             return;
         }
 
+        
+        // ==========================================
+        // DIÁLOGOS DE GUANACASTE
+        // ==========================================
+
+        if (
+            typeof dialogosGuanacasteActivos !== "undefined" &&
+            dialogosGuanacasteActivos
+        ) {
+
+            dialogoGuanacasteActual++;
+
+            if (
+                dialogoGuanacasteActual <
+                dialogosGuanacaste.length
+            ) {
+                mostrarDialogoGuanacaste();
+            } else {
+                finalizarDialogosGuanacaste();
+            }
+
+            return;
+        }
+
+
 
         // ======================================
         // DIÁLOGOS NORMALES DEL JUEGO

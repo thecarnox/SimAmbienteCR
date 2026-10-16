@@ -24,7 +24,6 @@ const bgSound = document.getElementById('bgSound');
 
 // MENÚ PAUSA
 // ==========================================
-const menuToggleBtn = document.getElementById('menuToggleBtn');
 const pauseMenu = document.getElementById('pauseMenu');
 const resumeBtn = document.getElementById('resumeBtn');
 const optionsBtn = document.getElementById('optionsBtn');
@@ -226,11 +225,6 @@ function abrirMenuPausa() {
 
 }
 
-// Botón menú principal
-menuToggleBtn.addEventListener(
-    'click',
-    abrirMenuPausa
-);
 
 // ==========================================
 // OPCIONES DEL VIDEOJUEGO
