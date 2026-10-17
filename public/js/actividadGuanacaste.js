@@ -166,8 +166,31 @@ const modelosGuanacaste = {
 
     roca: "/models/roca.glb",
 
-    basura: "/models/basura.glb"
+    basura: "/models/basura.glb",
 
+    contenedorBasura: "/models/Contenedor1.glb",
+
+    flores: "/models/flores.glb",
+
+    llantas: "/models/llantas.glb",
+
+    soda: "/models/soda.glb",
+
+    banana: "/models/banana.glb"
+
+};
+
+const escalasElementosGuanacaste = {
+    arbol: 0.5,
+    arbusto: 0.5,
+    pasto: 0.5,
+    roca: 0.5,
+    basura: 0.5,
+    contenedorBasura: 0.2,
+    flores: 0.2,
+    llantas: 0.2,
+    soda: 0.1,
+    banana: 0.003
 };
 
 
@@ -181,7 +204,12 @@ const valoresElementos = {
     arbusto: 2,
     pasto: 1,
     roca: 1,
-    basura: -2
+    basura: -2,
+    contenedorBasura: 2,
+    flores: 2,
+    llantas: -2,
+    soda: -2,
+    banana: 2
 };
 
 // 4 o más negativos producen MALO.
@@ -212,25 +240,51 @@ function obtenerOcupacionGuanacaste() {
 }
 
 // Evitar evaluar mientras se cargan modelos.
+
 function actualizarDisponibilidadEvaluacionGuanacaste() {
+
     const boton = document.getElementById(
         "btnEvaluarGuanacaste"
     );
 
-    if (
-        !boton ||
-        simulacionGuanacasteActiva ||
-        actividadGuanacasteEvaluada
-    ) {
+    if (!boton) {
         return;
     }
 
-    boton.disabled = elementosPendientesGuanacaste > 0;
+    if (simulacionGuanacasteActiva || actividadGuanacasteEvaluada) {
+        boton.disabled = true;
+        return;
+    }
 
-    boton.textContent = elementosPendientesGuanacaste > 0
-        ? "⏳ Cargando elementos..."
-        : "✅ Evaluar";
+    const colocados = objetosColocados.length;
+    const pendientes = elementosPendientesGuanacaste;
+
+    // Exigir exactamente cinco objetos cargados
+    const puedeEvaluar =
+        colocados === MAXIMO_ELEMENTOS &&
+        pendientes === 0 &&
+        !dialogosGuanacasteActivos;
+
+    boton.disabled = !puedeEvaluar;
+
+    if (pendientes > 0) {
+
+        boton.textContent = "⏳ Cargando elementos...";
+
+    } else if (colocados < MAXIMO_ELEMENTOS) {
+
+        const faltantes = MAXIMO_ELEMENTOS - colocados;
+
+        boton.textContent =
+            `🔒 Faltan ${faltantes} objeto(s)`;
+
+    } else {
+
+        boton.textContent = "✅ Evaluar";
+
+    }
 }
+
 
 
 // ==========================================
@@ -313,9 +367,10 @@ const dialogosGuanacaste = [
     {
         nombre: "Guacamaya - Guía Ambiental",
         texto:
-            "Podrás seleccionar árboles, arbustos, " +
-            "pasto, rocas y basura para colocarlos " +
-            "sobre el terreno."
+            "Dispones de 10 tipos de elementos para elegir, " +
+            "entre ellos vegetación, rocas y diferentes residuos. " +
+            "Debes colocar cinco objetos sobre el terreno " +
+            "antes de iniciar la simulación."
     },
     {
         nombre: "Guacamaya - Guía Ambiental",
@@ -346,6 +401,95 @@ const dialogosGuanacaste = [
             "afectan al ambiente."
     }
 ];
+
+
+
+
+/**
+ * Guarda los puntos y progreso de Guanacaste.
+ * Actividad ID: 2
+ */
+async function guardarProgresoGuanacaste(tipoResultado) {
+
+    const jugadorId = Number(
+        sessionStorage.getItem("jugadorId")
+    );
+
+    if (!Number.isSafeInteger(jugadorId) || jugadorId <= 0) {
+        console.warn(
+            "No se pudo guardar Guanacaste: jugador no identificado."
+        );
+        return false;
+    }
+
+    const puntosPorResultado = {
+        bueno: 20,
+        medio: 10,
+        riesgo: 0,
+        malo: 0
+    };
+
+    const puntos = puntosPorResultado[
+        String(tipoResultado).toLowerCase()
+    ];
+
+    if (puntos === undefined) {
+        console.error(
+            "Resultado de Guanacaste desconocido:",
+            tipoResultado
+        );
+        return false;
+    }
+
+    const datos = {
+        jugador_id: jugadorId,
+        actividad_id: 2,
+        puntos: puntos,
+        estado: puntos >= 10 ? "completada" : "pendiente",
+        actividad_finalizada: true
+    };
+
+    try {
+        const respuesta = await fetch("/progreso/guardar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(datos)
+        });
+
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok) {
+            throw new Error(
+                resultado.mensaje ||
+                `Error HTTP ${respuesta.status}`
+            );
+        }
+
+        console.log(
+            "Progreso de Guanacaste guardado:",
+            resultado
+        );
+
+        if (typeof cargarProgresoJugador === "function") {
+            await cargarProgresoJugador(jugadorId);
+        }
+
+        return true;
+
+    } catch (error) {
+        console.error(
+            "No se pudo guardar el progreso de Guanacaste:",
+            error
+        );
+
+        return false;
+    }
+}
+
+
+
 
 // ==========================================
 // INICIAR DIÁLOGOS DE GUANACASTE
@@ -388,6 +532,7 @@ function mostrarDialogoGuanacaste() {
 // FINALIZAR DIÁLOGOS DE GUANACASTE
 // ==========================================
 
+
 function finalizarDialogosGuanacaste() {
 
     dialogosGuanacasteActivos = false;
@@ -396,10 +541,14 @@ function finalizarDialogosGuanacaste() {
     dialogBox.style.display = "none";
     nextDialogBtn.textContent = "Continuar ►";
 
+    // Actualizar disponibilidad del botón Evaluar
+    actualizarDisponibilidadEvaluacionGuanacaste();
+
     console.log(
         "Instrucciones de Guanacaste finalizadas."
     );
 }
+
 
 
 
@@ -975,48 +1124,30 @@ function crearInterfazGuanacaste() {
     );
 
 
+    
     // ==========================================
-    // BOTONES
+    // BOTONES DE ELEMENTOS
     // ==========================================
+    crearBotonElemento(panel, "🌳", "Árbol", "arbol");
 
-    crearBotonElemento(
-        panel,
-        "🌳",
-        "Árbol",
-        "arbol"
-    );
+    crearBotonElemento(panel, "🌿", "Arbusto", "arbusto");
 
+    crearBotonElemento(panel, "🌱", "Pasto", "pasto");
 
-    crearBotonElemento(
-        panel,
-        "🌿",
-        "Arbusto",
-        "arbusto"
-    );
+    crearBotonElemento(panel, "🪨", "Roca", "roca");
 
+    crearBotonElemento(panel, "🚮", "Basura", "basura");
 
-    crearBotonElemento(
-        panel,
-        "🌱",
-        "Pasto",
-        "pasto"
-    );
+    crearBotonElemento(panel, "🗑️", "Contenedor de basura", "contenedorBasura");
 
+    crearBotonElemento(panel, "🌸", "Flores", "flores");
 
-    crearBotonElemento(
-        panel,
-        "🪨",
-        "Roca",
-        "roca"
-    );
+    crearBotonElemento(panel, "🛞", "Llantas", "llantas");
 
+    crearBotonElemento(panel, "🥤", "Lata de refresco", "soda");
 
-    crearBotonElemento(
-        panel,
-        "🗑️",
-        "Basura",
-        "basura"
-    );
+    crearBotonElemento(panel, "🍌", "Banana", "banana");
+
 
 
     // ==========================================
@@ -1565,7 +1696,13 @@ function cargarElementoGuanacaste(tipo, x, z, y) {
                 // Colocar en el terreno.
                 contenedor.setLocalPosition(x, y, z);
 
-                modelo.setLocalScale(0.5, 0.5, 0.5);
+                const escala = escalasElementosGuanacaste[tipo] ?? 0.5;
+
+                modelo.setLocalScale(escala, escala, escala);
+
+                if (tipo === "contenedorBasura") {
+                    modelo.setLocalEulerAngles(0, 35, 0);
+                }
 
                 appActual.root.addChild(contenedor);
 
@@ -2164,14 +2301,21 @@ function evaluarTerrenoGuanacaste() {
     }
 
     // Evitar evaluar un terreno sin elementos.
-    if (objetosColocados.length === 0) {
+
+    if (objetosColocados.length !== MAXIMO_ELEMENTOS) {
+
+        const faltantes =
+            MAXIMO_ELEMENTOS - objetosColocados.length;
 
         mostrarMensajeGuanacaste(
-            "Coloca al menos un elemento antes de evaluar."
+            `Debes colocar los ${MAXIMO_ELEMENTOS} objetos ` +
+            `antes de iniciar la simulación. ` +
+            `Te faltan ${faltantes} objeto(s).`
         );
 
         return;
     }
+
 
     // Mantener puntuación como dato informativo.
     puntuacionGuanacaste = objetosColocados.reduce(
@@ -2257,6 +2401,7 @@ function mostrarResultadoGuanacaste(tipo, mensaje) {
         return;
     }
 
+
     // Determinar nivel de evaluación
     let nivel = "MALO";
     let claseNivel = "resultadoMaloGuanacaste";
@@ -2327,6 +2472,28 @@ function mostrarResultadoGuanacaste(tipo, mensaje) {
 
     // Mostrar ventana
     resultado.style.display = "flex";
+
+    
+    const botonContinuar = document.getElementById(
+        "continuarResultadoGuanacaste"
+    );
+
+    if (botonContinuar) {
+        botonContinuar.disabled = true;
+    }
+
+    guardarProgresoGuanacaste(tipo).then(guardado => {
+        if (botonContinuar) {
+            botonContinuar.disabled = false;
+        }
+
+        if (!guardado) {
+            mostrarMensajeGuanacaste(
+                "No se pudo guardar el progreso. Inténtalo nuevamente."
+            );
+        }
+    });
+
 }
 
 

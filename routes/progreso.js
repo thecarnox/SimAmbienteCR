@@ -68,8 +68,7 @@ router.get("/jugador/:jugadorId", (req, res) => {
 
         const guanacasteDesbloqueada = Boolean(
             progresoLimon &&
-            progresoLimon.estado === "completada" &&
-            progresoLimon.puntos >= PUNTOS_MINIMOS_LIMON
+            progresoLimon.estado === "completada"
         );
 
         return res.json({
@@ -146,8 +145,10 @@ router.post("/guardar", (req, res) => {
                 : "pendiente";
     }
 
+    
     // ======================================
-    // CONSERVAR MEJOR PUNTUACIÓN
+    // ACTUALIZAR PUNTOS DEL ÚLTIMO INTENTO
+    // CONSERVAR ESTADO COMPLETADA
     // ======================================
 
     const sql = `
@@ -163,10 +164,7 @@ router.post("/guardar", (req, res) => {
 
         DO UPDATE SET
 
-            puntos = MAX(
-                progreso_jugador.puntos,
-                excluded.puntos
-            ),
+            puntos = excluded.puntos,
 
             estado = CASE
 
@@ -183,6 +181,7 @@ router.post("/guardar", (req, res) => {
 
             fecha_actualizacion = CURRENT_TIMESTAMP
     `;
+
 
     // ======================================
     // VALIDAR ACCESO A GUANACASTE
@@ -270,8 +269,7 @@ router.post("/guardar", (req, res) => {
 
                 const desbloqueada = Boolean(
                     progresoLimon &&
-                    progresoLimon.estado === "completada" &&
-                    progresoLimon.puntos >= PUNTOS_MINIMOS_LIMON
+                    progresoLimon.estado === "completada"
                 );
 
                 if (!desbloqueada) {
