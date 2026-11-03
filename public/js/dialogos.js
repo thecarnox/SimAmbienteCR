@@ -1,5 +1,5 @@
 // --------------------
-// 💬 DIÁLOGOS
+// DIÁLOGOS
 // --------------------
 
 let currentDialog = 0;
@@ -112,7 +112,32 @@ function mostrarDialogo(indice) {
             return;
         }
 
+        // ==========================================
+        // DIÁLOGOS DE ACTIVIDAD 3 - SAN JOSÉ
+        // ==========================================
 
+        if (
+            typeof dialogosSanJoseActivos !== "undefined" &&
+            dialogosSanJoseActivos
+        ) {
+
+            dialogoSanJoseActual++;
+
+            if (
+                dialogoSanJoseActual <
+                dialogosSanJose.length
+            ) {
+
+                mostrarDialogoSanJose();
+
+            } else {
+
+                finalizarDialogosSanJose();
+
+            }
+
+            return;
+        }
 
         // ======================================
         // DIÁLOGOS NORMALES DEL JUEGO
@@ -137,6 +162,18 @@ function mostrarDialogo(indice) {
 
             currentDialog =
                 0;
+
+        }
+
+        // ======================================
+        // VERIFICAR RESULTADO FINAL
+        // ======================================
+
+        if (
+            typeof window.verificarResultadoFinal === "function"
+        ) {
+
+            window.verificarResultadoFinal();
 
         }
 

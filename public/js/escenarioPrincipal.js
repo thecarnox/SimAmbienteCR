@@ -127,13 +127,11 @@ async function verificarDesbloqueoGuanacaste() {
         const datos = await respuesta.json();
 
         // Comprobar progreso real de Limón
-        const progresoLimon = datos.progreso?.find(
-            actividad => actividad.actividad_id === 1
-        );
+        // Guanacaste se desbloquea únicamente
+        // cuando Limón está completada.
 
         const desbloqueada =
-            progresoLimon?.estado === "completada" &&
-            progresoLimon?.puntos >= 10;
+            datos.desbloqueos?.guanacaste === true;
 
         console.log(
             "Guanacaste desbloqueada:",
@@ -296,24 +294,79 @@ document.addEventListener(
 
 
 
-            // ======================================
-            // ACTIVIDAD 3 - SAN JOSÉ
-            // ======================================
 
-            botonSanJose.addEventListener(
-                "click",
-                () => {
+    // ======================================
+    // ACTIVIDAD 3 - SAN JOSÉ
+    // VALIDAR DESBLOQUEO ANTES DE ENTRAR
+    // ======================================
+
+    if (botonSanJose) {
+
+        botonSanJose.addEventListener(
+            "click",
+            async () => {
+
+                console.log(
+                    "Botón San José presionado"
+                );
+
+                // Evitar solicitudes simultáneas
+                if (
+                    botonSanJose.dataset.verificando === "true"
+                ) {
+                    return;
+                }
+
+                botonSanJose.dataset.verificando = "true";
+
+                try {
+
+                    // ==================================
+                    // VERIFICAR ACCESO DEL JUGADOR
+                    // ==================================
+
+                    const accesoPermitido =
+                        await iniciarActividadSanJose();
+
+                    if (!accesoPermitido) {
+
+                        console.log(
+                            "San José permanece bloqueada."
+                        );
+
+                        return;
+                    }
+
+                    // ==================================
+                    // ACCESO AUTORIZADO
+                    // ==================================
 
                     console.log(
-                        "Botón San José presionado"
+                        "San José desbloqueada. Entrando..."
                     );
 
                     cerrarEscenarioPrincipal();
 
-                    iniciarActividadSanJose();
+                } catch (error) {
+
+                    console.error(
+                        "Error iniciando San José:",
+                        error
+                    );
+
+                    alert(
+                        "No se pudo iniciar San José. " +
+                        "Inténtalo nuevamente."
+                    );
+
+                } finally {
+
+                    botonSanJose.dataset.verificando = "false";
 
                 }
-            );
+            }
+        );
+    }
 
 
             // ======================================

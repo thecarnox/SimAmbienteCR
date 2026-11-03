@@ -199,6 +199,54 @@ db.serialize(() => {
         )
     `);
 
+    // ==========================================
+    // MIGRACIÓN: ACTIVIDAD FINALIZADA
+    // ==========================================
+
+    db.all(
+        "PRAGMA table_info(progreso_jugador)",
+        (error, columnas) => {
+
+            if (error) {
+                console.error(error);
+                return;
+            }
+
+            if (!columnas.some(col => col.name === "actividad_finalizada")) {
+
+                db.run(`
+                    ALTER TABLE progreso_jugador
+                    ADD COLUMN actividad_finalizada INTEGER
+                    NOT NULL DEFAULT 0
+                `, error => {
+
+                    if (error) {
+                        console.error(
+                            "Error agregando actividad_finalizada:",
+                            error
+                        );
+                    }
+                });
+            }
+        }
+    );
+
+    // ==========================================
+    // RESULTADO FINAL MOSTRADO POR JUGADOR
+    // ==========================================
+
+    db.run(`
+        CREATE TABLE IF NOT EXISTS resultados_finales_mostrados (
+            jugador_id INTEGER PRIMARY KEY,
+            fecha_visualizacion DATETIME
+                DEFAULT CURRENT_TIMESTAMP,
+
+            FOREIGN KEY (jugador_id)
+                REFERENCES jugadores(id)
+                ON DELETE CASCADE
+        )
+    `);
+
     // --------------------------------------
     // ÍNDICES
     // --------------------------------------

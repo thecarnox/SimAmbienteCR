@@ -716,3 +716,249 @@ window.addEventListener("resize", () => {
 
 
 
+// ==========================================
+// SIMAMBIENTECR - RESULTADO FINAL
+// ==========================================
+
+let resultadoFinalConsultando = false;
+let resultadoFinalMostradoEnSesion = false;
+
+const ventanaResultadoFinal =
+    document.getElementById("ventanaResultadoFinal");
+
+const escenarioResultadoFinal = canvas;
+
+
+// ==========================================
+// VERIFICAR ESCENARIO PRINCIPAL
+// ==========================================
+
+// ==========================================
+// VERIFICAR ESCENARIO PRINCIPAL
+// ==========================================
+
+function jugadorEnEscenarioPrincipal() {
+
+    if (!escenarioResultadoFinal || !menu) {
+        return false;
+    }
+
+    const canvasVisible =
+        getComputedStyle(escenarioResultadoFinal).display !== "none" &&
+        getComputedStyle(escenarioResultadoFinal).visibility !== "hidden" &&
+        escenarioResultadoFinal.getClientRects().length > 0;
+
+    const menuOculto =
+        getComputedStyle(menu).display === "none";
+
+    const mapaOculto =
+        !mapDiv ||
+        getComputedStyle(mapDiv).display === "none";
+
+    const panelOculto =
+        !rightPanel ||
+        getComputedStyle(rightPanel).display === "none";
+
+    const pausaOculta =
+        !pauseMenu ||
+        getComputedStyle(pauseMenu).display === "none";
+
+    return (
+        canvasVisible &&
+        menuOculto &&
+        mapaOculto &&
+        panelOculto &&
+        pausaOculta
+    );
+}
+
+
+// ==========================================
+// RETROALIMENTACIÓN SEGÚN PUNTUACIÓN
+// ==========================================
+
+function obtenerRetroalimentacionFinal(categoria) {
+
+    switch (categoria) {
+
+        case "BUENO":
+            return (
+                "¡Excelente trabajo! Has demostrado un gran " +
+                "conocimiento sobre la conservación ambiental " +
+                "y la importancia de proteger los recursos " +
+                "naturales de Costa Rica."
+            );
+
+        case "MEDIO":
+            return (
+                "¡Buen esfuerzo! Has completado todas las " +
+                "actividades y adquirido conocimientos " +
+                "importantes sobre el ambiente. Puedes " +
+                "volver a explorar las actividades para " +
+                "fortalecer tu aprendizaje."
+            );
+
+        default:
+            return (
+                "¡Felicidades por completar la experiencia! " +
+                "Todavía existen aspectos ambientales que " +
+                "puedes reforzar. Te invitamos a repetir " +
+                "las actividades para mejorar tus conocimientos."
+            );
+    }
+}
+
+
+// ==========================================
+// CONSULTAR Y MOSTRAR RESULTADO FINAL
+// ==========================================
+
+async function verificarResultadoFinal() {
+
+    if (
+        resultadoFinalConsultando ||
+        resultadoFinalMostradoEnSesion ||
+        !jugadorEnEscenarioPrincipal()
+    ) {
+        return;
+    }
+
+    const idJugador = Number(
+        sessionStorage.getItem("jugadorId")
+    );
+
+    if (!Number.isSafeInteger(idJugador) || idJugador <= 0) {
+        return;
+    }
+
+    resultadoFinalConsultando = true;
+
+    try {
+
+        const respuesta = await fetch(
+            `/progreso/resultado-final/${idJugador}`
+        );
+
+        if (!respuesta.ok) {
+            throw new Error("No se pudo consultar el resultado final.");
+        }
+
+        const datos = await respuesta.json();
+
+        if (!datos.disponible) {
+            return;
+        }
+
+        // Volver a comprobar la escena después del fetch.
+        if (
+            !jugadorEnEscenarioPrincipal() ||
+            resultadoFinalMostradoEnSesion
+        ) {
+            return;
+        }
+
+        // Registrar en SQLite antes de presentar la ventana.
+        // Si ya fue registrada, el servidor rechazará
+        // una segunda visualización.
+
+        const registro = await fetch(
+            "/progreso/resultado-final/mostrar",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    jugador_id: idJugador
+                })
+            }
+        );
+
+        if (!registro.ok) {
+            if (registro.status !== 409) {
+                console.error(
+                    "No se pudo registrar la visualización final."
+                );
+            }
+            return;
+        }
+
+        resultadoFinalMostradoEnSesion = true;
+
+        document.getElementById(
+            "resultadoPuntosLimon"
+        ).textContent = `${datos.puntos.limon} / 20`;
+
+        document.getElementById(
+            "resultadoPuntosGuanacaste"
+        ).textContent = `${datos.puntos.guanacaste} / 20`;
+
+        document.getElementById(
+            "resultadoPuntosSanJose"
+        ).textContent = `${datos.puntos.sanJose} / 10`;
+
+        document.getElementById(
+            "resultadoPuntosTotales"
+        ).textContent = `${datos.puntos.total} / 50`;
+
+        document.getElementById(
+            "resultadoCategoriaFinal"
+        ).textContent = `RESULTADO FINAL: ${datos.categoria}`;
+
+        document.getElementById(
+            "resultadoRetroalimentacion"
+        ).textContent =
+            obtenerRetroalimentacionFinal(datos.categoria);
+
+        ventanaResultadoFinal.hidden = false;
+
+    } catch (error) {
+
+        console.error(
+            "Error verificando el resultado final:",
+            error
+        );
+
+    } finally {
+
+        resultadoFinalConsultando = false;
+
+    }
+}
+
+
+// ==========================================
+// BOTÓN QUITAR
+// ==========================================
+
+document.getElementById(
+    "quitarResultadoFinal"
+)?.addEventListener("click", () => {
+
+    ventanaResultadoFinal.hidden = true;
+
+});
+
+
+// ==========================================
+// BOTÓN MENÚ PRINCIPAL
+// ==========================================
+
+document.getElementById(
+    "menuPrincipalResultadoFinal"
+)?.addEventListener("click", () => {
+
+    ventanaResultadoFinal.hidden = true;
+
+    // Mantener el mismo comportamiento
+    // del menú principal existente.
+    location.reload();
+
+});
+
+
+// ==========================================
+// DISPONIBILIDAD PARA OTRAS ACTIVIDADES
+// ==========================================
+
+window.verificarResultadoFinal = verificarResultadoFinal;

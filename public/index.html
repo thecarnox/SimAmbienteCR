@@ -564,7 +564,17 @@
          MAPA
     =========================================== -->
 
-    <div id="map"></div>
+    <!-- ==========================================
+     MAPA INTERACTIVO SAN JOSÉ
+    =========================================== -->
+
+    <div id="map">
+
+        <div id="coordenadasMapa" class="coordenadas-ocultas">
+            Latitud: -- | Longitud: --
+        </div>
+
+    </div>
 
 
 
@@ -586,67 +596,58 @@
 
 
 
-        <!-- ======================================
-             INFORMACIÓN DE ACTIVIDAD
-        ======================================= -->
 
-        <div id="activitySection">
+    <!-- ==========================================
+        ACTIVIDAD SAN JOSÉ - INFORMACIÓN
+    =========================================== -->
 
-            <h2 id="panelTitle">
+    <div id="activitySection">
 
-                🌱 Actividad
+        <h2 id="panelTitle">
+            🏙️ Actividad de San José
+        </h2>
 
-            </h2>
+        <p id="panelText">
+            Responde cinco preguntas relacionadas
+            con el ambiente de Costa Rica.
+        </p>
 
-            <p id="panelText">
+        <p id="contadorPreguntasSanJose">
+            Pregunta 1 de 5
+        </p>
 
-                Selecciona una provincia para comenzar.
+        <p id="puntuacionSanJose">
+            Puntos: 0 / 10
+        </p>
 
-            </p>
-
-        </div>
+    </div>
 
 
 
-        <!-- ======================================
-             ACTIVIDADES
-        ======================================= -->
+    <!-- ==========================================
+        ACTIVIDAD SAN JOSÉ - PREGUNTAS
+    =========================================== -->
 
-        <div id="regionsSection">
+    <div id="regionsSection">
 
-            <h2>
-                🌍 Regiones
-            </h2>
+        <h2 id="preguntaSanJose">
+            Aquí aparecerá la primera pregunta.
+        </h2>
 
-            <button>
-                Actividad 1
-            </button>
+        <div id="opcionesSanJose">
 
-            <button>
-                Actividad 2
-            </button>
-
-            <button>
-                Actividad 3
-            </button>
+            <!-- Las opciones se generarán con JavaScript -->
 
         </div>
 
+        <p id="retroalimentacionSanJose"></p>
 
+        <button id="siguientePreguntaSanJose" type="button">
+            Siguiente pregunta
+        </button>
 
-        <!-- ======================================
-             BOTÓN VOLVER
-        ======================================= -->
+    </div>
 
-        <div id="bottomSection">
-
-            <button id="backToMenuBtn">
-
-                🏠 Menú Principal
-
-            </button>
-
-        </div>
 
     </div>
 
@@ -1101,6 +1102,78 @@
             </button>
 
         </div>
+    </div>
+
+
+    <!-- ==========================================
+     VENTANA DE RESULTADO FINAL
+    ========================================== -->
+
+    <div id="ventanaResultadoFinal"
+        class="resultado-final-overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tituloResultadoFinal"
+        hidden>
+
+        <div class="resultado-final-contenido">
+
+            <h2 id="tituloResultadoFinal">
+                🏆 ¡Felicidades!
+            </h2>
+
+            <p class="resultado-final-introduccion">
+                Has completado las tres actividades educativas
+                de SimAmbienteCR.
+            </p>
+
+            <div class="resultado-final-actividades">
+
+                <div>
+                    <span>🌿 Actividad 1 - Limón</span>
+                    <strong id="resultadoPuntosLimon">0 / 20</strong>
+                </div>
+
+                <div>
+                    <span>🌳 Actividad 2 - Guanacaste</span>
+                    <strong id="resultadoPuntosGuanacaste">0 / 20</strong>
+                </div>
+
+                <div>
+                    <span>🏙️ Actividad 3 - San José</span>
+                    <strong id="resultadoPuntosSanJose">0 / 10</strong>
+                </div>
+
+            </div>
+
+            <div class="resultado-final-total">
+
+                <p>PUNTUACIÓN TOTAL</p>
+
+                <h2 id="resultadoPuntosTotales">0 / 50</h2>
+
+                <h3 id="resultadoCategoriaFinal">
+                    RESULTADO FINAL
+                </h3>
+
+            </div>
+
+            <p id="resultadoRetroalimentacion"></p>
+
+            <div class="resultado-final-botones">
+
+                <button id="quitarResultadoFinal" type="button">
+                    ✖ Quitar
+                </button>
+
+                <button id="menuPrincipalResultadoFinal" type="button">
+                    🏠 Menú Principal
+                </button>
+
+            </div>
+
+        </div>
+
     </div>
     
 

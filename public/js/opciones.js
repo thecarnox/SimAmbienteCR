@@ -107,6 +107,12 @@
     const bgSound =
         document.getElementById("bgSound");
 
+    const menuToggleBtn =
+    document.getElementById("menuToggleBtn");
+
+    const pauseMenu =
+    document.getElementById("pauseMenu"); 
+
     // ==========================================
     // GUARDAR CONFIGURACIÓN
     // ==========================================
@@ -221,40 +227,68 @@
         guardarConfiguracion();
     }
 
-    // ==========================================
-    // NAVEGACIÓN DEL MENÚ
-    // ==========================================
+// ==========================================
+// NAVEGACIÓN DEL MENÚ
+// ==========================================
 
-    function mostrarOpciones() {
+function mostrarOpciones() {
 
-        if (pauseMainView) {
-            pauseMainView.hidden = true;
-        }
-
-        if (gameOptionsView) {
-            gameOptionsView.hidden = false;
-        }
+    if (pauseMainView) {
+        pauseMainView.hidden = true;
     }
 
-    function volverMenuPausa() {
+    if (gameOptionsView) {
+        gameOptionsView.hidden = false;
+    }
+}
 
-        if (gameOptionsView) {
-            gameOptionsView.hidden = true;
-        }
+// ==========================================
+// VOLVER AL MENÚ DE PAUSA
+// ==========================================
 
-        if (pauseMainView) {
-            pauseMainView.hidden = false;
-        }
+function volverMenuPausa() {
+
+    if (gameOptionsView) {
+        gameOptionsView.hidden = true;
     }
 
-    // Permite restablecer la vista al reabrir
-    // el menú de pausa desde cualquier actividad.
+    if (pauseMainView) {
+        pauseMainView.hidden = false;
+    }
+}
 
-    window.restablecerVistaPausa = volverMenuPausa;
+// ==========================================
+// ABRIR OPCIONES DESDE SAN JOSÉ
+// ==========================================
+
+function abrirOpcionesSanJose() {
+
+    if (!pauseMenu || !gameOptionsView || !pauseMainView) {
+        return;
+    }
+
+    // Mostrar el menú
+    pauseMenu.style.display = "flex";
+
+    // Abrir directamente la configuración
+    pauseMainView.hidden = true;
+    gameOptionsView.hidden = false;
+}
+
+// ==========================================
+// RESTABLECER VISTA DEL MENÚ DE PAUSA
+// ==========================================
+
+window.restablecerVistaPausa = volverMenuPausa;
 
     // ==========================================
     // EVENTOS
     // ==========================================
+
+    menuToggleBtn?.addEventListener(
+    "click",
+    abrirOpcionesSanJose
+    );
 
     optionsBtn?.addEventListener(
         "click",

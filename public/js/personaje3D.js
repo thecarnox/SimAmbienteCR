@@ -224,6 +224,8 @@ function cargarModeloPersonaje(modelo) {
 
                 const esGuacamaya = modelo.toLowerCase().includes("guacamaya.glb");
 
+                const esManati = modelo.toLowerCase().includes("manati.glb");
+
                 let ajusteAltura = 0;
 
                 // Mantener el ajuste original del mono
@@ -241,6 +243,10 @@ function cargarModeloPersonaje(modelo) {
                     ajusteAltura = -tamano * 1.10;
                 }
 
+                if (esManati) {
+                    ajusteAltura = -tamano * 0.40;
+                }
+
                 personaje.setPosition(
                     -centro.x,
                     -centro.y + ajusteAltura,
@@ -255,7 +261,9 @@ function cargarModeloPersonaje(modelo) {
                     personaje.setLocalEulerAngles(0, 50, 0);
                 }
 
-
+                if (esManati) {
+                    personaje.setLocalEulerAngles(0, -45, 0);
+                }
 
                 const camera =
                     characterApp.root.findByName("CameraPersonaje");

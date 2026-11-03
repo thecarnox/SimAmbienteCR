@@ -10,8 +10,8 @@ const db = require("../database/database");
 
 const ACTIVIDAD_LIMON = 1;
 const ACTIVIDAD_GUANACASTE = 2;
+const ACTIVIDAD_SAN_JOSE = 3;
 
-const PUNTOS_MAXIMOS_LIMON = 20;
 const PUNTOS_MINIMOS_LIMON = 10;
 
 // ==========================================
@@ -41,6 +41,7 @@ router.get("/jugador/:jugadorId", (req, res) => {
             a.provincia,
             p.puntos,
             p.estado,
+            p.actividad_finalizada,
             p.fecha_actualizacion
         FROM progreso_jugador p
         INNER JOIN actividades a
@@ -71,12 +72,22 @@ router.get("/jugador/:jugadorId", (req, res) => {
             progresoLimon.estado === "completada"
         );
 
+        const progresoGuanacaste = filas.find(
+            fila => fila.actividad_id === ACTIVIDAD_GUANACASTE
+        );
+
+        const sanJoseDesbloqueada = Boolean(
+            progresoGuanacaste &&
+            progresoGuanacaste.estado === "completada"
+        );
+
         return res.json({
             jugador_id: jugadorId,
             progreso: filas,
             desbloqueos: {
                 limon: true,
-                guanacaste: guanacasteDesbloqueada
+                guanacaste: guanacasteDesbloqueada,
+                sanjose: sanJoseDesbloqueada
             }
         });
     });
@@ -111,18 +122,29 @@ router.post("/guardar", (req, res) => {
         });
     }
 
-    // ======================================
-    // VALIDACIÓN ESPECÍFICA DE LIMÓN
-    // ======================================
+
+    const puntosMaximos = {
+    1: 20,
+    2: 20,
+    3: 10
+    };
 
     if (
-        actividad_id === ACTIVIDAD_LIMON &&
-        puntos > PUNTOS_MAXIMOS_LIMON
+        !Object.hasOwn(puntosMaximos, actividad_id) ||
+        puntos > puntosMaximos[actividad_id]
     ) {
         return res.status(400).json({
-            mensaje: "La puntuación de Limón no puede superar 20 puntos."
+            mensaje: "Actividad o puntuación inválida."
         });
     }
+
+    if (typeof actividad_finalizada !== "boolean") {
+        return res.status(400).json({
+            mensaje: "Debe indicar si la actividad fue finalizada."
+        });
+    }
+
+
 
     // En Limón, el servidor determina el estado.
     // Se conserva en_progreso únicamente para
@@ -132,11 +154,6 @@ router.post("/guardar", (req, res) => {
 
     if (actividad_id === ACTIVIDAD_LIMON) {
 
-        if (typeof actividad_finalizada !== "boolean") {
-            return res.status(400).json({
-                mensaje: "Debe indicar si finalizó la actividad."
-            });
-        }
 
         estadoFinal =
             actividad_finalizada &&
@@ -156,27 +173,40 @@ router.post("/guardar", (req, res) => {
             jugador_id,
             actividad_id,
             puntos,
-            estado
+            estado,
+            actividad_finalizada
         )
-        VALUES (?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?)
 
         ON CONFLICT(jugador_id, actividad_id)
 
         DO UPDATE SET
 
-            puntos = excluded.puntos,
+            puntos = CASE
+                WHEN excluded.actividad_finalizada = 1
+                THEN excluded.puntos
+
+                WHEN progreso_jugador.actividad_finalizada = 1
+                THEN progreso_jugador.puntos
+
+                ELSE excluded.puntos
+            END,
 
             estado = CASE
-
                 WHEN progreso_jugador.estado = 'completada'
-                     OR excluded.estado = 'completada'
+                    OR excluded.estado = 'completada'
                 THEN 'completada'
 
                 WHEN excluded.estado = 'en_progreso'
                 THEN 'en_progreso'
 
                 ELSE 'pendiente'
+            END,
 
+            actividad_finalizada = CASE
+                WHEN excluded.actividad_finalizada = 1
+                THEN 1
+                ELSE progreso_jugador.actividad_finalizada
             END,
 
             fecha_actualizacion = CURRENT_TIMESTAMP
@@ -195,7 +225,9 @@ router.post("/guardar", (req, res) => {
                 jugador_id,
                 actividad_id,
                 puntos,
-                estadoFinal
+                estadoFinal,
+                actividad_finalizada ? 1 : 0
+
             ],
             function(err) {
 
@@ -223,10 +255,10 @@ router.post("/guardar", (req, res) => {
                 // puede ser distinto al intento actual.
 
                 db.get(
-                    `SELECT puntos, estado
-                     FROM progreso_jugador
-                     WHERE jugador_id = ?
-                       AND actividad_id = ?`,
+                    `SELECT puntos, estado, actividad_finalizada
+                    FROM progreso_jugador
+                    WHERE jugador_id = ?
+                    AND actividad_id = ?`,
                     [jugador_id, actividad_id],
                     (error, progresoGuardado) => {
 
@@ -237,11 +269,13 @@ router.post("/guardar", (req, res) => {
                         }
 
                         return res.json({
-                            mensaje: "Progreso guardado correctamente.",
-                            jugador_id,
-                            actividad_id,
-                            puntos: progresoGuardado.puntos,
-                            estado: progresoGuardado.estado
+                                mensaje: "Progreso guardado correctamente.",
+                                jugador_id,
+                                actividad_id,
+                                puntos: progresoGuardado.puntos,
+                                estado: progresoGuardado.estado,
+                                actividad_finalizada:
+                                    progresoGuardado.actividad_finalizada === 1
                         });
                     }
                 );
@@ -278,6 +312,7 @@ router.post("/guardar", (req, res) => {
                     });
                 }
 
+  
                 guardar();
             }
         );
@@ -285,7 +320,193 @@ router.post("/guardar", (req, res) => {
         return;
     }
 
+    // ======================================
+    // VALIDAR ACCESO A SAN JOSÉ
+    // ACTIVIDAD 3
+    // ======================================
+
+    if (actividad_id === ACTIVIDAD_SAN_JOSE) {
+
+        db.get(
+            `SELECT estado
+             FROM progreso_jugador
+             WHERE jugador_id = ?
+               AND actividad_id = ?`,
+            [jugador_id, ACTIVIDAD_GUANACASTE],
+            (err, progresoGuanacaste) => {
+
+                if (err) {
+
+                    console.error(
+                        "Error validando acceso a San José:",
+                        err
+                    );
+
+                    return res.status(500).json({
+                        mensaje: "Error validando el desbloqueo de San José."
+                    });
+                }
+
+                const desbloqueada = Boolean(
+                    progresoGuanacaste &&
+                    progresoGuanacaste.estado === "completada"
+                );
+
+                if (!desbloqueada) {
+
+                    return res.status(403).json({
+                        mensaje: "Debes completar Guanacaste para acceder a San José."
+                    });
+                }
+
+                guardar();
+            }
+        );
+
+        return;
+    }
+
+    // ======================================
+    // GUARDAR ACTIVIDAD AUTORIZADA
+    // ======================================
+
     guardar();
 });
 
+// ==========================================
+// CONSULTAR RESULTADO FINAL
+// ==========================================
+
+router.get("/resultado-final/:jugadorId", (req, res) => {
+
+    const jugadorId = Number(req.params.jugadorId);
+
+    if (!Number.isSafeInteger(jugadorId) || jugadorId <= 0) {
+        return res.status(400).json({
+            mensaje: "Jugador inválido."
+        });
+    }
+
+    db.all(`
+        SELECT actividad_id, puntos, actividad_finalizada
+        FROM progreso_jugador
+        WHERE jugador_id = ?
+          AND actividad_id IN (1, 2, 3)
+    `, [jugadorId], (error, filas) => {
+
+        if (error) {
+            return res.status(500).json({
+                mensaje: "Error consultando las actividades."
+            });
+        }
+
+        const actividades = [1, 2, 3].map(id =>
+            filas.find(fila => fila.actividad_id === id)
+        );
+
+        const todasFinalizadas = actividades.every(
+            actividad =>
+                actividad &&
+                actividad.actividad_finalizada === 1
+        );
+
+        if (!todasFinalizadas) {
+            return res.json({
+                disponible: false
+            });
+        }
+
+        db.get(`
+            SELECT jugador_id
+            FROM resultados_finales_mostrados
+            WHERE jugador_id = ?
+        `, [jugadorId], (error, resultadoMostrado) => {
+
+            if (error) {
+                return res.status(500).json({
+                    mensaje: "Error consultando el resultado final."
+                });
+            }
+
+            if (resultadoMostrado) {
+                return res.json({
+                    disponible: false,
+                    ya_mostrado: true
+                });
+            }
+
+            const limon = actividades[0].puntos;
+            const guanacaste = actividades[1].puntos;
+            const sanJose = actividades[2].puntos;
+
+            const total = limon + guanacaste + sanJose;
+
+            const categoria =
+                total >= 40 ? "BUENO" :
+                total >= 25 ? "MEDIO" :
+                "MALO";
+
+            return res.json({
+                disponible: true,
+                puntos: {
+                    limon,
+                    guanacaste,
+                    sanJose,
+                    total,
+                    maximo: 50
+                },
+                categoria
+            });
+        });
+    });
+});
+
+
+// ==========================================
+// MARCAR RESULTADO COMO MOSTRADO
+// ==========================================
+
+router.post("/resultado-final/mostrar", (req, res) => {
+
+    const jugadorId = Number(req.body?.jugador_id);
+
+    if (!Number.isSafeInteger(jugadorId) || jugadorId <= 0) {
+        return res.status(400).json({
+            mensaje: "Jugador inválido."
+        });
+    }
+
+    db.run(`
+        INSERT OR IGNORE INTO resultados_finales_mostrados (
+            jugador_id
+        )
+        SELECT ?
+        WHERE (
+            SELECT COUNT(DISTINCT actividad_id)
+            FROM progreso_jugador
+            WHERE jugador_id = ?
+              AND actividad_id IN (1, 2, 3)
+              AND actividad_finalizada = 1
+        ) = 3
+    `, [jugadorId, jugadorId], function(error) {
+
+        if (error) {
+            return res.status(500).json({
+                mensaje: "No se pudo registrar el resultado final."
+            });
+        }
+
+        if (this.changes !== 1) {
+            return res.status(409).json({
+                mensaje: "El resultado ya fue mostrado o las actividades no están finalizadas."
+            });
+        }
+
+        return res.json({
+            registrado: true
+        });
+    });
+});
+
 module.exports = router;
+

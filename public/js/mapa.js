@@ -20,7 +20,7 @@ function inicializarMapa() {
         zoomControl: false,
 
         dragging: false,
-        scrollWheelZoom: false,
+        scrollWheelZoom: true,
         doubleClickZoom: false,
         boxZoom: false,
         keyboard: false,
@@ -40,6 +40,42 @@ function inicializarMapa() {
     ];
 
     mapInstance.setMaxBounds(bounds);
+
+    // ==========================================
+    // MOSTRAR COORDENADAS DEL CURSOR
+    // ==========================================
+
+    const indicadorCoordenadas =
+        document.getElementById("coordenadasMapa");
+
+    if (indicadorCoordenadas) {
+
+        mapInstance.on("mousemove", (evento) => {
+
+            const latitud = evento.latlng.lat.toFixed(6);
+            const longitud = evento.latlng.lng.toFixed(6);
+
+            indicadorCoordenadas.textContent =
+                `Latitud: ${latitud} | Longitud: ${longitud}`;
+
+            indicadorCoordenadas.classList.remove(
+                "coordenadas-ocultas"
+            );
+
+        });
+
+        mapInstance.getContainer().addEventListener(
+            "mouseleave",
+            () => {
+
+                indicadorCoordenadas.classList.add(
+                    "coordenadas-ocultas"
+                );
+
+            }
+        );
+
+    }
 }
 
 
@@ -74,7 +110,7 @@ function inicializarMapa() {
              } else {
 
                  mapInstance.dragging.disable();
-                 mapInstance.scrollWheelZoom.disable();
+                 mapInstance.scrollWheelZoom.enable();
                  mapInstance.doubleClickZoom.disable();
                  mapInstance.boxZoom.disable();
                  mapInstance.keyboard.disable();
@@ -87,3 +123,44 @@ function inicializarMapa() {
      }
  }
 
+// ==========================================
+// ACTIVIDAD SAN JOSÉ
+// MOSTRAR UBICACIÓN DESPUÉS DE RESPONDER
+// ==========================================
+
+let marcadorSanJose = null;
+
+function mostrarUbicacionSanJose(latitud, longitud, nombre) {
+
+    if (!mapInstance) {
+        console.warn("El mapa Leaflet no está inicializado.");
+        return;
+    }
+
+    // Eliminar el marcador de la pregunta anterior
+    if (marcadorSanJose) {
+        mapInstance.removeLayer(marcadorSanJose);
+        marcadorSanJose = null;
+    }
+
+    // Crear marcador de la ubicación correcta
+    marcadorSanJose = L.marker([
+        latitud,
+        longitud
+    ]).addTo(mapInstance);
+
+    // Mostrar información del área protegida
+    marcadorSanJose.bindPopup(
+        nombre
+    ).openPopup();
+
+    // Centrar el mapa en el área protegida
+    mapInstance.setView(
+        [latitud, longitud],
+        10,
+        {
+            animate: true
+        }
+    );
+
+}
