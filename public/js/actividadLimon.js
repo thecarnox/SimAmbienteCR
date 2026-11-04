@@ -322,6 +322,68 @@ let camaraLimon = null;
 
 let modeloActualLimon = null;
 
+
+
+/* ==========================================
+   ANIMACIÓN DE MODELOS 3D - LIMÓN
+   ROTACIÓN Y FLOTACIÓN SUAVE
+========================================== */
+
+function animarModelo3DLimon(app, modelo, opciones = {}) {
+
+    if (!app || !modelo) return;
+
+    const velocidadRotacion = opciones.velocidadRotacion ?? 18;
+    const amplitudFlotacion = opciones.amplitudFlotacion ?? 0.06;
+    const velocidadFlotacion = opciones.velocidadFlotacion ?? 2;
+
+    let tiempo = 0;
+
+    // Conservar la posición inicial del modelo
+    const posicionInicial = modelo.getLocalPosition().clone();
+
+    // Animación ejecutada en cada fotograma
+    function actualizarAnimacion(dt) {
+
+        if (!modelo || !modelo.parent) {
+            app.off("update", actualizarAnimacion);
+            return;
+        }
+
+        // Detener el movimiento durante la pausa
+        if (
+            !actividadLimonActiva ||
+            actividadLimonPausada
+        ) {
+            return;
+        }
+
+        tiempo += dt;
+
+        // Rotación sobre su propio eje vertical
+        modelo.rotateLocal(
+            0,
+            velocidadRotacion * dt,
+            0
+        );
+
+        // Movimiento suave arriba y abajo
+        const desplazamientoY =
+            Math.sin(tiempo * velocidadFlotacion) *
+            amplitudFlotacion;
+
+        modelo.setLocalPosition(
+            posicionInicial.x,
+            posicionInicial.y + desplazamientoY,
+            posicionInicial.z
+        );
+    }
+
+    app.on("update", actualizarAnimacion);
+}
+
+
+
 // ==========================================
 // CONTENEDORES 3D DE CLASIFICACIÓN
 // ==========================================
@@ -868,46 +930,33 @@ function finalizarActividadLimon() {
     let nivelFinal;
     let mensajeFinal;
 
-    if (puntosActividadLimon >= 20) {
+if (puntosActividadLimon >= 20) {
 
-        nivelFinal = "BUENO";
+    nivelFinal = "BUENO";
 
-        mensajeFinal =
-            "¡Excelente trabajo! Has identificado correctamente " +
-            "los elementos que favorecen o perjudican las " +
-            "condiciones del suelo. Tus decisiones demuestran " +
-            "que comprendes la importancia de conservar la " +
-            "vegetación, proteger los recursos naturales y " +
-            "prevenir la erosión. ¡Sigue aplicando estos " +
-            "conocimientos para cuidar los ecosistemas de Costa Rica!";
+    mensajeFinal =
+        "¡Excelente trabajo! Identificaste correctamente los " +
+        "elementos que favorecen o perjudican el suelo, " +
+        "demostrando la importancia de proteger el ambiente.";
 
-    } else if (puntosActividadLimon >= 10) {
+} else if (puntosActividadLimon >= 10) {
 
-        nivelFinal = "MEDIO";
+    nivelFinal = "MEDIO";
 
-        mensajeFinal =
-            "¡Buen esfuerzo! Has identificado correctamente " +
-            "varios elementos ambientales, aunque todavía " +
-            "puedes mejorar algunas clasificaciones. Recuerda " +
-            "que la vegetación contribuye a proteger y " +
-            "estabilizar el suelo, mientras que la acumulación " +
-            "de residuos y determinadas actividades humanas " +
-            "pueden afectar negativamente sus condiciones. " +
-            "¡Continúa fortaleciendo tus conocimientos!";
+    mensajeFinal =
+        "¡Buen esfuerzo! Recuerda que la vegetación ayuda " +
+        "a proteger el suelo, mientras que los residuos " +
+        "pueden contaminarlo.";
 
-    } else {
+} else {
 
-        nivelFinal = "MALO";
+    nivelFinal = "MALO";
 
-        mensajeFinal =
-            "¡Cada intento es una oportunidad para aprender! " +
-            "Necesitas reforzar la identificación de los " +
-            "elementos favorables y desfavorables para el suelo. " +
-            "Recuerda que las raíces de los árboles ayudan a " +
-            "mantenerlo estable y que los residuos pueden " +
-            "contaminarlo. Observa cuidadosamente los elementos " +
-            "antes de clasificarlos e intenta mejorar tu resultado.";
-    }
+    mensajeFinal =
+        "Necesitas reforzar tus conocimientos sobre el suelo. " +
+        "La vegetación contribuye a su conservación, " +
+        "mientras que los residuos abandonados pueden perjudicarlo.";
+}
 
     // ======================================
     // MOSTRAR CALIFICACIÓN
@@ -947,20 +996,57 @@ function finalizarActividadLimon() {
     if (puedeAvanzar) {
 
         mensajeFinal +=
-            " ¡Felicidades! Has completado satisfactoriamente " +
-            "la actividad de Limón y puedes avanzar a Guanacaste.";
+            " ¡Puedes avanzar a Guanacaste!";
 
     } else {
 
         mensajeFinal +=
-            " Para desbloquear Guanacaste, debes responder " +
-            "los 10 elementos y obtener al menos 10 puntos. " +
-            "¡Vuelve a intentarlo!";
+            " Completa los 10 elementos y consigue al menos " +
+            "10 puntos para desbloquear Guanacaste.";
     }
 
     document.getElementById(
         "retroalimentacionFinalLimon"
     ).textContent = mensajeFinal;
+
+    // ==========================================
+    // IMAGEN DE RETROALIMENTACIÓN - LIMÓN
+    // ==========================================
+
+    const contenedorRetroalimentacionLimon =
+        document.getElementById("retroalimentacionFinalLimon");
+
+    let imagenRetroalimentacionLimon =
+        document.getElementById("imagenRetroalimentacionLimon");
+
+    if (!imagenRetroalimentacionLimon && contenedorRetroalimentacionLimon) {
+
+        imagenRetroalimentacionLimon = document.createElement("img");
+
+        imagenRetroalimentacionLimon.id =
+            "imagenRetroalimentacionLimon";
+
+        imagenRetroalimentacionLimon.className =
+            "imagenRetroalimentacionLimon";
+
+        contenedorRetroalimentacionLimon.insertAdjacentElement(
+            "beforebegin",
+            imagenRetroalimentacionLimon
+        );
+    }
+
+    if (imagenRetroalimentacionLimon) {
+
+        const resultadoPositivo = nivelFinal !== "MALO";
+
+        imagenRetroalimentacionLimon.src = resultadoPositivo
+            ? "/img/limonCorrecto.png"
+            : "/img/limonIncorrecto.jpg";
+
+        imagenRetroalimentacionLimon.alt = resultadoPositivo
+            ? "Resultado favorable de la actividad de Limón"
+            : "Resultado desfavorable de la actividad de Limón";
+    }
 
     // ======================================
     // REPRODUCIR SONIDO SEGÚN CALIFICACIÓN
@@ -1401,13 +1487,28 @@ function mostrarModeloAleatorioLimon() {
 
             }
 
+            
+        // ==================================
+        // ANIMAR MODELO PRINCIPAL
+        // ==================================
 
-            // ==================================
-            // YA PUEDE RESPONDER
-            // ==================================
+        animarModelo3DLimon(
+            limonApp,
+            modeloActualLimon,
+            {
+                velocidadRotacion: 20,
+                amplitudFlotacion: 0.08,
+                velocidadFlotacion: 2
+            }
+        );
+
 
             respuestaLimonBloqueada =
                 false;
+
+
+            respuestaLimonBloqueada =
+            false;
 
         }
 
@@ -1910,6 +2011,22 @@ function agregarModeloClasificacionLimon(
 
 
             arreglo[indice] = modelo;
+
+            
+        // ==================================
+        // ANIMAR MODELO CLASIFICADO
+        // ==================================
+
+        animarModelo3DLimon(
+            app,
+            modelo,
+            {
+                velocidadRotacion: 12,
+                amplitudFlotacion: 0.025,
+                velocidadFlotacion: 1.8
+            }
+        );
+
 
         }
     );

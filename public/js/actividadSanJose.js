@@ -65,6 +65,62 @@ function detenerSonidosSanJose() {
 }
 
 
+/* ==========================================
+   IMÁGENES DE RETROALIMENTACIÓN - SAN JOSÉ
+========================================== */
+
+
+function mostrarImagenRetroalimentacionSanJose(esCorrecta) {
+
+    const retroalimentacion = document.getElementById(
+        "retroalimentacionSanJose"
+    );
+
+    if (!retroalimentacion) return;
+
+    let imagen = document.getElementById(
+        "imagenRetroalimentacionSanJose"
+    );
+
+    if (!imagen) {
+
+        imagen = document.createElement("img");
+
+        imagen.id = "imagenRetroalimentacionSanJose";
+        imagen.className = "imagenRetroalimentacionSanJose";
+
+        // Colocar la imagen DEBAJO del resultado
+        retroalimentacion.insertAdjacentElement(
+            "afterend",
+            imagen
+        );
+    }
+
+    imagen.src = esCorrecta
+        ? "/img/sanjoseCorrecto.jpg"
+        : "/img/sanJoseIncorrecto.jpg";
+
+    imagen.alt = esCorrecta
+        ? "Resultado satisfactorio de San José"
+        : "Resultado no satisfactorio de San José";
+
+    imagen.style.display = "block";
+}
+
+
+function ocultarImagenRetroalimentacionSanJose() {
+
+    const imagen = document.getElementById(
+        "imagenRetroalimentacionSanJose"
+    );
+
+    if (imagen) {
+        imagen.style.display = "none";
+    }
+}
+
+
+
 
 const dialogosSanJose = [
 
@@ -588,6 +644,8 @@ function mostrarPreguntaSanJose() {
 
     retroalimentacion.textContent = "";
 
+    ocultarImagenRetroalimentacionSanJose();
+
     botonSiguiente.classList.add("pantalla-oculta");
 
     contenedorOpciones.replaceChildren();
@@ -815,6 +873,10 @@ async function finalizarActividadSanJose() {
     retroalimentacion.textContent =
         `Resultado: ${calificacion}\n\n${mensaje}\n\n` +
         "Guardando progreso...";
+
+        mostrarImagenRetroalimentacionSanJose(
+        calificacion !== "MALO"
+    );
 
     botonSiguiente.classList.add("pantalla-oculta");
 

@@ -35,6 +35,71 @@ let objetosDisponibles = [];
 let objetosColocados = [];
 
 
+
+// ==========================================
+// ANIMACIÓN DE RESPIRACIÓN DE OBJETOS 3D
+// ==========================================
+
+const AMPLITUD_RESPIRACION_GUANACASTE = 0.08;
+const VELOCIDAD_RESPIRACION_GUANACASTE = 2.5;
+
+let tiempoRespiracionGuanacaste = 0;
+
+function actualizarRespiracionGuanacaste(dt) {
+
+    if (!actividadGuanacasteIniciada || !objetosColocados.length) {
+        return;
+    }
+
+    const actividad = document.getElementById("actividadGuanacaste");
+    const menuPausa = document.getElementById("pauseMenu");
+
+    if (
+        !actividad ||
+        window.getComputedStyle(actividad).display === "none" ||
+        (
+            menuPausa &&
+            window.getComputedStyle(menuPausa).display !== "none"
+        )
+    ) {
+        return;
+    }
+
+    tiempoRespiracionGuanacaste += Math.min(dt, 0.1);
+
+    objetosColocados.forEach(objeto => {
+
+        if (
+            !objeto.modelo ||
+            !objeto.entidad ||
+            !objeto.entidad.parent
+        ) {
+            return;
+        }
+
+        const escala = objeto.escalaOriginal;
+
+        if (!escala) return;
+
+        const expansion =
+            1 + AMPLITUD_RESPIRACION_GUANACASTE *
+            (
+                0.5 - 0.5 * Math.cos(
+                    tiempoRespiracionGuanacaste *
+                    VELOCIDAD_RESPIRACION_GUANACASTE +
+                    objeto.faseRespiracion
+                )
+            );
+
+        objeto.modelo.setLocalScale(
+            escala.x * expansion,
+            escala.y * expansion,
+            escala.z * expansion
+        );
+    });
+}
+
+
 // ==========================================
 // OBJETO ACTUAL SELECCIONADO
 // ==========================================
@@ -659,7 +724,10 @@ function iniciarActividadGuanacaste() {
     // ==========================================
 
     guanacasteApp.start();
-
+    guanacasteApp.on(
+        "update",
+        actualizarRespiracionGuanacaste
+    );
 
     // ==========================================
     // CREAR ESCENARIO
@@ -1700,6 +1768,9 @@ function cargarElementoGuanacaste(tipo, x, z, y) {
                 objetosColocados.push({
                     tipo: tipo,
                     entidad: contenedor,
+                    modelo: modelo,
+                    escalaOriginal: modelo.getLocalScale().clone(),
+                    faseRespiracion: objetosColocados.length * 0.65,
                     valor: valoresElementos[tipo]
                 });
 
@@ -2317,41 +2388,39 @@ function evaluarTerrenoGuanacaste() {
     // La calificación depende de los elementos negativos.
     const negativos = obtenerConteoNegativosGuanacaste();
 
+    
     let tipo;
     let mensaje;
-
 
     if (negativos === 0) {
 
         tipo = "bueno";
 
         mensaje =
-            "¡EXCELENTE TRABAJO! No colocaste elementos " +
-            "perjudiciales para el terreno. " +
-            "Tus decisiones favorecen la conservación ambiental.";
+            "¡Excelente trabajo! Elegiste elementos que favorecen " +
+            "la conservación del suelo y ayudan a reducir la erosión " +
+            "durante las lluvias intensas.";
 
-    } else if (
-        negativos < UMBRAL_NEGATIVOS_MALO_GUANACASTE
-    ) {
+    } else if (negativos < UMBRAL_NEGATIVOS_MALO_GUANACASTE) {
 
         tipo = "medio";
 
         mensaje =
-            "¡ATENCIÓN! Colocaste " + negativos +
-            " elemento(s) negativo(s). " +
-            "El terreno sigue siendo vulnerable. " +
-            "Puedes mejorar tus decisiones ambientales.";
+            "Tu terreno tiene algunos elementos que perjudican " +
+            "sus condiciones ambientales. Incorporar más vegetación " +
+            "y retirar los residuos ayuda a proteger el suelo frente a la lluvia.";
 
     } else {
 
         tipo = "riesgo";
 
         mensaje =
-            "¡RIESGO AMBIENTAL! Colocaste " + negativos +
-            " elementos negativos. " +
-            "El terreno presenta un alto riesgo de degradación.";
-
+            "La acumulación de residuos deteriora las condiciones " +
+            "del terreno y puede obstruir el drenaje del agua. " +
+            "Retirarlos e incorporar vegetación ayuda a reducir el riesgo " +
+            "de erosión e inundaciones.";
     }
+
 
 
     console.log("Evaluación Guanacaste:", {
@@ -2419,6 +2488,19 @@ function mostrarResultadoGuanacaste(tipo, mensaje) {
     );
 
     // Construir contenido
+    
+    // ==========================================
+    // CONSTRUIR RESULTADO CON IMAGEN
+    // ==========================================
+
+    const imagenResultadoGuanacaste = tipo === "bueno"
+        ? "/img/guanacasteCorrecto.jpg"
+        : "/img/guanacasteIncorrecto.jpg";
+
+    const descripcionImagenGuanacaste = tipo === "bueno"
+        ? "Terreno protegido"
+        : "Terreno con riesgo ambiental";
+
     resultado.innerHTML = `
         <div class="contenidoResultadoGuanacaste">
 
@@ -2430,6 +2512,13 @@ function mostrarResultadoGuanacaste(tipo, mensaje) {
             >
                 ${nivel}
             </h3>
+
+            <img
+                id="imagenRetroalimentacionGuanacaste"
+                class="imagenRetroalimentacionGuanacaste"
+                src="${imagenResultadoGuanacaste}"
+                alt="${descripcionImagenGuanacaste}"
+            >
 
             <p id="retroalimentacionFinalGuanacaste"></p>
 
@@ -2447,6 +2536,7 @@ function mostrarResultadoGuanacaste(tipo, mensaje) {
 
         </div>
     `;
+
 
     // Mostrar mensaje de retroalimentación
     document.getElementById(
@@ -2596,6 +2686,8 @@ function reiniciarActividadGuanacaste() {
 
     // Reiniciar registros.
     objetosColocados = [];
+
+    tiempoRespiracionGuanacaste = 0;
 
     objetoSeleccionado = null;
 

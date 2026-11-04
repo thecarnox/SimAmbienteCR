@@ -5537,6 +5537,23 @@ html, body {
 }
 
 /* ==========================================
+   IMAGEN DE RETROALIMENTACIÓN - LIMÓN
+========================================== */
+
+.imagenRetroalimentacionLimon {
+    display: block;
+    width: 100%;
+    max-width: 260px;
+    max-height: 180px;
+    object-fit: contain;
+    margin: 12px auto;
+    border-radius: 12px;
+}
+
+
+
+
+/* ==========================================
    PANEL DE OPCIONES
 ========================================== */
 
@@ -6137,6 +6154,20 @@ html, body {
     overflow-wrap: break-word;
 }
 
+/* ==========================================
+   IMAGEN DE RETROALIMENTACIÓN - GUANACASTE
+========================================== */
+
+.imagenRetroalimentacionGuanacaste {
+    display: block;
+    width: 100%;
+    max-width: 260px;
+    max-height: 180px;
+    object-fit: contain;
+    margin: 12px auto;
+    border-radius: 12px;
+}
+
 /* ELEMENTOS COLOCADOS */
 
 .resumenResultadoGuanacaste {
@@ -6392,6 +6423,15 @@ html, body {
 
 
 
+.imagenRetroalimentacionSanJose {
+    display: block;
+    width: 100%;
+    max-width: 260px;
+    max-height: 180px;
+    object-fit: contain;
+    margin: 15px auto;
+    border-radius: 12px;
+}
 
 
 
