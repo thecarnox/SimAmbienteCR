@@ -12,6 +12,60 @@
 let dialogosSanJoseActivos = false;
 let dialogoSanJoseActual = 0;
 
+
+
+
+ // ==========================================
+ // SONIDOS DE RESPUESTAS - SAN JOSÉ
+ // ==========================================
+
+const retroBuenoSanJose = new Audio("sounds/retroBueno.mp3");
+const retroMaloSanJose = new Audio("sounds/retroMalo.mp3");
+
+retroBuenoSanJose.volume = 0.7;
+retroMaloSanJose.volume = 0.7;
+
+retroBuenoSanJose.preload = "auto";
+retroMaloSanJose.preload = "auto";
+
+// Reproducir sonido según la respuesta
+function reproducirSonidoRespuestaSanJose(esCorrecta) {
+
+    const sonidoActual = esCorrecta
+        ? retroBuenoSanJose
+        : retroMaloSanJose;
+
+    // Detener ambos para evitar superposiciones
+    retroBuenoSanJose.pause();
+    retroMaloSanJose.pause();
+
+    retroBuenoSanJose.currentTime = 0;
+    retroMaloSanJose.currentTime = 0;
+
+    sonidoActual.play().catch(error => {
+        console.warn(
+            "No se pudo reproducir el sonido de San José:",
+            error
+        );
+    });
+}
+
+
+// ==========================================
+// DETENER SONIDOS DE SAN JOSÉ
+// ==========================================
+
+function detenerSonidosSanJose() {
+
+    retroBuenoSanJose.pause();
+    retroMaloSanJose.pause();
+
+    retroBuenoSanJose.currentTime = 0;
+    retroMaloSanJose.currentTime = 0;
+}
+
+
+
 const dialogosSanJose = [
 
     {
@@ -120,7 +174,7 @@ function finalizarDialogosSanJose() {
 
 async function iniciarActividadSanJose() {
 
-    console.log("Verificando acceso a San José...");
+    detenerSonidosSanJose();
 
     // ======================================
     // IDENTIFICAR AL JUGADOR
@@ -134,7 +188,13 @@ async function iniciarActividadSanJose() {
         !Number.isSafeInteger(jugadorId) ||
         jugadorId <= 0
     ) {
-        alert("No se pudo identificar al jugador.");
+        window.mostrarAlertaJuego(
+            "No se pudo identificar al jugador. " +
+            "Inicia sesión nuevamente.",
+            {
+                titulo: "Jugador no identificado"
+            }
+        );
         return false;
     }
 
@@ -164,12 +224,15 @@ async function iniciarActividadSanJose() {
         const sanJoseDesbloqueada =
             datos.desbloqueos?.sanjose === true;
 
+       
         if (!sanJoseDesbloqueada) {
 
-            alert(
-                "🔒 Actividad bloqueada.\n\n" +
-                "Debes completar Guanacaste " +
-                "para acceder a San José."
+            window.mostrarAlertaJuego(
+                "Debes completar primero la actividad de Guanacaste " +
+                "para poder acceder a San José.",
+                {
+                    titulo: "San José bloqueada"
+                }
             );
 
             console.log(
@@ -178,6 +241,7 @@ async function iniciarActividadSanJose() {
 
             return false;
         }
+
 
         // ==================================
         // ACCESO AUTORIZADO
@@ -235,9 +299,12 @@ async function iniciarActividadSanJose() {
                 error
             );
 
-            alert(
+            window.mostrarAlertaJuego(
                 "No se pudo verificar el acceso a San José. " +
-                "Inténtalo nuevamente."
+                "Inténtalo nuevamente.",
+                {
+                    titulo: "Error de conexión"
+                }
             );
 
             return false;
@@ -578,6 +645,7 @@ function seleccionarRespuestaSanJose(indiceSeleccionado) {
 
     const respuestaCorrecta =
         indiceSeleccionado === preguntaActual.correcta;
+        reproducirSonidoRespuestaSanJose(respuestaCorrecta);
 
     if (respuestaCorrecta) {
 
@@ -734,7 +802,7 @@ async function finalizarActividadSanJose() {
     // MOSTRAR RESULTADO
     // ======================================
 
-    titulo.textContent = "🏁 Actividad finalizada";
+    titulo.textContent = "Actividad finalizada";
 
     opciones.replaceChildren();
 
@@ -794,9 +862,12 @@ async function finalizarActividadSanJose() {
             // ======================================
 
             botonResultado.textContent =
-                "🔄 Reintentar actividad";
+                "Reintentar actividad";
 
+            
             botonResultado.addEventListener("click", () => {
+
+                detenerSonidosSanJose();
 
                 indicePreguntaSanJose = 0;
                 puntosSanJose = 0;
@@ -805,6 +876,7 @@ async function finalizarActividadSanJose() {
                 mostrarPreguntaSanJose();
 
             });
+
         }
 
         opciones.appendChild(botonResultado);

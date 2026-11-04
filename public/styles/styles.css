@@ -3816,6 +3816,119 @@ html, body {
 
     z-index: 10;
 }
+
+
+
+
+
+/* ==========================================
+   REGIONES - TEXTO 3D DE COLORES
+========================================== */
+
+#escenarioPrincipal .botonRegion {
+    font-family: 'Fredoka', sans-serif;
+}
+
+/* Texto tridimensional */
+
+#escenarioPrincipal .botonRegion span {
+    display: inline-block;
+
+    font-family: 'Fredoka', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+
+    text-align: center;
+
+    transition: transform 0.25s ease;
+}
+
+/* LIMÓN - VERDE */
+
+#botonLimon span {
+    color: #77e36a;
+
+    text-shadow:
+        0 1px 0 #398c32,
+        0 2px 0 #307a2a,
+        0 3px 0 #276722,
+        0 4px 0 #1e541a,
+        0 5px 0 #164012,
+        0 8px 10px rgba(0, 0, 0, 0.35);
+}
+
+/* GUANACASTE - NARANJA DORADO */
+
+#botonGuanacaste span {
+    color: #ffc45c;
+
+    text-shadow:
+        0 1px 0 #d38a23,
+        0 2px 0 #b9781b,
+        0 3px 0 #a26615,
+        0 4px 0 #87530f,
+        0 5px 0 #6b400b,
+        0 8px 10px rgba(0, 0, 0, 0.35);
+}
+
+/* SAN JOSÉ - AZUL */
+
+#botonSanJose span {
+    color: #71caff;
+
+    text-shadow:
+        0 1px 0 #3485bc,
+        0 2px 0 #2874a8,
+        0 3px 0 #1e6292,
+        0 4px 0 #16517b,
+        0 5px 0 #104064,
+        0 8px 10px rgba(0, 0, 0, 0.35);
+}
+
+/* EFECTO AL PASAR EL MOUSE */
+
+@media (hover: hover) {
+    #escenarioPrincipal .botonRegion:not(:disabled):hover span {
+        transform: translateY(-3px) scale(1.05);
+    }
+}
+
+/* PANTALLAS PEQUEÑAS */
+
+@media (max-width: 600px) {
+
+    #escenarioPrincipal .botonRegion span {
+        font-size: 19px;
+    }
+}
+
+
+
+
+/* ==========================================
+   SÍMBOLO DE ALERTA 3D
+========================================== */
+
+.gameAlertIcon {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 58px;
+    font-weight: 700;
+    line-height: 1;
+
+    color: #ffca48;
+
+    text-shadow:
+        0 1px 0 #d99a20,
+        0 2px 0 #bc7c14,
+        0 3px 0 #975b0e,
+        0 4px 0 #744009,
+        0 7px 12px rgba(0, 0, 0, 0.3);
+}
+
+
+
+
 /* ==============================================================================================================================
 
 
@@ -3869,6 +3982,14 @@ html, body {
     z-index: 10;
 }
 
+#actividadLimon #encabezadoLimon {
+    flex-wrap: nowrap;
+}
+
+#actividadLimon #informacionLimon {
+    justify-self: end;
+}
+
 
 #encabezadoLimon h2 {
 
@@ -3882,21 +4003,269 @@ html, body {
 }
 
 
+
+/* ==========================================
+   LIMÓN - PANEL DE INFORMACIÓN
+========================================== */
+
 #informacionLimon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+
+    padding: 8px;
+    background: rgba(12, 35, 35, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 18px;
+
+    font-family: 'Fredoka', sans-serif;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.25);
+}
+
+/* Indicadores individuales */
+
+#progresoLimon,
+#puntosLimon,
+#tiempoLimon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 65px;
+    padding: 10px 18px;
+    box-sizing: border-box;
+
+    border-radius: 12px;
+
+    font-family: 'Fredoka', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* ELEMENTO ACTUAL */
+
+#progresoLimon {
+    background: #244e70;
+    color: #ffffff;
+    border: 2px solid #79bde8;
+}
+
+/* PUNTUACIÓN */
+
+#puntosLimon {
+    background: #22583e;
+    color: #ffe26a;
+    border: 2px solid #74d49a;
+
+    font-size: 25px;
+}
+
+/* TEMPORIZADOR */
+
+#tiempoLimon {
+    min-width: 205px;
+    min-height: 72px;
+
+    background: #342127;
+    color: #ff5151;
+    border: 3px solid #d74444;
+
+    font-size: 32px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+
+    box-shadow:
+        0 0 12px rgba(255, 55, 55, 0.25);
+}
+
+/* ==========================================
+   ANIMACIÓN DEL RELOJ
+========================================== */
+
+#tiempoLimon.relojLimonActivo {
+    animation: parpadeoRelojLimon 1s ease-in-out infinite;
+}
+
+@keyframes parpadeoRelojLimon {
+
+    0%, 100% {
+        color: #ff5151;
+        border-color: #d74444;
+        box-shadow: 0 0 8px rgba(255, 55, 55, 0.2);
+    }
+
+    50% {
+        color: #ffffff;
+        border-color: #ff2828;
+        box-shadow: 0 0 22px rgba(255, 35, 35, 0.75);
+    }
+}
+
+/* Tiempo crítico: últimos 10 segundos */
+
+#tiempoLimon.relojLimonCritico {
+    background: #7b101b;
+    animation-duration: 0.45s;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 850px) {
+
+    #informacionLimon {
+        gap: 6px;
+        padding: 5px;
+        flex-wrap: wrap;
+    }
+
+    #progresoLimon,
+    #puntosLimon {
+        font-size: 16px;
+        min-height: 48px;
+        padding: 8px 10px;
+    }
+
+    #tiempoLimon {
+        font-size: 23px;
+        min-width: 145px;
+        min-height: 52px;
+        padding: 8px 10px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    #tiempoLimon.relojLimonActivo {
+        animation: none;
+    }
+}
+
+
+/* ==========================================
+   LIMÓN - PANEL DE INFORMACIÓN FIJO
+========================================== */
+
+/* Contenedor principal */
+
+#actividadLimon #informacionLimon {
+
+    display: grid;
+
+    grid-template-columns:
+        210px
+        160px
+        220px;
+
+    align-items: center;
+
+    gap: 12px;
+
+    width: 626px;
+
+    min-width: 626px;
+    max-width: 626px;
+
+    box-sizing: border-box;
+
+    padding: 10px;
+
+    flex-shrink: 0;
+}
+
+/* Elementos individuales */
+
+#actividadLimon #progresoLimon,
+#actividadLimon #puntosLimon,
+#actividadLimon #tiempoLimon {
+
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    height: 72px;
+    min-height: 72px;
+    max-height: 72px;
+
+    box-sizing: border-box;
 
     display: flex;
+    align-items: center;
+    justify-content: center;
 
-    gap: 25px;
+    margin: 0;
+    padding: 10px;
 
-    padding: 10px 20px;
+    white-space: nowrap;
+    overflow: hidden;
 
-    background:
-        rgba(0, 0, 0, 0.45);
-
-    color: white;
-
-    border-radius: 10px;
+    font-family: 'Fredoka', sans-serif;
+    font-variant-numeric: tabular-nums;
 }
+
+/* Tamaños específicos */
+
+#actividadLimon #progresoLimon {
+    font-size: 20px;
+}
+
+#actividadLimon #puntosLimon {
+    font-size: 24px;
+}
+
+#actividadLimon #tiempoLimon {
+    font-size: 30px;
+}
+
+/* ==========================================
+   PANTALLAS PEQUEÑAS
+========================================== */
+
+@media (max-width: 850px) {
+
+    #actividadLimon #informacionLimon {
+
+        grid-template-columns:
+            150px
+            110px
+            165px;
+
+        width: 461px;
+        min-width: 461px;
+        max-width: 461px;
+
+        gap: 8px;
+        padding: 8px;
+    }
+
+    #actividadLimon #progresoLimon,
+    #actividadLimon #puntosLimon,
+    #actividadLimon #tiempoLimon {
+
+        height: 55px;
+        min-height: 55px;
+        max-height: 55px;
+
+        padding: 6px;
+    }
+
+    #actividadLimon #progresoLimon {
+        font-size: 15px;
+    }
+
+    #actividadLimon #puntosLimon {
+        font-size: 17px;
+    }
+
+    #actividadLimon #tiempoLimon {
+        font-size: 21px;
+    }
+}
+
 
 
 /* ==========================================
@@ -5903,6 +6272,134 @@ html, body {
 }
 
 
+
+/* ==========================================
+   GUANACASTE - TEXTO DE COLORES SIN 3D
+========================================== */
+
+/* Título principal */
+
+#actividadGuanacaste .tituloGuanacaste3D {
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(21px, 3vw, 32px);
+    font-weight: 700;
+    text-align: center;
+    color: #b5f46c;
+
+    text-shadow: none;
+}
+
+/* Letras de los elementos */
+
+#actividadGuanacaste .textoElemento3D {
+    display: inline-block;
+
+    font-family: 'Fredoka', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+
+    overflow-wrap: anywhere;
+
+    color: var(--color-texto-elemento, #ffffff);
+
+    text-shadow: none;
+
+    transition: transform 0.2s ease;
+}
+
+/* ==========================================
+   COLORES INDIVIDUALES
+========================================== */
+
+#actividadGuanacaste [data-tipo="arbol"] {
+    --color-texto-elemento: #64e88b;
+}
+
+#actividadGuanacaste [data-tipo="arbusto"] {
+    --color-texto-elemento: #a3f06e;
+}
+
+#actividadGuanacaste [data-tipo="pasto"] {
+    --color-texto-elemento: #c5f65c;
+}
+
+#actividadGuanacaste [data-tipo="roca"] {
+    --color-texto-elemento: #d0d7df;
+}
+
+#actividadGuanacaste [data-tipo="basura"] {
+    --color-texto-elemento: #ff8c87;
+}
+
+#actividadGuanacaste [data-tipo="contenedorBasura"] {
+    --color-texto-elemento: #77d8ff;
+}
+
+#actividadGuanacaste [data-tipo="flores"] {
+    --color-texto-elemento: #ff9de3;
+}
+
+#actividadGuanacaste [data-tipo="llantas"] {
+    --color-texto-elemento: #ffc078;
+}
+
+#actividadGuanacaste [data-tipo="soda"] {
+    --color-texto-elemento: #ff7979;
+}
+
+#actividadGuanacaste [data-tipo="banana"] {
+    --color-texto-elemento: #ffe56b;
+}
+
+/* ==========================================
+   INTERACCIÓN VISUAL
+========================================== */
+
+/* Efecto al pasar el mouse */
+
+@media (hover: hover) {
+    #actividadGuanacaste
+    .botonElementoGuanacaste:not(:disabled):hover
+    .textoElemento3D {
+        transform: translateY(-3px) scale(1.04);
+    }
+}
+
+/* Botón seleccionado */
+
+#actividadGuanacaste
+.botonElementoGuanacaste.elementoSeleccionado
+.textoElemento3D {
+    transform: scale(1.05);
+}
+
+/* ==========================================
+   PANTALLAS PEQUEÑAS
+========================================== */
+
+@media (max-width: 600px) {
+
+    #actividadGuanacaste .textoElemento3D {
+        font-size: 14px;
+    }
+
+    #actividadGuanacaste .tituloGuanacaste3D {
+        font-size: 22px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
 /* ==========================================
    SIMAMBIENTECR - RESULTADO FINAL
 ========================================== */
@@ -6060,4 +6557,44 @@ html, body {
     .resultado-final-botones button {
         width: 100%;
     }
+}
+
+
+/* ==========================================
+   SIMAMBIENTECR - CONFETI 3D FINAL
+========================================== */
+
+#ventanaResultadoFinal {
+    isolation: isolate;
+}
+
+/* Canvas de partículas */
+
+#canvasConfetiFinal {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    z-index: 2;
+
+    pointer-events: none;
+    background: transparent;
+}
+
+/* Contenido del resultado */
+
+#ventanaResultadoFinal .resultado-final-contenido {
+    position: relative;
+    z-index: 1;
+}
+
+/* Botones por encima del confeti */
+
+#ventanaResultadoFinal .resultado-final-botones {
+    position: relative;
+    z-index: 3;
 }

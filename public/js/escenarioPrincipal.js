@@ -235,17 +235,21 @@ document.addEventListener(
                         const desbloqueada =
                             await verificarDesbloqueoGuanacaste();
 
+                       
                         if (!desbloqueada) {
 
-                            alert(
-                                "🔒 Guanacaste está bloqueada.\n\n" +
+                            window.mostrarAlertaJuego(
                                 "Primero debes completar la actividad de Limón, " +
                                 "responder sus 10 elementos y obtener " +
-                                "al menos 10 puntos."
+                                "al menos 10 puntos para acceder a Guanacaste.",
+                                {
+                                    titulo: "Guanacaste bloqueada"
+                                }
                             );
 
                             return;
                         }
+
 
                         // El jugador cumple los requisitos
                         console.log(
@@ -277,10 +281,15 @@ document.addEventListener(
                             error
                         );
 
-                        alert(
+                        
+                        window.mostrarAlertaJuego(
                             "No se pudo consultar tu progreso. " +
-                            "Inténtalo nuevamente."
+                            "Inténtalo nuevamente.",
+                            {
+                                titulo: "Error de conexión"
+                            }
                         );
+
 
                     } finally {
 
@@ -354,9 +363,12 @@ document.addEventListener(
                         error
                     );
 
-                    alert(
-                        "No se pudo iniciar San José. " +
-                        "Inténtalo nuevamente."
+                    window.mostrarAlertaJuego(
+                        "No se pudo iniciar la actividad de San José. " +
+                        "Inténtalo nuevamente.",
+                        {
+                            titulo: "Error al iniciar la actividad"
+                        }
                     );
 
                 } finally {

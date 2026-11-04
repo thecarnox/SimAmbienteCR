@@ -11,6 +11,7 @@ let elementosRespondidosLimon = 0;
 let respuestaLimonBloqueada = false;
 
 
+
 // TEMPORIZADOR
 
 let tiempoRestanteLimon = 60;
@@ -22,10 +23,48 @@ let actividadLimonActiva = false;
 let actividadLimonPausada = false;
 
 
-/**
- * Guarda el resultado de la actividad de Limón.
- * Utiliza la ruta POST /progreso/guardar.
- */
+
+/* ==========================================
+   SONIDO DEL TEMPORIZADOR - LIMÓN
+========================================== */
+
+const sonidoRelojLimon = new Audio("sounds/reloj.mp3");
+
+sonidoRelojLimon.loop = true;
+sonidoRelojLimon.volume = 0.35;
+sonidoRelojLimon.preload = "auto";
+
+function reproducirRelojLimon() {
+
+    if (
+        !actividadLimonActiva ||
+        actividadLimonPausada ||
+        tiempoRestanteLimon <= 0
+    ) {
+        return;
+    }
+
+    if (!sonidoRelojLimon.paused) {
+        return;
+    }
+
+    sonidoRelojLimon.play().catch(error => {
+        console.warn(
+            "No se pudo reproducir el reloj:",
+            error
+        );
+    });
+}
+
+function pausarRelojLimon() {
+    sonidoRelojLimon.pause();
+}
+
+function detenerRelojLimon() {
+    sonidoRelojLimon.pause();
+    sonidoRelojLimon.currentTime = 0;
+}
+
 
 async function guardarProgresoLimon(puntos, actividadFinalizada) {
 
@@ -313,6 +352,7 @@ let modelosDisponiblesLimon = [];
 function iniciarActividadLimon() {
 
     detenerRetroalimentacionLimon();
+    detenerRelojLimon();
 
     console.log(
         "Actividad 1 - Limón iniciada"  
@@ -618,6 +658,9 @@ function iniciarTemporizadorLimon() {
 
     actualizarTiempoLimon();
 
+    detenerRelojLimon();
+    reproducirRelojLimon();
+
 
     // ======================================
     // CONTADOR
@@ -668,45 +711,49 @@ function iniciarTemporizadorLimon() {
 // ACTUALIZAR TIEMPO EN PANTALLA
 // ==========================================
 
+
 function actualizarTiempoLimon() {
 
     const elementoTiempo =
-        document.getElementById(
-            "tiempoLimon"
-        );
-
+        document.getElementById("tiempoLimon");
 
     if (!elementoTiempo) {
         return;
     }
 
+    const tiempoSeguro = Math.max(
+        0,
+        tiempoRestanteLimon
+    );
 
-    const minutos =
-        Math.floor(
-            tiempoRestanteLimon / 60
-        );
+    const minutos = Math.floor(tiempoSeguro / 60);
 
+    const segundos = tiempoSeguro % 60;
 
-    const segundos =
-        tiempoRestanteLimon % 60;
-
-
-    const segundosTexto =
-        segundos
-            .toString()
-            .padStart(
-                2,
-                "0"
-            );
-
+    const minutosTexto = String(minutos).padStart(2, "0");
+    const segundosTexto = String(segundos).padStart(2, "0");
 
     elementoTiempo.textContent =
-        "Tiempo: " +
-        minutos +
-        ":" +
-        segundosTexto;
+        "Tiempo: " + minutosTexto + ":" + segundosTexto;
 
+    // Parpadeo únicamente cuando el reloj corre
+    const relojActivo =
+        actividadLimonActiva &&
+        !actividadLimonPausada &&
+        tiempoSeguro > 0;
+
+    elementoTiempo.classList.toggle(
+        "relojLimonActivo",
+        relojActivo
+    );
+
+    // Acelerar el parpadeo en los últimos 10 segundos
+    elementoTiempo.classList.toggle(
+        "relojLimonCritico",
+        relojActivo && tiempoSeguro <= 10
+    );
 }
+
 
 // ==========================================
 // FINALIZAR ACTIVIDAD 1
@@ -730,6 +777,7 @@ function finalizarActividadLimon() {
     // ======================================
 
     actividadLimonActiva = false;
+    detenerRelojLimon();
 
     // ======================================
     // GUARDAR RESULTADO EN BASE DE DATOS
@@ -2102,6 +2150,8 @@ document.addEventListener(
 
                 // Pausar actividad
                 actividadLimonPausada = true;
+                pausarRelojLimon();
+                actualizarTiempoLimon();
 
                 // Pausar música
                 if (bgSound) {

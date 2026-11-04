@@ -493,47 +493,18 @@
 
 
             <!-- ACTIVIDAD 1 - LIMÓN -->
-
-            <button
-                id="botonLimon"
-                class="botonRegion">
-
-                🌴
-
-                <span>
-                    Limón
-                </span>
-
+            <button id="botonLimon" class="botonRegion">
+                <span>Limón</span>
             </button>
-
 
             <!-- ACTIVIDAD 2 - GUANACASTE -->
-
-            <button
-                id="botonGuanacaste"
-                class="botonRegion">
-
-                🌳
-
-                <span>
-                    Guanacaste
-                </span>
-
+            <button id="botonGuanacaste" class="botonRegion">
+                <span>Guanacaste</span>
             </button>
 
-
             <!-- ACTIVIDAD 3 - SAN JOSÉ -->
-
-            <button
-                id="botonSanJose"
-                class="botonRegion">
-
-                🏙️
-
-                <span>
-                    San José
-                </span>
-
+            <button id="botonSanJose" class="botonRegion">
+                <span>San José</span>
             </button>
 
         </div>
@@ -543,7 +514,7 @@
 
         <button id="menuPausaEscenarioPrincipal">
 
-            ☰
+            ⚙️
 
         </button>
 
@@ -604,7 +575,7 @@
     <div id="activitySection">
 
         <h2 id="panelTitle">
-            🏙️ Actividad de San José
+            Actividad de San José
         </h2>
 
         <p id="panelText">
@@ -1082,7 +1053,7 @@
         <div class="gameAlertContent">
 
             <div class="gameAlertIcon" aria-hidden="true">
-                ⚠
+                !
             </div>
 
             <h2 id="gameAlertTitle">
@@ -1093,12 +1064,12 @@
 
             <p id="gameAlertMessage"></p>
 
-            <button
+           <button
                 type="button"
                 id="gameAlertRetryBtn"
                 class="gameAlertRetryBtn"
             >
-                Reintentar
+                Entendido
             </button>
 
         </div>
@@ -1116,10 +1087,15 @@
         aria-labelledby="tituloResultadoFinal"
         hidden>
 
+        <canvas
+            id="canvasConfetiFinal"
+            aria-hidden="true">
+        </canvas>
+
         <div class="resultado-final-contenido">
 
             <h2 id="tituloResultadoFinal">
-                🏆 ¡Felicidades!
+                ¡Felicidades!
             </h2>
 
             <p class="resultado-final-introduccion">
@@ -1130,17 +1106,17 @@
             <div class="resultado-final-actividades">
 
                 <div>
-                    <span>🌿 Actividad 1 - Limón</span>
+                    <span>Actividad 1 - Limón</span>
                     <strong id="resultadoPuntosLimon">0 / 20</strong>
                 </div>
 
                 <div>
-                    <span>🌳 Actividad 2 - Guanacaste</span>
+                    <span>Actividad 2 - Guanacaste</span>
                     <strong id="resultadoPuntosGuanacaste">0 / 20</strong>
                 </div>
 
                 <div>
-                    <span>🏙️ Actividad 3 - San José</span>
+                    <span>Actividad 3 - San José</span>
                     <strong id="resultadoPuntosSanJose">0 / 10</strong>
                 </div>
 
@@ -1167,7 +1143,7 @@
                 </button>
 
                 <button id="menuPrincipalResultadoFinal" type="button">
-                    🏠 Menú Principal
+                    Menú Principal
                 </button>
 
             </div>

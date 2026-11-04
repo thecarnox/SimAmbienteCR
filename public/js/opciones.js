@@ -257,23 +257,24 @@ function volverMenuPausa() {
     }
 }
 
-// ==========================================
-// ABRIR OPCIONES DESDE SAN JOSÉ
-// ==========================================
 
-function abrirOpcionesSanJose() {
 
-    if (!pauseMenu || !gameOptionsView || !pauseMainView) {
-        return;
+menuToggleBtn?.addEventListener("click", () => {
+
+    // Abrir siempre la vista principal del menú de pausa
+    volverMenuPausa();
+
+    // Mostrar menú
+    if (pauseMenu) {
+        pauseMenu.style.display = "flex";
     }
 
-    // Mostrar el menú
-    pauseMenu.style.display = "flex";
+    // Pausar música ambiental
+    if (bgSound) {
+        bgSound.pause();
+    }
 
-    // Abrir directamente la configuración
-    pauseMainView.hidden = true;
-    gameOptionsView.hidden = false;
-}
+});
 
 // ==========================================
 // RESTABLECER VISTA DEL MENÚ DE PAUSA
@@ -284,11 +285,6 @@ window.restablecerVistaPausa = volverMenuPausa;
     // ==========================================
     // EVENTOS
     // ==========================================
-
-    menuToggleBtn?.addEventListener(
-    "click",
-    abrirOpcionesSanJose
-    );
 
     optionsBtn?.addEventListener(
         "click",

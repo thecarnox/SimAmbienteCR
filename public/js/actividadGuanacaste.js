@@ -267,29 +267,25 @@ function actualizarDisponibilidadEvaluacionGuanacaste() {
 
     boton.disabled = !puedeEvaluar;
 
+  
     if (pendientes > 0) {
 
-        boton.textContent = "⏳ Cargando elementos...";
+        boton.textContent = "CARGANDO ELEMENTOS...";
 
     } else if (colocados < MAXIMO_ELEMENTOS) {
 
         const faltantes = MAXIMO_ELEMENTOS - colocados;
 
         boton.textContent =
-            `🔒 Faltan ${faltantes} objeto(s)`;
+            `FALTAN ${faltantes} ELEMENTO(S)`;
 
     } else {
 
-        boton.textContent = "✅ Evaluar";
+        boton.textContent = "EVALUAR TERRENO";
 
     }
+
 }
-
-
-
-// ==========================================
-// SONIDOS DE RETROALIMENTACIÓN - GUANACASTE
-// ==========================================
 
 
 // ==========================================
@@ -1073,8 +1069,8 @@ function crearInterfazGuanacaste() {
         );
 
 
-    titulo.textContent =
-        "🌱 Recupera el terreno";
+    titulo.textContent = "RECUPERA EL TERRENO";
+    titulo.classList.add("tituloGuanacaste3D");
 
 
     panel.appendChild(
@@ -1125,28 +1121,31 @@ function crearInterfazGuanacaste() {
 
 
     
+
     // ==========================================
-    // BOTONES DE ELEMENTOS
+    // BOTONES DE ELEMENTOS SIN EMOJIS
     // ==========================================
-    crearBotonElemento(panel, "🌳", "Árbol", "arbol");
 
-    crearBotonElemento(panel, "🌿", "Arbusto", "arbusto");
+    crearBotonElemento(panel, "ÁRBOL", "Árbol", "arbol");
 
-    crearBotonElemento(panel, "🌱", "Pasto", "pasto");
+    crearBotonElemento(panel, "ARBUSTO", "Arbusto", "arbusto");
 
-    crearBotonElemento(panel, "🪨", "Roca", "roca");
+    crearBotonElemento(panel, "PASTO", "Pasto", "pasto");
 
-    crearBotonElemento(panel, "🚮", "Basura", "basura");
+    crearBotonElemento(panel, "ROCA", "Roca", "roca");
 
-    crearBotonElemento(panel, "🗑️", "Contenedor de basura", "contenedorBasura");
+    crearBotonElemento(panel, "BASURA", "Basura", "basura");
 
-    crearBotonElemento(panel, "🌸", "Flores", "flores");
+    crearBotonElemento(panel, "CONTENEDOR", "Contenedor de basura", "contenedorBasura");
 
-    crearBotonElemento(panel, "🛞", "Llantas", "llantas");
+    crearBotonElemento(panel, "FLORES", "Flores", "flores");
 
-    crearBotonElemento(panel, "🥤", "Lata de refresco", "soda");
+    crearBotonElemento(panel, "LLANTAS", "Llantas", "llantas");
 
-    crearBotonElemento(panel, "🍌", "Banana", "banana");
+    crearBotonElemento(panel, "LATA", "Lata de refresco", "soda");
+
+    crearBotonElemento(panel, "BANANA", "Banana", "banana");
+
 
 
 
@@ -1164,8 +1163,7 @@ function crearInterfazGuanacaste() {
         "btnEvaluarGuanacaste";
 
 
-    botonEvaluar.textContent =
-        "✅ Evaluar";
+    botonEvaluar.textContent = "EVALUAR TERRENO";
 
 
     botonEvaluar.addEventListener(
@@ -1184,53 +1182,45 @@ function crearInterfazGuanacaste() {
 // CREAR BOTÓN DE ELEMENTO
 // ==========================================
 
+
 function crearBotonElemento(
     panel,
-    icono,
+    texto,
     nombre,
     tipo
 ) {
 
-    const boton =
-        document.createElement(
-            "button"
+    const boton = document.createElement("button");
+
+    boton.type = "button";
+
+    boton.className = "botonElementoGuanacaste";
+
+    boton.dataset.tipo = tipo;
+
+    boton.setAttribute("aria-label", nombre);
+
+    // Texto con efecto 3D
+    const etiqueta = document.createElement("span");
+
+    etiqueta.className = "textoElemento3D";
+
+    etiqueta.textContent = texto;
+
+    boton.appendChild(etiqueta);
+
+    boton.addEventListener("click", function() {
+
+        seleccionarElementoGuanacaste(
+            tipo,
+            boton
         );
 
+    });
 
-    boton.className =
-        "botonElementoGuanacaste";
-
-
-    boton.dataset.tipo =
-        tipo;
-
-
-    boton.innerHTML =
-        icono +
-        " " +
-        nombre;
-
-
-    boton.addEventListener(
-
-        "click",
-
-        function() {
-
-            seleccionarElementoGuanacaste(
-                tipo,
-                boton
-            );
-
-        }
-
-    );
-
-
-    panel.appendChild(
-        boton
-    );
+    panel.appendChild(boton);
 }
+
 
 
 // ==========================================
@@ -2166,7 +2156,7 @@ function iniciarTormentaGuanacaste(alFinalizar, permitirInundacion = true) {
         boton.disabled = true;
 
         boton.textContent =
-            "🌧️ Simulando lluvia e inundación...";
+            "SIMULACIÓN DE LLUVIA EN PROCESO...";
     }
 
     document.querySelectorAll(
@@ -2330,13 +2320,15 @@ function evaluarTerrenoGuanacaste() {
     let tipo;
     let mensaje;
 
+
     if (negativos === 0) {
 
         tipo = "bueno";
 
         mensaje =
-            "✅ ¡Buen trabajo! No colocaste elementos " +
-            "perjudiciales para el terreno.";
+            "¡EXCELENTE TRABAJO! No colocaste elementos " +
+            "perjudiciales para el terreno. " +
+            "Tus decisiones favorecen la conservación ambiental.";
 
     } else if (
         negativos < UMBRAL_NEGATIVOS_MALO_GUANACASTE
@@ -2345,19 +2337,22 @@ function evaluarTerrenoGuanacaste() {
         tipo = "medio";
 
         mensaje =
-            "🟡 Colocaste " + negativos +
+            "¡ATENCIÓN! Colocaste " + negativos +
             " elemento(s) negativo(s). " +
-            "El terreno sigue siendo vulnerable.";
+            "El terreno sigue siendo vulnerable. " +
+            "Puedes mejorar tus decisiones ambientales.";
 
     } else {
 
         tipo = "riesgo";
 
         mensaje =
-            "⚠️ Colocaste " + negativos +
+            "¡RIESGO AMBIENTAL! Colocaste " + negativos +
             " elementos negativos. " +
-            "El terreno presenta un alto riesgo ambiental.";
+            "El terreno presenta un alto riesgo de degradación.";
+
     }
+
 
     console.log("Evaluación Guanacaste:", {
         total: objetosColocados.length,

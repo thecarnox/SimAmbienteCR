@@ -246,7 +246,11 @@ backToPauseBtn.addEventListener("click", () => {
 
 });
 
-// Reanudar
+
+// ==========================================
+// REANUDAR VIDEOJUEGO
+// ==========================================
+
 resumeBtn.addEventListener("click", () => {
 
     pauseMenu.style.display = "none";
@@ -255,15 +259,39 @@ resumeBtn.addEventListener("click", () => {
         window.restablecerVistaPausa();
     }
 
+    // Reanudar música ambiental
     bgSound.play().catch(error => {
-        console.warn("No se pudo reanudar la música:", error);
+        console.warn(
+            "No se pudo reanudar la música:",
+            error
+        );
     });
 
+    // ======================================
+    // REANUDAR ACTIVIDAD LIMÓN
+    // ======================================
+
     if (typeof actividadLimonPausada !== "undefined") {
+
         actividadLimonPausada = false;
+
+        // Reanudar sonido del reloj
+        if (
+            typeof reproducirRelojLimon === "function" &&
+            typeof actividadLimonActiva !== "undefined" &&
+            actividadLimonActiva
+        ) {
+            reproducirRelojLimon();
+        }
+
+        // Reactivar parpadeo del temporizador
+        if (typeof actualizarTiempoLimon === "function") {
+            actualizarTiempoLimon();
+        }
     }
 
 });
+
 
 
 // Menú principal
@@ -717,6 +745,385 @@ window.addEventListener("resize", () => {
 
 
 // ==========================================
+// SONIDO DE CELEBRACIÓN - RESULTADO FINAL
+// ==========================================
+
+const sonidoResultadoFinal = new Audio(
+    "sounds/sonidoBueno.mp3"
+);
+
+sonidoResultadoFinal.volume = 0.7;
+sonidoResultadoFinal.preload = "auto";
+
+function reproducirSonidoResultadoFinal() {
+
+    sonidoResultadoFinal.pause();
+    sonidoResultadoFinal.currentTime = 0;
+
+    sonidoResultadoFinal.play().catch(error => {
+        console.warn(
+            "No se pudo reproducir el sonido final:",
+            error
+        );
+    });
+}
+
+function detenerSonidoResultadoFinal() {
+
+    sonidoResultadoFinal.pause();
+    sonidoResultadoFinal.currentTime = 0;
+}
+
+
+// ==========================================
+// SIMAMBIENTECR - CONFETI
+// PLAYCANVAS
+// ==========================================
+
+let appConfetiFinal = null;
+let estadoConfetiFinal = null;
+
+// ==========================================
+// DETENER CONFETI
+// ==========================================
+
+function detenerConfetiFinal() {
+
+    if (estadoConfetiFinal) {
+        estadoConfetiFinal.activo = false;
+        estadoConfetiFinal = null;
+    }
+
+    if (appConfetiFinal) {
+
+        const appAnterior = appConfetiFinal;
+
+        appConfetiFinal = null;
+
+        appAnterior.destroy();
+    }
+}
+
+// ==========================================
+// INICIAR CONFETI
+// ==========================================
+
+function iniciarConfetiFinal() {
+
+    detenerConfetiFinal();
+
+    const canvasConfeti =
+        document.getElementById("canvasConfetiFinal");
+
+    if (!canvasConfeti || typeof pc === "undefined") {
+        return;
+    }
+
+    if (
+        window.matchMedia(
+            "(prefers-reduced-motion: reduce)"
+        ).matches
+    ) {
+        return;
+    }
+
+    const ancho = Math.max(
+        1,
+        canvasConfeti.clientWidth
+    );
+
+    const alto = Math.max(
+        1,
+        canvasConfeti.clientHeight
+    );
+
+    // ======================================
+    // APLICACIÓN PLAYCANVAS
+    // ======================================
+
+    const appConfeti = new pc.Application(
+        canvasConfeti,
+        {
+            graphicsDeviceOptions: {
+                alpha: true,
+                antialias: true
+            }
+        }
+    );
+
+    appConfetiFinal = appConfeti;
+
+    appConfeti.setCanvasFillMode(
+        pc.FILLMODE_NONE
+    );
+
+    appConfeti.setCanvasResolution(
+        pc.RESOLUTION_AUTO
+    );
+
+    appConfeti.resizeCanvas(ancho, alto);
+
+    appConfeti.scene.ambientLight =
+        new pc.Color(1, 1, 1);
+
+    // ======================================
+    // CÁMARA ORTOGRÁFICA
+    // ======================================
+
+    const camaraConfeti =
+        new pc.Entity("CamaraConfetiFinal");
+
+    camaraConfeti.addComponent("camera", {
+        projection: pc.PROJECTION_ORTHOGRAPHIC,
+        orthoHeight: 10,
+        clearColor: new pc.Color(0, 0, 0, 0),
+        nearClip: 0.1,
+        farClip: 100
+    });
+
+    camaraConfeti.setPosition(0, 0, 30);
+    camaraConfeti.lookAt(0, 0, 0);
+
+    appConfeti.root.addChild(camaraConfeti);
+
+    // ======================================
+    // MATERIALES DE COLORES
+    // ======================================
+
+    const colores = [
+        [1.00, 0.82, 0.20],
+        [0.25, 0.90, 0.45],
+        [0.20, 0.75, 1.00],
+        [1.00, 0.35, 0.40],
+        [0.95, 0.40, 0.90],
+        [0.70, 0.45, 1.00],
+        [1.00, 0.60, 0.20]
+    ];
+
+    const materialesConfeti = colores.map(
+        ([r, g, b]) => {
+
+            const material =
+                new pc.StandardMaterial();
+
+            material.diffuse =
+                new pc.Color(r, g, b);
+
+            material.emissive =
+                new pc.Color(
+                    r * 0.65,
+                    g * 0.65,
+                    b * 0.65
+                );
+
+            material.emissiveIntensity = 0.7;
+            material.cull = pc.CULLFACE_NONE;
+
+            material.update();
+
+            return material;
+        }
+    );
+
+    // ======================================
+    // EXPLOSIONES LATERALES
+    // ======================================
+
+    const relacion = ancho / alto;
+
+    const mitadAncho = 10 * relacion;
+
+    const particulasConfeti = [];
+
+    const cantidadParticulas = Math.min(
+        170,
+        Math.max(90, Math.floor(ancho / 8))
+    );
+
+    const aleatorio = (min, max) =>
+        min + Math.random() * (max - min);
+
+    for (
+        let i = 0;
+        i < cantidadParticulas;
+        i++
+    ) {
+
+        const lado = i % 2 === 0 ? -1 : 1;
+
+        const esHoja = Math.random() < 0.18;
+
+        const entidad = new pc.Entity(
+            esHoja ? "HojaConfeti" : "PiezaConfeti"
+        );
+
+        entidad.addComponent("render", {
+            type: "box",
+            material: esHoja
+                ? materialesConfeti[1]
+                : materialesConfeti[
+                    Math.floor(
+                        Math.random() *
+                        materialesConfeti.length
+                    )
+                ]
+        });
+
+        const anchoPieza = esHoja
+            ? aleatorio(0.10, 0.19)
+            : aleatorio(0.08, 0.23);
+
+        const altoPieza = esHoja
+            ? aleatorio(0.25, 0.42)
+            : aleatorio(0.12, 0.34);
+
+        entidad.setLocalScale(
+            anchoPieza,
+            altoPieza,
+            aleatorio(0.012, 0.05)
+        );
+
+        // Posición inicial
+
+        const xInicial =
+            lado * mitadAncho * 0.70;
+
+        const yInicial =
+            aleatorio(-3.5, 1.5);
+
+        const zInicial =
+            aleatorio(-3, 3);
+
+        entidad.setPosition(
+            xInicial,
+            yInicial,
+            zInicial
+        );
+
+        entidad.setEulerAngles(
+            aleatorio(0, 360),
+            aleatorio(0, 360),
+            aleatorio(0, 360)
+        );
+
+        appConfeti.root.addChild(entidad);
+
+        // Velocidades
+
+        const velocidadX =
+            -lado * aleatorio(1.0, 6.0) +
+            aleatorio(-2.0, 2.0);
+
+        const velocidadY =
+            aleatorio(5.0, 11.0);
+
+        const velocidadZ =
+            aleatorio(-3.0, 3.0);
+
+        particulasConfeti.push({
+            entidad: entidad,
+
+            vx: velocidadX,
+            vy: velocidadY,
+            vz: velocidadZ,
+
+            giroX: aleatorio(-450, 450),
+            giroY: aleatorio(-500, 500),
+            giroZ: aleatorio(-350, 350),
+
+            oscilacion: aleatorio(
+                0,
+                Math.PI * 2
+            )
+        });
+    }
+
+    // ======================================
+    // ANIMACIÓN
+    // ======================================
+
+    const estado = {
+        activo: true,
+        transcurrido: 0,
+        finalizando: false
+    };
+
+    estadoConfetiFinal = estado;
+
+    const duracion = 6.5;
+    const gravedad = 13;
+
+    appConfeti.on("update", (dt) => {
+
+        if (!estado.activo) {
+            return;
+        }
+
+        dt = Math.min(dt, 0.05);
+
+        estado.transcurrido += dt;
+
+        for (const particula of particulasConfeti) {
+
+            const entidad = particula.entidad;
+
+            // Aplicar gravedad
+            particula.vy -= gravedad * dt;
+
+            const posicion = entidad.getPosition();
+
+            const oscilacion =
+                Math.sin(
+                    estado.transcurrido * 5 +
+                    particula.oscilacion
+                ) * 0.35;
+
+            entidad.setPosition(
+                posicion.x +
+                    (particula.vx + oscilacion) * dt,
+
+                posicion.y +
+                    particula.vy * dt,
+
+                posicion.z +
+                    particula.vz * dt
+            );
+
+            // Giro tridimensional
+            entidad.rotateLocal(
+                particula.giroX * dt,
+                particula.giroY * dt,
+                particula.giroZ * dt
+            );
+        }
+
+        // ==================================
+        // FINALIZAR ANIMACIÓN
+        // ==================================
+
+        if (
+            estado.transcurrido >= duracion &&
+            !estado.finalizando
+        ) {
+
+            estado.finalizando = true;
+            estado.activo = false;
+
+            requestAnimationFrame(() => {
+
+                if (estadoConfetiFinal === estado) {
+                    detenerConfetiFinal();
+                }
+
+            });
+        }
+    });
+
+    appConfeti.start();
+}
+
+
+// ==========================================
 // SIMAMBIENTECR - RESULTADO FINAL
 // ==========================================
 
@@ -910,7 +1317,15 @@ async function verificarResultadoFinal() {
         ).textContent =
             obtenerRetroalimentacionFinal(datos.categoria);
 
+        
+        // Mostrar ventana de resultados
         ventanaResultadoFinal.hidden = false;
+
+        reproducirSonidoResultadoFinal();
+
+        // Iniciar explosión de confeti 3D
+        iniciarConfetiFinal();
+
 
     } catch (error) {
 
@@ -927,38 +1342,47 @@ async function verificarResultadoFinal() {
 }
 
 
+
 // ==========================================
-// BOTÓN QUITAR
+// BOTÓN QUITAR RESULTADO FINAL
 // ==========================================
 
 document.getElementById(
     "quitarResultadoFinal"
 )?.addEventListener("click", () => {
 
+    detenerConfetiFinal();
+
+    detenerSonidoResultadoFinal();
+
+
     ventanaResultadoFinal.hidden = true;
 
 });
 
 
+
+
 // ==========================================
-// BOTÓN MENÚ PRINCIPAL
+// MENÚ PRINCIPAL DESDE RESULTADO FINAL
 // ==========================================
 
 document.getElementById(
     "menuPrincipalResultadoFinal"
 )?.addEventListener("click", () => {
 
+    detenerConfetiFinal();
+
+    detenerSonidoResultadoFinal();
+
+
     ventanaResultadoFinal.hidden = true;
 
-    // Mantener el mismo comportamiento
-    // del menú principal existente.
     location.reload();
 
 });
 
 
-// ==========================================
-// DISPONIBILIDAD PARA OTRAS ACTIVIDADES
-// ==========================================
+
 
 window.verificarResultadoFinal = verificarResultadoFinal;
