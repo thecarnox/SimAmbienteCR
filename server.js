@@ -49,10 +49,11 @@ app.use("/progreso", progresoRoutes);
 // INICIAR SERVIDOR
 // ==========================================
 
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
+const HOST = process.env.HOST || "127.0.0.1";
 
-app.listen(PORT, () => {
+app.listen(PORT, HOST, () => {
     console.log(
-        `Servidor activo en http://localhost:${PORT}`
+        `Servidor activo en http://${HOST}:${PORT}`
     );
 });

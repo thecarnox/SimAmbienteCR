@@ -2,12 +2,15 @@
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
 
+const DB_PATH = process.env.DB_PATH ||
+    path.join(__dirname, "simambiente.db");
+
 // ==========================================
 // CONEXIÓN A LA BASE DE DATOS
 // ==========================================
 
 const db = new sqlite3.Database(
-    path.join(__dirname, "simambiente.db"),
+    DB_PATH,
     (err) => {
         if (err) {
             console.error(
@@ -26,9 +29,18 @@ const db = new sqlite3.Database(
 
 db.serialize(() => {
 
+    // ==========================================
+    // CONFIGURACIÓN DE SQLITE
+    // ==========================================
+
     // Activar claves foráneas
     db.run("PRAGMA foreign_keys = ON");
 
+    // Permitir lecturas durante operaciones de escritura
+    db.run("PRAGMA journal_mode = WAL");
+
+    // Esperar hasta 5 segundos si la base está ocupada
+    db.run("PRAGMA busy_timeout = 5000");
     // --------------------------------------
     // JUGADORES
     // --------------------------------------
