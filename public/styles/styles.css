@@ -6638,3 +6638,359 @@ html, body {
     position: relative;
     z-index: 3;
 }
+
+
+/* ==========================================
+   SIMAMBIENTECR - CONSENTIMIENTO INFORMADO
+========================================== */
+
+#playerModal .playerConsent {
+    margin-top: 22px;
+    padding: 16px;
+
+    border: 1px solid rgba(166, 214, 153, 0.24);
+    border-radius: 14px;
+
+    background: rgba(107, 170, 97, 0.08);
+}
+
+/* ==========================================
+   BOTÓN DE POLÍTICA DE PRIVACIDAD
+========================================== */
+
+#playerModal .playerPrivacyBtn {
+    display: block;
+
+    width: 100%;
+    margin: 0 0 15px;
+    padding: 0;
+
+    border: none;
+    background: transparent;
+
+    color: #d9bf75;
+
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+
+    text-align: center;
+    text-decoration: underline;
+
+    cursor: pointer;
+
+    transition: color 0.2s ease;
+}
+
+#playerModal .playerPrivacyBtn:hover {
+    color: #f4dda0;
+}
+
+/* ==========================================
+   CASILLA DE CONSENTIMIENTO
+========================================== */
+
+#playerModal .playerConsentLabel {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    color: #dbead5;
+
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+
+    cursor: pointer;
+}
+
+#playerModal #playerConsentCheck {
+    flex-shrink: 0;
+
+    width: 19px;
+    height: 19px;
+
+    margin: 0;
+
+    accent-color: #8ac765;
+
+    cursor: pointer;
+}
+
+/* ==========================================
+   VENTANA DE CONSENTIMIENTO INFORMADO
+========================================== */
+
+#privacyModal {
+    position: fixed;
+    inset: 0;
+
+    width: calc(100% - 40px);
+    max-width: 660px;
+
+    max-height: 90vh;
+    max-height: 90dvh;
+
+    margin: auto;
+    padding: 0;
+
+    box-sizing: border-box;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    border: 1px solid rgba(166, 214, 153, 0.35);
+    border-radius: 26px;
+
+    background: linear-gradient(
+        145deg,
+        #183d2d 0%,
+        #102d22 55%,
+        #092118 100%
+    );
+
+    color: #f2f8ed;
+
+    font-family: 'Nunito', sans-serif;
+
+    box-shadow:
+        0 28px 80px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+    scrollbar-width: thin;
+    scrollbar-color: #8ac765 #102d22;
+}
+
+#privacyModal[open] {
+    animation: playerModalAppear 0.3s ease-out;
+}
+
+/* Fondo de la ventana */
+
+#privacyModal::backdrop {
+    background: rgba(0, 0, 0, 0.65);
+
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+/* ==========================================
+   CONTENIDO PRINCIPAL
+========================================== */
+
+.privacyModalContent {
+    position: relative;
+
+    padding: 36px;
+
+    box-sizing: border-box;
+}
+
+.privacyModalContent::before {
+    content: "";
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 5px;
+
+    background: linear-gradient(
+        90deg,
+        #4caf50,
+        #b7dc78,
+        #e4c36d,
+        #4caf50
+    );
+}
+
+/* ==========================================
+   ENCABEZADO
+========================================== */
+
+.privacyModalHeader {
+    text-align: center;
+
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+
+    border-bottom: 1px solid
+        rgba(166, 214, 153, 0.24);
+}
+
+.privacyEyebrow {
+    display: inline-block;
+
+    margin-bottom: 12px;
+
+    color: #d9bf75;
+
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+}
+
+#privacyModal h2 {
+    margin: 0 0 12px;
+
+    color: #c6f18c;
+
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(24px, 4vw, 32px);
+    font-weight: 600;
+}
+
+.privacyModalHeader p {
+    margin: 0;
+
+    color: #b8d0be;
+
+    font-size: 13px;
+}
+
+/* ==========================================
+   INFORMACIÓN DEL CONSENTIMIENTO
+========================================== */
+
+.privacyModalBody {
+    text-align: left;
+}
+
+.privacyModalBody h3 {
+    margin: 24px 0 10px;
+
+    color: #c6f18c;
+
+    font-family: 'Fredoka', sans-serif;
+    font-size: 19px;
+    font-weight: 600;
+}
+
+.privacyModalBody p {
+    margin: 0 0 12px;
+
+    color: #dbead5;
+
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+/* ==========================================
+   BOTÓN ENTENDIDO
+========================================== */
+
+#privacyModal .playerSubmitBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    min-height: 52px;
+
+    margin-top: 28px;
+    padding: 13px 18px;
+
+    box-sizing: border-box;
+
+    border: none;
+    border-radius: 13px;
+
+    background: linear-gradient(
+        135deg,
+        #8ac765,
+        #4b9c56
+    );
+
+    color: #102b1d;
+
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    box-shadow: 0 6px 18px
+        rgba(66, 145, 73, 0.25);
+
+    transition:
+        transform 0.2s ease,
+        filter 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#privacyModal .playerSubmitBtn:hover {
+    transform: translateY(-2px);
+
+    filter: brightness(1.1);
+
+    box-shadow: 0 9px 23px
+        rgba(91, 175, 83, 0.32);
+}
+
+/* ==========================================
+   PIE DE LA VENTANA
+========================================== */
+
+.privacyModalFooter {
+    margin-top: 22px;
+
+    color: #829f8c;
+
+    font-size: 11px;
+    text-align: center;
+    letter-spacing: 0.3px;
+}
+
+/* ==========================================
+   ACCESIBILIDAD
+========================================== */
+
+#privacyModal button:focus-visible,
+#playerModal #playerConsentCheck:focus-visible {
+    outline: 3px solid #e4cb7e;
+    outline-offset: 3px;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 600px) {
+
+    #privacyModal {
+        width: calc(100% - 24px);
+        border-radius: 20px;
+    }
+
+    .privacyModalContent {
+        padding: 26px 20px;
+    }
+
+    .privacyModalBody h3 {
+        font-size: 17px;
+    }
+
+    .privacyModalBody p {
+        font-size: 13px;
+    }
+
+    #playerModal .playerConsent {
+        padding: 12px;
+    }
+
+    #playerModal .playerPrivacyBtn {
+        font-size: 13px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    #privacyModal,
+    #privacyModal *,
+    #playerModal .playerPrivacyBtn {
+        animation: none !important;
+        transition: none !important;
+    }
+}

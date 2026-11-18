@@ -309,14 +309,51 @@
 
                 </div>
 
+                
+                <!-- ==================================
+                    CONSENTIMIENTO INFORMADO
+                =================================== -->
+
+                <div class="playerConsent">
+
+                    <button
+                        type="button"
+                        id="openPrivacyBtn"
+                        class="playerPrivacyBtn"
+                    >
+                        Política de privacidad y tratamiento de datos
+                    </button>
+
+                    <label
+                        for="playerConsentCheck"
+                        class="playerConsentLabel"
+                    >
+
+                        <input
+                            type="checkbox"
+                            id="playerConsentCheck"
+                            required
+                        >
+
+                        <span>
+                            He leído y acepto el tratamiento
+                            de mis datos personales.
+                        </span>
+
+                    </label>
+
+                </div>
+
                 <button
                     type="button"
                     id="startPlayerBtn"
                     class="playerSubmitBtn"
+                    disabled
                 >
                     Comenzar aventura
                     <span aria-hidden="true">→</span>
                 </button>
+
 
                 <button
                     type="button"
@@ -401,6 +438,87 @@
     </div>
 
 
+
+    <!-- ==========================================
+        VENTANA DE CONSENTIMIENTO INFORMADO
+    ========================================== -->
+
+    <dialog
+        id="privacyModal"
+        class="privacyModal"
+        aria-labelledby="privacyTitle"
+    >
+
+        <div class="privacyModalContent">
+
+            <header class="privacyModalHeader">
+
+                <span class="privacyEyebrow">
+                    SIMAMBIENTECR
+                </span>
+
+                <h2 id="privacyTitle">
+                    Consentimiento informado
+                </h2>
+
+                <p>
+                    Protección de datos personales — Ley N.º 8968
+                </p>
+
+            </header>
+
+            <div class="privacyModalBody">
+
+                <p>
+                    Para utilizar SimAmbienteCR, se requiere
+                    recopilar información personal necesaria
+                    para gestionar su experiencia educativa.
+                </p>
+
+                <h3>Finalidad de los datos</h3>
+
+                <p>
+                    Identificar al jugador, almacenar las
+                    puntuaciones y recuperar el progreso de
+                    las actividades educativas. La información
+                    recopilada será utilizada únicamente
+                    para fines académicos.
+                </p>
+
+                <h3>Almacenamiento y privacidad</h3>
+
+                <p>
+                    La información será almacenada en una
+                    base de datos alojada en un servidor con
+                    mecanismos de seguridad y no será
+                    utilizada con fines comerciales.
+                </p>
+
+                <h3>Derechos del usuario</h3>
+
+                <p>
+                    El usuario podrá solicitar el acceso,
+                    rectificación o eliminación de sus datos
+                    personales y revocar su consentimiento.
+                </p>
+
+            </div>
+
+            <button
+                type="button"
+                id="closePrivacyBtn"
+                class="playerSubmitBtn"
+            >
+                Entendido
+            </button>
+
+            <div class="privacyModalFooter">
+                SimAmbienteCR · Proyecto académico UNED
+            </div>
+
+        </div>
+
+    </dialog>
 
     
     <!-- ==========================================

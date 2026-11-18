@@ -67,6 +67,54 @@ const backNewPlayerBtn = document.getElementById("backNewPlayerBtn");
 const backExistingPlayerBtn = document.getElementById("backExistingPlayerBtn");
 const closePlayerModalBtn = document.getElementById("closePlayerModalBtn");
 
+const playerConsentCheck = document.getElementById("playerConsentCheck");
+const openPrivacyBtn = document.getElementById("openPrivacyBtn");
+const privacyModal = document.getElementById("privacyModal");
+const closePrivacyBtn = document.getElementById("closePrivacyBtn");
+
+
+// ==========================================
+// POLÍTICA DE PRIVACIDAD
+// ==========================================
+
+openPrivacyBtn.addEventListener("click", () => {
+
+    privacyModal.showModal();
+
+});
+
+closePrivacyBtn.addEventListener("click", () => {
+
+    privacyModal.close();
+
+});
+
+// ==========================================
+// VALIDACIÓN DEL CONSENTIMIENTO
+// ==========================================
+
+function actualizarConsentimiento() {
+
+    startPlayerBtn.disabled =
+        iniciandoJugador || !playerConsentCheck.checked;
+
+}
+
+function restablecerConsentimiento() {
+
+    playerConsentCheck.checked = false;
+
+    actualizarConsentimiento();
+
+}
+
+playerConsentCheck.addEventListener("change", () => {
+
+    actualizarConsentimiento();
+
+});
+
+
 // ==========================================
 // MOSTRAR VISTAS DEL MODAL
 // ==========================================
@@ -94,7 +142,11 @@ function mostrarVistaJugador(vista) {
 // ==========================================
 
 newPlayerBtn.addEventListener("click", () => {
+
+    restablecerConsentimiento();
+
     mostrarVistaJugador("nuevo");
+
 });
 
 existingPlayerBtn.addEventListener("click", () => {
@@ -310,8 +362,13 @@ mainMenuBtn.addEventListener(
  // ==========================================
 
 mapBtn.addEventListener("click", () => {
+
+    restablecerConsentimiento();
+
     mostrarVistaJugador("seleccion");
+
     playerModal.style.display = "flex";
+
 });
 
 
@@ -394,6 +451,16 @@ startPlayerBtn.addEventListener("click", async () => {
 
     if (iniciandoJugador) return;
 
+    if (!playerConsentCheck.checked) {
+
+        mostrarAlertaJuego(
+            "Debes aceptar el consentimiento informado antes de continuar."
+        );
+
+        return;
+
+    }
+
     const nombre = playerName.value.trim();
     const correo = playerEmail.value.trim();
     const centroUniversitario = playerCenter.value;
@@ -455,8 +522,10 @@ startPlayerBtn.addEventListener("click", async () => {
     } finally {
 
         iniciandoJugador = false;
-        startPlayerBtn.disabled = false;
+
         loginPlayerBtn.disabled = false;
+
+        actualizarConsentimiento();
 
     }
 });
@@ -517,8 +586,10 @@ loginPlayerBtn.addEventListener("click", async () => {
     } finally {
 
         iniciandoJugador = false;
+
         loginPlayerBtn.disabled = false;
-        startPlayerBtn.disabled = false;
+
+        actualizarConsentimiento();
 
     }
 });
